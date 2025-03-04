@@ -1,0 +1,254 @@
+package cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.impl;
+
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.common.exception.BusinessException;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Brand;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.BrandPublic;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.BrandPublicView;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.system.IBrandPublicRepository;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IBrandPublicService;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IBrandService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class BrandPublicServiceImpl implements IBrandPublicService {
+
+    private static final Logger log =
+            LoggerFactory.getLogger(BrandPublicServiceImpl.class);
+    private final IBrandService brandService;
+
+    private final IBrandPublicRepository brandPublicRepository;
+
+    public BrandPublicServiceImpl(IBrandService brandService, IBrandPublicRepository brandPublicRepository) {
+        this.brandService = brandService;
+        this.brandPublicRepository = brandPublicRepository;
+    }
+
+    @Override
+    public String add(Brand brand) {
+        if (brand == null)
+            throw new BusinessException("参数不能为空");
+
+
+        String brandId = brandService.add(brand);
+        if (brandId == null)
+            throw new BusinessException("添加失败");
+
+        BrandPublic brandPublic = new BrandPublic();
+        brandPublic.setBrandId(brandId);
+
+
+        return add(brandPublic);
+    }
+
+    /**
+     * 增加
+     */
+    @Override
+    public String add(BrandPublic brandPublic) {
+        return brandPublicRepository.add(brandPublic);
+    }
+
+    /**
+     * 删除
+     */
+    @Override
+    public int delete(BrandPublic brandPublic) {
+        return brandPublicRepository.delete(brandPublic);
+    }
+
+    /**
+     * 更新
+     */
+    @Override
+    public int update(BrandPublic brandPublic) {
+        return brandPublicRepository.update(brandPublic);
+    }
+
+    @Override
+    public int update(Brand brand) {
+        return brandService.update(brand);
+    }
+
+    /**
+     * 根据id删除记录
+     *
+     * @param id
+     */
+    @Override
+    public int deleteById(String id) {
+        return brandPublicRepository.deleteById(id);
+    }
+
+    /**
+     * 根据brandId删除记录
+     *
+     * @param brandId
+     */
+    @Override
+    public int deleteByBrandId(String brandId) {
+        return brandPublicRepository.deleteByBrandId(brandId);
+    }
+
+    /**
+     * 得到数量
+     */
+    @Override
+    public int getCount() {
+        return brandPublicRepository.getCount();
+    }
+
+    /**
+     * 根据brandId得到数量
+     *
+     * @param brandId
+     */
+    @Override
+    public int getCountByBrandId(String brandId) {
+        return brandPublicRepository.getCountByBrandId(brandId);
+    }
+
+    /**
+     * 根据id得到BrandPublic
+     *
+     * @param id
+     */
+    @Override
+    public BrandPublic getById(String id) {
+        return brandPublicRepository.getById(id);
+    }
+
+    @Override
+    public BrandPublicView getViewById(String id) {
+        return getBrandPublicViewByBrandPublicId(id);
+    }
+
+    /**
+     * 根据brandId得到BrandPublic
+     *
+     * @param brandId
+     */
+    @Override
+    public List<BrandPublic> getByBrandId(String brandId) {
+        return brandPublicRepository.getByBrandId(brandId);
+    }
+
+    @Override
+    public List<BrandPublicView> getByMaterialClassifySectionId(String materialClassifySectionId) {
+        List<BrandPublic> brandPublicList = brandPublicRepository.getByMaterialClassifySectionId(materialClassifySectionId);
+        if (brandPublicList == null || brandPublicList.isEmpty()) return null;
+
+        List<BrandPublicView> brandPublicViewList = new ArrayList<>();
+        for (BrandPublic brandPublic : brandPublicList) {
+            BrandPublicView brandPublicView = getBrandPublicViewByBrandPublicId(brandPublic.getId());
+            if (brandPublicView != null) brandPublicViewList.add(brandPublicView);
+        }
+        return brandPublicViewList;
+    }
+
+    /**
+     * 获得指定页面数据
+     *
+     * @param pageNo   页号，从1开始
+     * @param pageSize 每页的记录数
+     */
+    @Override
+    public Page<BrandPublic> getPage(int pageNo, int pageSize) {
+        return brandPublicRepository.getPage(pageNo, pageSize);
+    }
+
+    /**
+     * 获得指定页面数据
+     *
+     * @param brandId
+     * @param pageNo   页号，从1开始
+     * @param pageSize 每页的记录数
+     */
+    @Override
+    public Page<BrandPublic> getPageByBrandId(String brandId, int pageNo, int pageSize) {
+        return brandPublicRepository.getPageByBrandId(brandId, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<BrandPublic> getPageByBrandName(String brandName, int pageNo, int pageSize) {
+        return brandPublicRepository.getPageByBrandName(brandName, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<BrandPublic> getPageByBrandPosition(String brandPosition, int pageNo, int pageSize) {
+        return brandPublicRepository.getPageByBrandPosition(brandPosition, pageNo, pageSize);
+    }
+
+    /**
+     * 获得指定页面视图数据
+     *
+     * @param pageNo   页号，从1开始
+     * @param pageSize 每页的记录数
+     */
+    @Override
+    public Page<BrandPublicView> getPageView(int pageNo, int pageSize) {
+        Page<BrandPublic> brandPublicPage = getPage(pageNo, pageSize);
+        return convertBrandPublicPage2PageView(brandPublicPage, pageNo, pageSize);
+    }
+
+    /**
+     * 获得指定页面视图数据
+     *
+     * @param brandId
+     * @param pageNo   页号，从1开始
+     * @param pageSize 每页的记录数
+     */
+    @Override
+    public Page<BrandPublicView> getPageViewByBrandId(String brandId, int pageNo, int pageSize) {
+        Page<BrandPublic> brandPublicPage = getPageByBrandId(brandId, pageNo, pageSize);
+        return convertBrandPublicPage2PageView(brandPublicPage, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<BrandPublicView> getPageViewByBrandName(String brandName, Integer pageNo, Integer pageSize) {
+        Page<BrandPublic> brandPublicPage = getPageByBrandName(brandName, pageNo, pageSize);
+        return convertBrandPublicPage2PageView(brandPublicPage, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<BrandPublicView> getPageViewByBrandPosition(String brandPosition, Integer pageNo, Integer pageSize) {
+        Page<BrandPublic> brandPublicPage = getPageByBrandPosition(brandPosition, pageNo, pageSize);
+        return convertBrandPublicPage2PageView(brandPublicPage, pageNo, pageSize);
+    }
+
+    /**
+     * 根据主键获得视图对象
+     *
+     * @param id 主键
+     */
+    private BrandPublicView getBrandPublicViewByBrandPublicId(String id) {
+        BrandPublic brandPublic = getById(id);
+        if (brandPublic == null) return null;
+        BrandPublicView brandPublicView = new BrandPublicView();
+        brandPublicView.setBrandPublic(brandPublic);
+        brandPublicView.setBrandView(brandService.getViewById(brandPublic.getBrandId()));
+        return brandPublicView;
+    }
+
+    /**
+     * 将页面转换为视图页面
+     *
+     * @param brandPublicPage 页面对象
+     */
+    private Page<BrandPublicView> convertBrandPublicPage2PageView(Page<BrandPublic> brandPublicPage, int pageNo, int pageSize) {
+        if (brandPublicPage == null) return null;
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<BrandPublicView> list = new ArrayList<>();
+        for (BrandPublic brandPublic : brandPublicPage.getResult()) {
+            BrandPublicView brandPublicView = getBrandPublicViewByBrandPublicId(brandPublic.getId());
+            if (brandPublicView != null) list.add(brandPublicView);
+        }
+        return new Page<>(startIndex, brandPublicPage.getTotalCount(), pageSize, list);
+    }
+
+}

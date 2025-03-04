@@ -1,0 +1,23 @@
+package cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class ProjectMaterialVerificationDocumentFileView{
+	private ProjectMaterialVerificationDocumentFile projectMaterialVerificationDocumentFile;//t_project_material_verification_document_file
+	private ProjectMaterialVerificationDocument projectMaterialVerificationDocument;//外键：t_project_material_verification_document_id,关联表为：t_project_material_verification_document表,
+
+
+	public ProjectMaterialVerificationDocumentFile getProjectMaterialVerificationDocumentFile(){
+		return projectMaterialVerificationDocumentFile;
+	}
+	public void setProjectMaterialVerificationDocumentFile(ProjectMaterialVerificationDocumentFile projectMaterialVerificationDocumentFile){
+		this.projectMaterialVerificationDocumentFile=projectMaterialVerificationDocumentFile;
+	}
+	public ProjectMaterialVerificationDocument getProjectMaterialVerificationDocument(){
+		return projectMaterialVerificationDocument;
+	}
+	public void setProjectMaterialVerificationDocument(ProjectMaterialVerificationDocument projectMaterialVerificationDocument){
+		this.projectMaterialVerificationDocument=projectMaterialVerificationDocument;
+	}
+}
