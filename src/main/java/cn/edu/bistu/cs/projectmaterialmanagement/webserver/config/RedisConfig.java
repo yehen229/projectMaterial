@@ -1,0 +1,23 @@
+package cn.edu.bistu.cs.projectmaterialmanagement.webserver.config;
+
+import org.springframework.cache.annotation.CachingConfigurerSupport;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+
+@Configuration
+public class RedisConfig extends CachingConfigurerSupport {
+
+    //自定义redisTemplate的连接配置
+    @Bean
+    public LettuceConnectionFactory redisConnection() {
+        RedisStandaloneConfiguration server = new RedisStandaloneConfiguration();
+        server.setHostName("127.0.0.1"); //这里写你redis主机地址就好了
+        server.setDatabase(0); // 指定数据库
+        server.setPort(6379);
+        return new LettuceConnectionFactory(server);
+    }
+
+
+}

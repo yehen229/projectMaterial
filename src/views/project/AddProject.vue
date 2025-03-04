@@ -1,0 +1,150 @@
+<template>
+  <el-form ref="projectFormRef" :model="projectForm" :rules="rules" label-width="160px">
+    <el-form-item label="项目名称" prop="name">
+      <el-input v-model="projectForm.name" placeholder="请输入项目名称" />
+    </el-form-item>
+
+    <el-form-item label="项目地点" prop="location">
+      <el-input v-model="projectForm.location" placeholder="请输入项目地点" />
+    </el-form-item>
+
+    <el-form-item label="总投资（含税）" prop="totalInvestmentWithTax">
+      <el-input-number v-model="projectForm.totalInvestmentWithTax" :precision="2" :step="0.01" :min="0" placeholder="请输入总投资（含税）" />
+    </el-form-item>
+
+    <el-form-item label="总投资（不含税）" prop="totalInvestmentWithoutTax">
+      <el-input-number v-model="projectForm.totalInvestmentWithoutTax" :precision="2" :step="0.01" :min="0" placeholder="请输入总投资（不含税）" />
+    </el-form-item>
+
+    <el-form-item label="建设面积（地上）" prop=" buildingAreaAboveGround">
+      <el-input-number v-model="projectForm.buildingAreaAboveGround" :step="1" :min="0" placeholder="请输入建设面积（地上）" />
+    </el-form-item>
+
+    <el-form-item label="建设面积（地下）" prop="buildingAreaUnderGround">
+      <el-input-number v-model="projectForm.buildingAreaUnderGround" :step="1" :min="0" placeholder="请输入建设面积（地下）" />
+    </el-form-item>
+
+    <el-form-item label="建设单位" prop="companyConstructionId">
+      <el-select v-model="projectForm.companyConstructionId" placeholder="请选择建设单位">
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+    </el-form-item>
+
+    <el-form-item label="设计单位" prop="companyDesignId">
+      <el-select v-model="projectForm.companyDesignId" placeholder="请选择设计单位">
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+    </el-form-item>
+
+    <el-form-item label="立项时间" prop="approvalDate">
+      <el-date-picker
+        v-model="projectForm.approvalDate"
+        type="date"
+        placeholder="选择立项时间"
+        value-format="yyyy-MM-dd"
+      />
+    </el-form-item>
+
+    <el-form-item>
+      <el-button type="primary" @click="submitForm">提交</el-button>
+      <el-button @click="resetForm">重置</el-button>
+    </el-form-item>
+  </el-form>
+</template>
+
+<script setup lang="ts">
+import { ref, reactive } from 'vue';
+import type { FormInstance, FormRules } from 'element-plus';
+import { ElMessage } from 'element-plus';
+
+// 定义表单数据
+const projectForm = reactive({
+  name: '',
+  location: '',
+  totalInvestmentWithTax: 0,
+  totalInvestmentWithoutTax: 0,
+  buildingAreaAboveGround: 0,
+  buildingAreaUnderGround: 0,
+  companyConstructionId: '',
+  companyDesignId: '',
+  approvalDate: ''
+});
+
+// 表单引用
+const projectFormRef = ref<FormInstance>();
+
+// 表单验证规则
+const rules = reactive<FormRules>({
+  name: [
+    { required: true, message: '项目名称', trigger: 'blur' }
+  ],
+  location: [
+    { required: true, message: '项目地点', trigger: 'blur' }
+  ],
+  totalInvestmentWithTax: [
+    { required: true, message: '总投资（含税）/万', trigger: 'change' }
+  ],
+  totalInvestmentWithoutTax: [
+    { required: true, message: '总投资（不含税）/万', trigger: 'change' }
+  ],
+  buildingAreaAboveGround: [
+    { required: true, message: '建设面积（地上）/㎡', trigger: 'change' }
+  ],
+  buildingAreaUnderGround: [
+    { required: true, message: '建设面积（地下）/㎡', trigger: 'change' }
+  ],
+  companyConstructionId: [
+    { required: true, message: '建设单位', trigger: 'change' }
+  ],
+  companyDesignId: [
+    { required: true, message: '设计单位', trigger: 'change' }
+  ],
+  approvalDate: [
+    { required: true, message: '立项时间', trigger: 'change' }
+  ]
+});
+
+// 提交表单
+const submitForm = () => {
+  projectFormRef.value?.validate((valid) => {
+    if (valid) {
+      ElMessage.success('提交成功');
+      // 此处补充提交表单数据的逻辑
+    } else {
+      ElMessage.error('表单验证失败');
+    }
+  });
+};
+
+// 重置表单
+const resetForm = () => {
+  projectFormRef.value?.resetFields();
+};
+</script>
+
+<style scoped>
+.page-class {
+  padding: 10px;
+}
+
+.top-toolbar {
+  display: flex;
+  margin: 0 10px;
+}
+
+.input-with-select {
+  right: 20px;
+  margin-left: 10px;
+  flex: 1;
+}
+</style>

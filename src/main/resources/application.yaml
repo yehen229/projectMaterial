@@ -1,0 +1,77 @@
+spring:
+  application:
+    name: webserver
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/project_material?serverTimezone=Asia/Shanghai
+    username: root
+    password: 12345
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+
+  profiles:
+    active: dev
+
+  
+  data:
+    redis:
+      client-name: project
+      host: 127.0.0.1
+      port: 6379
+      password:
+      database: 0
+      timeout: 1000
+
+
+
+server:
+  address: 127.0.0.1
+  port: 9000
+  tomcat:
+    remoteip:
+      remote-ip-header: x-forwarded-for
+  forward-headers-strategy: framework
+  servlet:
+    session:
+      timeout: PT3H
+
+
+
+#logging.level.root=warn
+#spring.profiles.active=dev
+
+
+# Camunda
+camunda.bpm:
+  admin-user:
+    id: admin
+    password: admin
+  generic-properties.properties:
+    javaSerializationFormatEnabled: true
+
+
+
+  filter:
+    create: All tasks
+
+  database:
+    type: mysql
+    schema-update: true
+
+
+
+  auto-deployment-enabled: false
+  deployment-resource-pattern: classpath:process*.bpmn
+  history-level: full
+
+
+
+
+
+
+

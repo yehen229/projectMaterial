@@ -1,0 +1,32 @@
+.question-index {
+    background-color: darkslategrey;
+    color: white;
+    padding: 0.5em;
+    font: 1.5em sans-serif;
+    border-radius: 5px;
+  }
+  
+  .question-tag {
+    font-size: small;
+    color: #f9fafb;
+    margin-right: 5px;
+    margin-left: 5px;
+    padding: 4px;
+    border-radius: 2px;
+    background-color: #6b7280;
+  }
+  
+  .question-title {
+    display: flex;
+    align-items: center;
+    font: 1.5em;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    font: 1.2em sans-serif;
+    cursor: pointer;
+    color: blue;
+  }
+  
+  .question-title:hover {
+    color: red;
+  }
