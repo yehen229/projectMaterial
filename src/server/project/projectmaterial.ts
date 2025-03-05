@@ -221,24 +221,56 @@ export async function serverGetProjectMaterialPageViewByProject(
 
 export async function serverGetProjectMaterialPageViewByCurrentUserProject(
   projectId: string,
+  name: String,
+  location: String,
+  itemMark: String,
+  technology: String,
+  installation: String,
+  brand: String,
+  brandPrivate: String,
   pageNo: number,
   pageSize: number
 ): Promise<IServerResponseData<IServerPage<IServerProjectMaterialView>>> {
   try {
-    let res = await axios.get<
+    let res;
+    if (name == "" && location == "" && itemMark == "" && technology == "" && installation == "" && brand == "" && brandPrivate == "") {
+      res = await axios.get<
       any,
       IServerResponseData<IServerPage<IServerProjectMaterialView>>
-    >(
-      BASEURL.projectmaterial +
-      "page-view-by-design-company-of-current-user-and-project-id",
-      {
-        params: {
-          projectId: projectId,
-          pageNo: pageNo,
-          pageSize: pageSize,
-        },
-      }
-    );
+      >(
+        BASEURL.projectmaterial +
+        "page-view-by-design-company-of-current-user-and-project-id",
+        {
+          params: {
+            projectId: projectId,
+            pageNo: pageNo,
+            pageSize: pageSize,
+          },
+        }
+      );
+    } else {
+      res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerProjectMaterialView>>
+      >(
+        BASEURL.projectmaterial +
+        "page-view-by-search",
+        {
+          params: {
+            projectId: projectId,
+            name: name,
+            location: location,
+            itemMark: itemMark,
+            technology: technology,
+            installation: installation,
+            brand: brand,
+            brandPrivate: brandPrivate,
+            pageNo: pageNo,
+            pageSize: pageSize,
+          },
+        }
+      );
+    }
     return res;
   } catch (err) {
     console.log(err);

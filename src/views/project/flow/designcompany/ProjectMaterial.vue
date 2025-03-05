@@ -214,37 +214,59 @@ const getProjectFromServer = async (projectId: string) => {
 
 const getProjectMaterialViewFromSever = async () => {
   let search = searchText.value.trim();
-
+  let name = "", location = "", itemMark = "", technology = "", installation = "", brand = "", brandPrivate = "";
   if (search) {
     console.log(searchSelect.value);
-
-    if (searchSelect.value == "0") {
-      //单位类型
-      console.log(search);
-      const ret = await serverGetCompanyPageByCompanyName(
-        projectId.value,
-        searchText.value,
-        pageNo.value,
-        pageSize.value
-      );
-      if (ret && ret.code == 200) {
-        projectMaterialViewPageData.value = ret.data;
-      }
-    } else if (searchSelect.value == "1") {
-      //单位名称
-      const ret = await serverGetCompanyPageByCompanyType(
-        projectId.value,
-        searchText.value,
-        pageNo.value,
-        pageSize.value
-      );
-      if (ret && ret.code == 200) {
-        projectMaterialViewPageData.value = ret.data;
-      }
+    switch (searchSelect.value) {
+      case "0":
+        name = search;
+        break;
+      case "1":
+        location = search;
+        break;
+      case "2":
+        itemMark = search;
+        break;
+      case "3":
+        technology = search;
+        break;
+      case "4":
+        installation = search;
+        break;
+      case "5":
+        brand = search;
+        break;
+      case "6":
+        brandPrivate = search;
+        break;
+      default:
+        break;
     }
+    const ret = await serverGetProjectMaterialPageViewByCurrentUserProject(
+        projectId.value,
+        name,
+        location,
+        itemMark,
+        technology,
+        installation,
+        brand,
+        brandPrivate,
+        pageNo.value,
+        pageSize.value
+    );
+    if (ret && ret.code == 200) {
+        projectMaterialViewPageData.value = ret.data;
+      }
   } else {
     const ret = await serverGetProjectMaterialPageViewByCurrentUserProject(
       projectId.value,
+      name,
+      location,
+      itemMark,
+      technology,
+      installation,
+      brand,
+      brandPrivate,
       pageNo.value,
       pageSize.value
     );
@@ -531,9 +553,9 @@ const textElipsisValue = ref(false);
             新增材料
           </el-button>
 
-          <el-button :icon="Upload" @click="onExcelUploadButtonClick">
+          <!-- <el-button :icon="Upload" @click="onExcelUploadButtonClick">
             导入材料（Excel）
-          </el-button>
+          </el-button> -->
           <el-button :icon="Download" @click="onDownloadExcelButtonClick">
             导出材料（Excel）
           </el-button>
@@ -557,8 +579,9 @@ const textElipsisValue = ref(false);
                 <el-option label="编号" value="2" />
                 <el-option label="技术要求" value="3" />
                 <el-option label="施工要求" value="4" />
-                <el-option label="品牌" value="5" />
-                <el-option label="审核状态" value="6" />
+                <el-option label="品牌（公有）" value="5" />
+                <el-option label="品牌（私有）" value="6" />
+                <el-option label="审核状态" value="7" />
               </el-select>
             </template>
             <template #append>
@@ -615,7 +638,8 @@ const textElipsisValue = ref(false);
           <el-col :span="2">编号 </el-col>
           <el-col :span="6">技术要求 </el-col>
           <el-col :span="4"> 施工要求</el-col>
-          <el-col :span="2"> 品牌</el-col>
+          <el-col :span="4"> 品牌（公有）</el-col>
+          <el-col :span="4"> 品牌（私有）</el-col>
           <el-col :span="2"> 审核状态 </el-col>
           <el-col :span="2"> 操作 </el-col>
         </el-row>
