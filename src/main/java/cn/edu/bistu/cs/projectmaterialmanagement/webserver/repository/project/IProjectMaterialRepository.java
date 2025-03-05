@@ -31,6 +31,16 @@ public interface IProjectMaterialRepository {
     int getCountByProjectIdAndCompanyId(String projectId,
                                         String companyId);
 
+    int getCountBySearch(String projectId,
+                         String companyId,
+                         String name,
+                         String location,
+                         String itemMark,
+                         String technology,
+                         String installation,
+                         String brand,
+                         String brandPrivate);
+
     int getCountOfReviewedAndApprovedUseMaterialByProjectId(String projectId);
 
     ProjectMaterial getById(String id);
@@ -55,6 +65,18 @@ public interface IProjectMaterialRepository {
 
     Page<ProjectMaterial> getPageByProjectIdAndCompanyId(String projectId,
                                                          String companyId,
+                                                         Integer pageNo,
+                                                         Integer pageSize);
+
+    Page<ProjectMaterial> getSearchPageByProjectIdAndCompanyId(String projectId,
+                                                         String companyId,
+                                                         String name,
+                                                         String location,
+                                                         String itemMark,
+                                                         String technology,
+                                                         String installation,
+                                                         String brand,
+                                                         String brandPrivate,
                                                          Integer pageNo,
                                                          Integer pageSize);
 

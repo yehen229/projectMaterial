@@ -29,6 +29,16 @@ public interface IProjectMaterialBusinessService {
                                                      Integer pageNo,
                                                      Integer pageSize);
 
+    Page<ProjectMaterialView> getSearchViewByCurrentUserAndProjectId(String projectId,
+                                                                   String name,
+                                                                   String location,
+                                                                   String itemMark,
+                                                                   String technology,
+                                                                   String installation,
+                                                                   String brand,
+                                                                   String brandPrivate,
+                                                                   Integer pageNo,
+                                                                   Integer pageSize);
 
     Page<ProjectMaterialView> getPageViewByCurrentUserAndProjectId(String projectId,
                                                                    Integer pageNo,

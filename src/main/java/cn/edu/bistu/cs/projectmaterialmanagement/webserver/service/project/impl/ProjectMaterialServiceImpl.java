@@ -182,6 +182,21 @@ public class ProjectMaterialServiceImpl implements IProjectMaterialService {
         return projectMaterialRepository.getPageByProjectIdAndCompanyId(projectId, companyId, pageNo, pageSize);
     }
 
+    @Override
+    public Page<ProjectMaterial> getSearchPageByProjectIdAndCompanyId(String projectId,
+                                                                String companyId,
+                                                                String name,
+                                                                String location,
+                                                                String itemMark,
+                                                                String technology,
+                                                                String installation,
+                                                                String brand,
+                                                                String brandPrivate,
+                                                                Integer pageNo,
+                                                                Integer pageSize) {
+        return projectMaterialRepository.getSearchPageByProjectIdAndCompanyId(projectId, companyId, name, location, itemMark, technology, installation, brand, brandPrivate, pageNo, pageSize);
+    }
+
     /**
      * 根据projectId和companyId得到ProjectMaterial
      *

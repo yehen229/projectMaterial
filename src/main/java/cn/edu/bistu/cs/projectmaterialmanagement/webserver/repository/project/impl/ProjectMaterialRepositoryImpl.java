@@ -1,7 +1,9 @@
 package cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.impl;
 
+import camundajar.impl.scala.Int;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectMaterial;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.project.Project;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.IProjectMaterialRepository;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.utility.GUID;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,15 +13,18 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Repository
 public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository {
     private final JdbcTemplate jdbcTemplate;
+    private final Project project;
 
-    public ProjectMaterialRepositoryImpl(JdbcTemplate jdbcTemplate) {
+    public ProjectMaterialRepositoryImpl(JdbcTemplate jdbcTemplate, Project project) {
         this.jdbcTemplate = jdbcTemplate;
+        this.project = project;
     }
 
     /**
@@ -168,13 +173,107 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
 
     @Override
     public int getCountByProjectIdAndCompanyId(String projectId,
-                                               String companyId) {
+                                               String companyId
+                                               ) {
         Integer i = jdbcTemplate.queryForObject("""
                                                         SELECT count(*) 
                                                         FROM t_project_material
                                                         WHERE t_project_id=? AND t_company_id=? AND deleted_at IS NULL
                                                         """,
-                                                Integer.class, projectId, companyId);
+                    Integer.class, projectId, companyId);
+
+
+        return i;
+    }
+
+    @Override
+    public int getCountBySearch(String projectId,
+                                String companyId,
+                                String name,
+                                String location,
+                                String itemMark,
+                                String technology,
+                                String installation,
+                                String brand,
+                                String brandPrivate
+    ) {
+        Integer i = 0;
+        if(name != ""){
+            name = "%" + name.trim() + "%";
+            i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*) 
+                                                        FROM t_project_material
+                                                        INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
+                                                        WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.name LIKE ?
+                                                        """,
+                    Integer.class,  projectId, companyId, name);
+        } else if(location != ""){
+            location = "%" + location.trim() + "%";
+            i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*) 
+                                                        FROM t_project_material
+                                                        left join t_material ON t_material.id=t_project_material.t_material_id
+                                                        WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.location LIKE ?
+                                                        """,
+                    Integer.class, projectId, companyId, location);
+        } else if(itemMark != ""){
+            itemMark = "%" + itemMark.trim() + "%";
+            i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*) 
+                                                        FROM t_project_material
+                                                        left join t_material ON t_material.id=t_project_material.t_material_id
+                                                        WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.item_mark LIKE ?
+                                                        """,
+                    Integer.class, projectId, companyId, itemMark);
+        } else if(technology != ""){
+            technology = "%" + technology.trim() + "%";
+            i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*) 
+                                                        FROM t_project_material
+                                                        left join t_material ON t_material.id=t_project_material.t_material_id
+                                                        WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL And t_material.technology LIKE ?
+                                                        """,
+                    Integer.class, projectId, companyId, technology);
+        } else if(installation != ""){
+            installation = "%" + installation.trim() + "%";
+            i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*) 
+                                                        FROM t_project_material
+                                                        left join t_material ON t_material.id=t_project_material.t_material_id
+                                                        WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.installation LIKE ?
+                                                        """,
+                    Integer.class, projectId, companyId, installation);
+        } else if(brand != "") {
+            brand = "%" + brand.trim() + "%";
+            i = jdbcTemplate.queryForObject("""
+                                                      SELECT count(*) FROM t_project_material
+                                                      INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
+                                                      INNER JOIN t_project_material_brand_public ON t_project_material.id=t_project_material_brand_public.t_project_material_id
+                                                      INNER JOIN t_brand_public ON t_brand_public.id=t_project_material_brand_public.t_brand_public_id
+                                                      INNER JOIN t_brand ON t_brand.id=t_brand_public.t_brand_id
+                                                      WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_brand.name LIKE ?
+                                                        """,
+                    Integer.class, projectId, companyId, brand);
+        } else if(brand != "") {
+            brandPrivate = "%" + brandPrivate.trim() + "%";
+            i = jdbcTemplate.queryForObject("""
+                                                      SELECT count(*) FROM t_project_material
+                                                      INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
+                                                      INNER JOIN t_project_material_brand_private ON t_project_material.id=t_project_material_brand_private.t_project_material_id
+                                                      INNER JOIN t_project_brand ON t_project_brand.id=t_project_material_brand_private.t_project_brand_id
+                                                      INNER JOIN t_brand ON t_brand.id=t_project_brand.t_brand_id
+                                                      WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_brand.name LIKE ?
+                                                        """,
+                    Integer.class, projectId, companyId, brandPrivate);
+        } else {
+                i = jdbcTemplate.queryForObject("""
+                                                      SELECT count(*) 
+                                                        FROM t_project_material
+                                                        left join t_material ON t_material.id=t_project_material.t_material_id
+                                                        WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL
+                                                        """,
+                        Integer.class, projectId, companyId);
+        }
         return i;
     }
 
@@ -352,14 +451,43 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
     @Override
     public Page<ProjectMaterial> getPageByProjectIdAndCompanyId(String projectId,
                                                                 String companyId,
+
                                                                 Integer pageNo,
                                                                 Integer pageSize) {
-        long totalCount = getCountByProjectIdAndCompanyId(projectId, companyId);
+            long totalCount = getCountByProjectIdAndCompanyId(projectId, companyId);
+            if (totalCount < 1) return new Page<>();
+            int startIndex = Page.getStartOfPage(pageNo, pageSize);
+            List<ProjectMaterial> resultData = getPageQueryByProjectIdAndCompanyId(projectId, companyId,
+                    pageNo - 1,
+                    pageSize);
+        return new Page<>(0, totalCount, (int) totalCount, resultData);
+    }
+
+    @Override
+    public Page<ProjectMaterial> getSearchPageByProjectIdAndCompanyId(String projectId,
+                                                                String companyId,
+                                                                String name,
+                                                                String location,
+                                                                String itemMark,
+                                                                String technology,
+                                                                String installation,
+                                                                String brand,
+                                                                String brandPrivate,
+                                                                Integer pageNo,
+                                                                Integer pageSize) {
+        long totalCount = getCountBySearch(projectId, companyId, name, location, itemMark, technology, installation, brand, brandPrivate);
         if (totalCount < 1) return new Page<>();
         int startIndex = Page.getStartOfPage(pageNo, pageSize);
-        List<ProjectMaterial> resultData = getPageQueryByProjectIdAndCompanyId(projectId, companyId,
-                                                                               pageNo - 1,
-                                                                               pageSize);
+        List<ProjectMaterial> resultData = getPageQueryBySearch(projectId, companyId,
+                    name,
+                    location,
+                    itemMark,
+                    technology,
+                    installation,
+                    brand,
+                    brandPrivate,
+                    pageNo - 1,
+                    pageSize);
         return new Page<>(0, totalCount, (int) totalCount, resultData);
     }
 
@@ -414,6 +542,105 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
                                   new ProjectMaterialMapper(), projectId, companyId, pageNo * pageSize, pageSize);
     }
 
+    private List<ProjectMaterial> getPageQueryBySearch(String projectId,
+                                                                      String companyId,
+                                                                      String name,
+                                                                      String location,
+                                                                      String itemMark,
+                                                                      String technology,
+                                                                      String installation,
+                                                                      String brand,
+                                                                      String brandPrivate,
+                                                                      int pageNo,
+                                                                      int pageSize) {
+        if(name != "") {
+            name = "%" + name.trim() + "%";
+            return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_project_material
+                                          INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
+                                          WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.name LIKE ?
+                                          LIMIT ?,?
+                                          """,
+                    new ProjectMaterialMapper(), projectId, companyId, name, pageNo * pageSize, pageSize);
+        } else if(location != "") {
+            location = "%" + location.trim() + "%";
+            return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_project_material
+                                          INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
+                                          WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.location LIKE ?
+                                          LIMIT ?,?
+                                          """,
+                    new ProjectMaterialMapper(), projectId, companyId, location, pageNo * pageSize, pageSize);
+        } else if(itemMark != "") {
+            itemMark = "%" + itemMark.trim() + "%";
+            return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_project_material
+                                          INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
+                                          WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.item_mark LIKE ?
+                                          LIMIT ?,?
+                                          """,
+                    new ProjectMaterialMapper(), projectId, companyId, itemMark, pageNo * pageSize, pageSize);
+        } else if(technology != "") {
+            technology = "%" + technology.trim() + "%";
+            return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_project_material
+                                          INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
+                                          WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.technology LIKE ?
+                                          LIMIT ?,?
+                                          """,
+                    new ProjectMaterialMapper(), projectId, companyId, technology, pageNo * pageSize, pageSize);
+        } else if(installation != "") {
+            installation = "%" + installation.trim() + "%";
+            return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_project_material
+                                          INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
+                                          WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.installation LIKE ?
+                                          LIMIT ?,?
+                                          """,
+                    new ProjectMaterialMapper(), projectId, companyId, installation, pageNo * pageSize, pageSize);
+        } else if(brand != "") {
+            brand = "%" + brand.trim() + "%";
+            return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_project_material
+                                          INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
+                                          INNER JOIN t_project_material_brand_public ON t_project_material.id=t_project_material_brand_public.t_project_material_id
+                                          INNER JOIN t_brand_public ON t_brand_public.id=t_project_material_brand_public.t_brand_public_id
+                                          INNER JOIN t_brand ON t_brand.id=t_brand_public.t_brand_id
+                                          WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_brand.name LIKE ?
+                                          LIMIT ?,?
+                                          """,
+                    new ProjectMaterialMapper(), projectId, companyId, brand, pageNo * pageSize, pageSize);
+        } else if(brandPrivate != "") {
+            brandPrivate = "%" + brandPrivate.trim() + "%";
+            return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_project_material
+                                          INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
+                                          INNER JOIN t_project_material_brand_private ON t_project_material.id=t_project_material_brand_private.t_project_material_id
+                                          INNER JOIN t_project_brand ON t_project_brand.id=t_project_material_brand_private.t_project_brand_id
+                                          INNER JOIN t_brand ON t_brand.id=t_project_brand.t_brand_id
+                                          WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_brand.name LIKE ?
+                                          LIMIT ?,?
+                                          """,
+                    new ProjectMaterialMapper(), projectId, companyId, brandPrivate, pageNo * pageSize, pageSize);
+        }
+        else {
+            return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_project_material
+                                          WHERE t_project_id=? AND t_company_id=? AND deleted_at IS NULL 
+                                          LIMIT ?,?
+                                          """,
+                    new ProjectMaterialMapper(), projectId, companyId, pageNo * pageSize, pageSize);
+        }
+
+    }
 
     private List<ProjectMaterial> getPageOfReviewedAndApprovedUseMaterialQueryByProjectId(String projectId,
                                                                                           int pageNo,

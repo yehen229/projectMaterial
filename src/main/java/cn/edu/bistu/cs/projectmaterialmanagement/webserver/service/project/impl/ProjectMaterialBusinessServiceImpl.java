@@ -393,6 +393,37 @@ public class ProjectMaterialBusinessServiceImpl implements IProjectMaterialBusin
     }
 
     @Override
+    public Page<ProjectMaterialView> getSearchViewByCurrentUserAndProjectId(String projectId,
+                                                                            String name,
+                                                                            String location,
+                                                                            String itemMark,
+                                                                            String technology,
+                                                                            String installation,
+                                                                            String brand,
+                                                                            String brandPrivate,
+                                                                            Integer pageNo,
+                                                                            Integer pageSize) {
+
+
+        User user = userService.getCurrentLoginUser();
+        if (user == null) return null;
+        CompanyUser companyUser = companyUserService.getByUserId(user.getId());
+        if (companyUser == null) return null;
+        Page<ProjectMaterial> projectMaterialPage = projectMaterialService.getSearchPageByProjectIdAndCompanyId(projectId,
+                companyUser.getCompanyId(),
+                name,
+                location,
+                itemMark,
+                technology,
+                installation,
+                brand,
+                brandPrivate,
+                pageNo,
+                pageSize);
+        return convertProjectMaterialPage2PageView(projectMaterialPage, pageNo, pageSize);
+    }
+
+    @Override
     public Page<ProjectMaterialView> getProjectMaterialPageViewByProjectIdAndCompanyId(String projectId,
                                                                                        String companyId,
                                                                                        Integer pageNo,
@@ -488,7 +519,7 @@ public class ProjectMaterialBusinessServiceImpl implements IProjectMaterialBusin
             heads.add("数量单位");
             heads.add("参考品牌（共有库）");
             heads.add("参考品牌（私有库）");
-            heads.add("样本图片");
+//            heads.add("样本图片");
 
             int rowIndex = 0;
             int span = heads.size() - 1;//合并的单元格
@@ -505,20 +536,20 @@ public class ProjectMaterialBusinessServiceImpl implements IProjectMaterialBusin
                 Material material = projectMaterialView.getMaterial();
                 List<MaterialPhoto> materialPhotoList = materialPhotoService.getByMaterialId(material.getId());
                 //从数据库中查找，说明照片是材料的样本照片
-                for (MaterialPhoto materialPhoto : materialPhotoList) {
-                    if (materialPhoto != null && materialPhoto.getMaterialId().equals(material.getId())) {
-                        String fileName = ConfigConstant.FilePath + File.separator + materialPhoto.getFilePath();
-                        boolean fileExist = FileUtils.isFileExist(fileName);
-                        if (!fileExist) {
-
-                        }
-                        else {
-                            File file = new File(fileName);
-                            setPhoto(workbook, sheetProjectMaterial, photoLocation, i, file);
-                            photoLocation++;
-                        }
-                    }
-                }
+//                for (MaterialPhoto materialPhoto : materialPhotoList) {
+//                    if (materialPhoto != null && materialPhoto.getMaterialId().equals(material.getId())) {
+//                        String fileName = ConfigConstant.FilePath + File.separator + materialPhoto.getFilePath();
+//                        boolean fileExist = FileUtils.isFileExist(fileName);
+//                        if (!fileExist) {
+//
+//                        }
+//                        else {
+//                            File file = new File(fileName);
+//                            setPhoto(workbook, sheetProjectMaterial, photoLocation, i, file);
+//                            photoLocation++;
+//                        }
+//                    }
+//                }
 
 //                List<MaterialPhotoView> materialPhotoViewList = new ArrayList<>();
 //                for (MaterialPhoto materialPhoto : materialPhotoList) {

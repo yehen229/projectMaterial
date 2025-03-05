@@ -120,6 +120,23 @@ public class ProjectMaterialController {
         return projectMaterialBusinessService.getPageViewByCurrentUserAndProjectId(projectId, pageNo, pageSize);
     }
 
+    @GetMapping(value = "page-view-by-search")
+    public Page<ProjectMaterialView> getPageViewByCurrentUserAndProjectId(
+            @RequestParam(value = "projectId", required = true) String projectId,
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "location", required = false) String location,
+            @RequestParam(value = "itemMark", required = false) String itemMark,
+            @RequestParam(value = "technology", required = false) String technology,
+            @RequestParam(value = "installation", required = false) String installation,
+            @RequestParam(value = "brand", required = false) String brand,
+            @RequestParam(value = "brandPrivate", required = false) String brandPrivate,
+            @RequestParam(value = "pageNo", required = false) Integer pageNo,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+        return projectMaterialBusinessService.getSearchViewByCurrentUserAndProjectId(projectId, name, location, itemMark, technology, installation, brand, brandPrivate, pageNo, pageSize);
+    }
+
     @GetMapping(value = "download-project-material-excel-by-design-company-of-current-user-and-project-id")
     public DownloadFile downloadProjectMaterialExcelByDesignCompanyOfCurrentUserAndProjectId(
             @RequestParam(value = "projectId", required = true) String projectId,

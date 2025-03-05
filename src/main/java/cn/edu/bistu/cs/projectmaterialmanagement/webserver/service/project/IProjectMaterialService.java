@@ -46,5 +46,17 @@ public interface IProjectMaterialService {
                                                          Integer pageNo,
                                                          Integer pageSize);
 
+    Page<ProjectMaterial> getSearchPageByProjectIdAndCompanyId(String projectId,
+                                                         String companyId,
+                                                         String name,
+                                                         String location,
+                                                         String itemMark,
+                                                         String technology,
+                                                         String installation,
+                                                         String brand,
+                                                         String brandPrivate,
+                                                         Integer pageNo,
+                                                         Integer pageSize);
+
     List<ProjectMaterial> getListByProjectId(String projectId, String companyId);
 }
