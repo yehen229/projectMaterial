@@ -581,7 +581,7 @@ const textElipsisValue = ref(false);
                 <el-option label="施工要求" value="4" />
                 <el-option label="品牌（公有）" value="5" />
                 <el-option label="品牌（私有）" value="6" />
-                <el-option label="审核状态" value="7" />
+                <!-- <el-option label="审核状态" value="7" /> -->
               </el-select>
             </template>
             <template #append>
@@ -640,7 +640,7 @@ const textElipsisValue = ref(false);
           <el-col :span="4"> 施工要求</el-col>
           <el-col :span="4"> 品牌（公有）</el-col>
           <el-col :span="4"> 品牌（私有）</el-col>
-          <el-col :span="2"> 审核状态 </el-col>
+          <!-- <el-col :span="2"> 审核状态 </el-col> -->
           <el-col :span="2"> 操作 </el-col>
         </el-row>
 
