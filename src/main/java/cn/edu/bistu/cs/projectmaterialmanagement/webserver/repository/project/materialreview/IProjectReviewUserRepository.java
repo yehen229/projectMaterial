@@ -27,6 +27,7 @@ public interface IProjectReviewUserRepository {
     int getCountByUserId(String userId);
 
     int getCountByProjectReviewId(String projectReviewId);
+    int getCountByProjectReviewIdAndUserAndResult(String projectReviewId, String reviewUser, int reviewResult);
 
     int getCountByProjectReviewIdAndResult(String projectReviewId, int nReviewResult);
     int getCountByProjecId(String projectId);
@@ -49,5 +50,7 @@ public interface IProjectReviewUserRepository {
     Page<ProjectReviewUser> getPageByUserId(String userId, int pageNo, int pageSize);
 
     Page<ProjectReviewUser> getPageByProjectReviewId(String projectReviewId, int pageNo, int pageSize);
+
+    Page<ProjectReviewUser> getPageByProjectReviewIdAndUserAndResult(String projectReviewId, String reviewUser, int reviewResult, int pageNo, int pageSize);
 
 }

@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
@@ -455,8 +456,54 @@ public class ProjectRepositoryImpl implements IProjectRepository {
         return new Page<>(0, totalCount, (int) totalCount, resultData);
     }
 
+    public Page<Project> getPageByParams(String name,
+                                         String location,
+                                         BigDecimal totalTaxIncluded,
+                                         BigDecimal totalTaxNotIncluded,
+                                         BigDecimal buildingAreaAboveGround,
+                                         BigDecimal buildingAreaUnderGround,
+                                         String companyConstructionId,
+                                         String companyDesignId,
+                                         String note,
+                                         Date createDatetime,
+                                         Date endDatetime,
+                                         int pageNo,
+                                         int pageSize) {
+        long totalCount = getCountByParams(name, location, totalTaxIncluded, totalTaxNotIncluded, buildingAreaAboveGround, buildingAreaUnderGround, companyConstructionId, companyDesignId, note, createDatetime, endDatetime); // 这个使用的是 project 的 location
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<Project> resultData = getPageQueryByParams(name, location, totalTaxIncluded, totalTaxNotIncluded, buildingAreaAboveGround, buildingAreaUnderGround, companyConstructionId, companyDesignId, note, createDatetime, endDatetime, pageNo - 1, pageSize);
+        return new Page<>(0, totalCount, (int) totalCount, resultData);
+    }
+
+
+
     private List<Project> getPageQueryByProjectLocation(String projectLocation, int pageNo, int pageSize) {
         String likeProjectLocation = "%" + projectLocation + "%";
+        return jdbcTemplate.query("""
+                        SELECT * 
+                        FROM t_project
+                        WHERE location like ? AND deleted_at IS NULL
+                        LIMIT ?,?
+                        """,
+                new ProjectMapper(), likeProjectLocation, pageNo * pageSize, pageSize);
+    }
+
+    //
+    private List<Project> getPageQueryByParams(String name,
+                                               String location,
+                                               BigDecimal totalTaxIncluded,
+                                               BigDecimal totalTaxNotIncluded,
+                                               BigDecimal buildingAreaAboveGround,
+                                               BigDecimal buildingAreaUnderGround,
+                                               String companyConstructionId,
+                                               String companyDesignId,
+                                               String note,
+                                               Date createDatetime,
+                                               Date endDatetime,
+                                               int pageNo,
+                                               int pageSize) {
+        String likeProjectLocation = "%" + location + "%";
         return jdbcTemplate.query("""
                         SELECT * 
                         FROM t_project
@@ -605,10 +652,11 @@ public class ProjectRepositoryImpl implements IProjectRepository {
     }
 
     public int getCountByProjectName(String projectName) {
+        projectName = "%" + projectName + "%";
         Integer i = jdbcTemplate.queryForObject("""
                         SELECT count(*) 
                         FROM t_project
-                        WHERE name=? AND deleted_at IS NULL
+                        WHERE name Like ? AND deleted_at IS NULL
                         """,
                 Integer.class, projectName);
         return i == null ? 0 : i;
@@ -619,6 +667,31 @@ public class ProjectRepositoryImpl implements IProjectRepository {
     public int getCountByProjectLocation(String projectLocation) {
 
         String likeProjectLocation = "%" + projectLocation + "%";
+
+        Integer i = jdbcTemplate.queryForObject("""
+                        SELECT count(*)
+                        FROM t_project
+                        WHERE location like ? AND deleted_at IS NULL
+                        """,
+                Integer.class, likeProjectLocation);
+        return i == null ? 0 : i;
+    }
+
+    //参数高级搜索,暂未完善
+
+    public int getCountByParams(String name,
+                                String location,
+                                BigDecimal totalTaxIncluded,
+                                BigDecimal totalTaxNotIncluded,
+                                BigDecimal buildingAreaAboveGround,
+                                BigDecimal buildingAreaUnderGround,
+                                String companyConstructionId,
+                                String companyDesignId,
+                                String note,
+                                Date createDatetime,
+                                Date endDatetime) {
+
+        String likeProjectLocation = "%" + location + "%";
 
         Integer i = jdbcTemplate.queryForObject("""
                         SELECT count(*)
@@ -751,10 +824,11 @@ public class ProjectRepositoryImpl implements IProjectRepository {
     private List<Project> getPageQueryByProjectName(String projectName,
                                                     int pageNo,
                                                     int pageSize) {
+        projectName = "%" + projectName + "%";
         return jdbcTemplate.query("""
                         SELECT * 
                         FROM t_project
-                        WHERE name=? AND deleted_at IS NULL
+                        WHERE name LIKE ? AND deleted_at IS NULL
                         LIMIT ?,?
                         """,
                 new ProjectMapper(), projectName, pageNo * pageSize, pageSize);

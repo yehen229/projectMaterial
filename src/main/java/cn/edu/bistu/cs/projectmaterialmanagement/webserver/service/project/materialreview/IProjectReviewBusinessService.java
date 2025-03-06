@@ -19,6 +19,8 @@ public interface IProjectReviewBusinessService {
                                                     int pageSize);
 
     Page<ProjectReviewUserView> getPageViewByProjectReviewId(String projectReviewId,
+                                                             String reviewUser,
+                                                             int reviewResult,
                                                              int pageNo,
                                                              int pageSize);
 

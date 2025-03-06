@@ -4,6 +4,7 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.project.Project;
 
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -69,6 +70,20 @@ public interface IProjectRepository {
                                        int pageSize);
 
     Page<Project> getPageByProjectLocation(String projectLocation, int pageNo, int pageSize);
+
+    Page<Project> getPageByParams(String name,
+                                  String location,
+                                  BigDecimal totalTaxIncluded,
+                                  BigDecimal totalTaxNotIncluded,
+                                  BigDecimal buildingAreaAboveGround,
+                                  BigDecimal buildingAreaUnderGround,
+                                  String companyConstructionId,
+                                  String companyDesignId,
+                                  String note,
+                                  Date createDatetime,
+                                  Date endDatetime,
+                                  int pageNo,
+                                  int pageSize);
 
     Page<Project> getPageByKeyword(String keyword,
                                    int pageNo,

@@ -51,6 +51,12 @@ public interface IProjectReviewUserService {
                                                      int pageNo,
                                                      int pageSize);
 
+    Page<ProjectReviewUser> getPageByProjectReviewIdAndUserAndResult(String projectReviewId,
+                                                     String reviewUser,
+                                                     int reviewResult,
+                                                     int pageNo,
+                                                     int pageSize);
+
 
     int getCountByProjectReviewIdAndResult(String projectReviewId,
                                            int nReviewResult);

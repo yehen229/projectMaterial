@@ -72,10 +72,18 @@ public class ProjectReviewBusinessServiceImpl implements IProjectReviewBusinessS
 
     @Override
     public Page<ProjectReviewUserView> getPageViewByProjectReviewId(String projectReviewId,
+                                                                    String reviewUser,
+                                                                    int reviewResult,
                                                                     int pageNo,
                                                                     int pageSize) {
-        Page<ProjectReviewUser> projectReviewUserPage = projectReviewUserService.getPageByProjectReviewId(
-                projectReviewId, pageNo, pageSize);
+        Page<ProjectReviewUser> projectReviewUserPage = new Page<ProjectReviewUser>();
+        if(reviewUser == "" && reviewResult == -1) {
+            projectReviewUserPage = projectReviewUserService.getPageByProjectReviewId(
+                    projectReviewId, pageNo, pageSize);
+        } else {
+            projectReviewUserPage = projectReviewUserService.getPageByProjectReviewIdAndUserAndResult(projectReviewId, reviewUser ,reviewResult, pageNo, pageSize);
+        }
+
         return convertProjectReviewUserPage2PageView(projectReviewUserPage, pageNo, pageSize);
     }
 

@@ -26,6 +26,13 @@ public interface IProjectMaterialBusinessService {
                                           Integer pageSize);
 
     Page<ProjectMaterialView> getPageViewByProjectId(String projectId,
+                                                     String name,
+                                                     String location,
+                                                     String itemMark,
+                                                     String technology,
+                                                     String installation,
+                                                     String brand,
+                                                     String brandPrivate,
                                                      Integer pageNo,
                                                      Integer pageSize);
 
@@ -46,6 +53,13 @@ public interface IProjectMaterialBusinessService {
 
     Page<ProjectMaterialView> getProjectMaterialPageViewByProjectIdAndCompanyId(String projectId,
                                                                                 String companyId,
+                                                                                String name,
+                                                                                String location,
+                                                                                String itemMark,
+                                                                                String technology,
+                                                                                String installation,
+                                                                                String brandPublic,
+                                                                                String brandPrivate,
                                                                                 Integer pageNo,
                                                                                 Integer pageSize);
 
