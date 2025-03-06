@@ -8,6 +8,7 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.account.UserLog
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.account.UserLoginResult;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.log.Log;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.account.IJWTTokenService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.account.IRoleService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.account.IUserService;
@@ -16,6 +17,7 @@ import com.google.code.kaptcha.Producer;
 import io.netty.handler.codec.base64.Base64Encoder;
 import org.apache.tomcat.util.codec.binary.Base64;
 import jakarta.annotation.Resource;
+import org.apache.xmlbeans.impl.xb.xsdschema.Attribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -52,7 +54,7 @@ public class UserController {
 
     private AuthenticationManager authenticationManager;
     private Producer producer;
-
+    private final ILogService logService;
     @Resource
     private RedisTemplate<String, String> redisKeyTemplate;
 
@@ -64,12 +66,14 @@ public class UserController {
     UserController(IUserService userService, IRoleService roleService,
                    IJWTTokenService ijwtTokenService,
                    AuthenticationManager authenticationManager,
-                   Producer producer) {
+                   Producer producer,
+                   ILogService logService) {
         this.userService = userService;
         this.roleService = roleService;
         this.ijwtTokenService = ijwtTokenService;
         this.authenticationManager = authenticationManager;
         this.producer = producer;
+        this.logService = logService;
     }
 
     @GetMapping("publicKey")
@@ -195,6 +199,8 @@ public class UserController {
         sysUserLoginResult.setUserRealName(sysUser.getRealName());
         sysUserLoginResult.setUserId(sysUser.getId());
 
+        Log log = new Log(sysUser.getId(), "123", "用户登录", 1 , new Date());
+        logService.add(log);
         return sysUserLoginResult;
     }
 
@@ -205,8 +211,6 @@ public class UserController {
      */
     @PostMapping(value = "logout")
     public String logout() {
-
-
         return "登出成功";
     }
 
@@ -218,34 +222,49 @@ public class UserController {
     @PostMapping(value = "add")
     @PreAuthorize("hasRole('Admin')")
     public String add(@RequestBody User user) {
+        User user1 = userService.getByUserName("admin");
+        Log log = new Log(user1.getId(), "123", "添加用户：" + user.getRealName() , 1 , new Date());
+        logService.add(log);
         return userService.add(user);
     }
 
     @PostMapping(value = "delete")
     @PreAuthorize("hasRole('Admin')")
     public int delete(@RequestBody User user) {
+        User user1 = userService.getByUserName("admin");
+        Log log = new Log(user1.getId(), "123", "删除用户：" + user.getRealName() , 1 , new Date());
+        logService.add(log);
         return userService.delete(user);
     }
 
     @PostMapping(value = "update")
     @PreAuthorize("hasRole('Admin')")
     public int update(@RequestBody User user) {
+        User user1 = userService.getByUserName("admin");
+        Log log = new Log(user1.getId(), "123", "更新用户信息：" + user.getRealName() , 1 , new Date());
+        logService.add(log);
         return userService.update(user);
     }
 
     @PostMapping(value = "update-own-info")
     public int updateOwnInfo(@RequestBody User user) {
+        Log log = new Log(user.getId(), "123", "更新用户信息：" + user.getRealName() , 1 , new Date());
+        logService.add(log);
         return userService.updateOwnInfo(user);
     }
 
     @PostMapping(value = "update-own-pwd")
     public int updateOwnPwd(@RequestBody User user) {
+        Log log = new Log(user.getId(), "123", "更改用户密码：" + user.getRealName() , 1 , new Date());
+        logService.add(log);
         return userService.updateOwnPwd(user);
     }
 
     @PostMapping(value = "reset-pwd")
     @PreAuthorize("hasAnyRole('Admin','Teacher')")
     public int resetPassword(@RequestBody User user) {
+        Log log = new Log(user.getId(), "123", "重置用户密码：" + user.getRealName() , 1 , new Date());
+        logService.add(log);
         return userService.resetPassword(user);
     }
 
