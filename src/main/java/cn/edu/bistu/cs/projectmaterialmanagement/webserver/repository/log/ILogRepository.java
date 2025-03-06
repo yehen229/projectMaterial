@@ -17,6 +17,7 @@ public interface ILogRepository{
 	List<Log> getByUserId(String userId);
 	List<Log> getByProjectId(String projectId);
 	Page<Log> getPage(int pageNo, int pageSize);
+	List<Log> getAllLog();
 	Page<Log> getPageByUserId(String userId,int pageNo, int pageSize);
 	Page<Log> getPageByProjectId(String projectId, int pageNo, int pageSize);
 

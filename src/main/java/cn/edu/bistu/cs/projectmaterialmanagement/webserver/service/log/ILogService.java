@@ -23,6 +23,7 @@ public interface ILogService {
 	List<Log> getByUserId(String userId);
 	List<Log> getByProjectId(String projectId);
 	Page<ProjectLogView> getPage(int pageNo, int pageSize);
+	Page<ProjectLogView> getbynamePage(String projectName, int pageNo, int pageSize);
 	Page<Log> getPageByUserId(String userId, int pageNo, int pageSize);
 	Page<Log> getPageByProjectId(String projectId, int pageNo, int pageSize);
 }

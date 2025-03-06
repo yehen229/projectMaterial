@@ -3,6 +3,7 @@ package cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.log.impl;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.log.Log;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.log.ILogRepository;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.impl.ProjectRepositoryImpl;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.utility.GUID;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -164,6 +166,31 @@ public class LogRepositoryImpl implements ILogRepository {
         return new Page<>(0, totalCount, (int) totalCount, resultData);
     }
 
+    @Override
+    public List<Log> getAllLog() {
+        long totalCount = getCount();
+        if (totalCount < 1) return new ArrayList<>();
+        List<Log> resultData = getAllQuery();
+        return resultData;
+    }
+
+    private List<Log> getAllQuery() {
+
+        Integer i = jdbcTemplate.queryForObject("""
+                        SELECT count(*) 
+                        FROM t_log_admin
+                        """,
+                Integer.class);
+        if (i == null || i == 0)
+            return null;
+
+        return jdbcTemplate.query("""
+                        SELECT * 
+                        FROM t_log_admin
+                        order by op_datetime desc
+                        """,
+                new LogMapper());
+    }
     /**
      * 获得指定页面数据
      *
