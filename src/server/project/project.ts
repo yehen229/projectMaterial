@@ -302,7 +302,7 @@ export async function serverGetCurrentLoginUserOfGeneralContractorCompanyNotEnde
       IServerResponseData<IServerPage<IServerProjectView>>
     >(
       BASEURL.project +
-        "page-view-not-ended-of-current-login-user-in-general-contractor-company",
+      "page-view-not-ended-of-current-login-user-in-general-contractor-company",
       {
         params: {
           pageNo: pageNo,

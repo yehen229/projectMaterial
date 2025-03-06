@@ -724,7 +724,7 @@ export async function serverGetProjectAllUsersPageViewByProjectName(
 }
 
 export async function serverGetProjectAllUsersPageViewByUserName(
-  projectName: string,
+  realName: string,
   pageNo: number,
   pageSize: number
 ): Promise<IServerResponseData<IServerPage<IServerProjectAllUserView>>> {
@@ -732,9 +732,9 @@ export async function serverGetProjectAllUsersPageViewByUserName(
     let res = await axios.get<
       any,
       IServerResponseData<IServerPage<IServerProjectAllUserView>>
-    >(BASEURL.projectuser + "page-all-user-view-by-user-name", {
+    >(BASEURL.projectuser + "page-all-user-view-by-real-name", {
       params: {
-        projectName: projectName,
+        realName: realName,
         pageNo: pageNo,
         pageSize: pageSize,
       },
