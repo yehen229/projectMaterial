@@ -2,12 +2,14 @@ package cn.edu.bistu.cs.projectmaterialmanagement.webserver.controller;
 
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.log.Log;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.log.ILogRepository;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.log.ILogService;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -15,9 +17,11 @@ import java.util.List;
 @EnableMethodSecurity
 public class LogController {
     private final ILogService logService;
+    private final ILogRepository logRepository;
 
-    LogController(ILogService logService) {
+    LogController(ILogService logService,ILogRepository logRepository) {
         this.logService = logService;
+        this.logRepository = logRepository;
     }
 
     @GetMapping(value = "get-by-id")
@@ -36,18 +40,26 @@ public class LogController {
     public String add(@RequestBody Log log) {
         return logService.add(log);
     }
-
-    @PostMapping(value = "delete")
+    @PostMapping(value = "addtest")
     @PreAuthorize("hasRole('Admin')")
-    public int delete(@RequestBody Log log) {
-        return logService.delete(log);
+    public String addTest() {
+        Log log1 = new Log("18138900153","46846416165146894163","测试1",0b0001,new Date());
+        logService.add(log1);
+        return "123124";
     }
 
-    @PostMapping(value = "update")
-    @PreAuthorize("hasRole('Admin')")
-    public int update(@RequestBody Log log) {
-        return logService.update(log);
-    }
+
+//    @PostMapping(value = "delete")
+//    @PreAuthorize("hasRole('Admin')")
+//    public int delete(@RequestBody Log log) {
+//        return logService.delete(log);
+//    }
+
+//    @PostMapping(value = "update")
+//    @PreAuthorize("hasRole('Admin')")
+//    public int update(@RequestBody Log log) {
+//        return logService.update(log);
+//    }
 
 
     @GetMapping(value = "page")

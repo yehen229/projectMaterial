@@ -38,36 +38,29 @@ public class LogServiceImpl implements ILogService {
 	/**
 	 * 删除
 	 */
-	@Override
-	public int delete(Log log){
-		return logRepository.delete(log);
-	}
+//	@Override
+//	public int delete(Log log){
+//		return logRepository.delete(log);
+//	}
 
 	/**
 	 * 根据id删除记录
 	 * @param id
 	 */
-	@Override
-	public int deleteById(String id){
-		return logRepository.deleteById(id);
-	}
+//	@Override
+//	public int deleteById(String id){
+//		return logRepository.deleteById(id);
+//	}
 
 	/**
 	 * 根据userId删除记录
 	 * @param userId
 	 */
-	@Override
-	public int deleteByUserId(String userId){
-		return logRepository.deleteByUserId(userId);
-	}
+//	@Override
+//	public int deleteByUserId(String userId){
+//		return logRepository.deleteByUserId(userId);
+//	}
 
-	/**
-	 * 更新
-	 */
-	@Override
-	public int update(Log log){
-		return logRepository.update(log);
-	}
 
 	/**
 	 * 得到数量
@@ -84,6 +77,16 @@ public class LogServiceImpl implements ILogService {
 	@Override
 	public int getCountByUserId(String userId){
 		return logRepository.getCountByUserId(userId);
+	}
+
+	/**
+	 * 根据ProjectId得到数量
+	 * @param projectId
+	 * @return
+	 */
+	@Override
+	public int getCountByProjectId(String projectId) {
+		return logRepository.getCountByProjectId(projectId);
 	}
 
 	/**
@@ -104,10 +107,15 @@ public class LogServiceImpl implements ILogService {
 		return logRepository.getByUserId(userId);
 	}
 
+	@Override
+	public List<Log> getByProjectId(String projectId) {
+		return logRepository.getByProjectId(projectId);
+	}
+
 	/**
 	 * 获得指定页面数据
 	 * @param pageNo   页号，从1开始
-	 * @param pageSize 每页的记录数 
+	 * @param pageSize 每页的记录数
 	 */
 	@Override
 	public Page<Log> getPage(int pageNo, int pageSize){
@@ -118,16 +126,21 @@ public class LogServiceImpl implements ILogService {
 	 * 获得指定页面数据
 	 * @param userId
 	 * @param pageNo   页号，从1开始
-	 * @param pageSize 每页的记录数 
+	 * @param pageSize 每页的记录数
 	 */
 	@Override
 	public Page<Log> getPageByUserId(String userId,int pageNo, int pageSize){
 		return logRepository.getPageByUserId(userId,pageNo,pageSize);
 	}
 
+	@Override
+	public Page<Log> getPageByProjectId(String projectId, int pageNo, int pageSize) {
+		return null;
+	}
+
 	/**
 	 * 根据主键获得视图对象
-	 * @param id	主键 
+	 * @param id	主键
 	 */
 	private LogView getLogViewByLogId(String id){
 		Log log = getById(id);
@@ -138,7 +151,7 @@ public class LogServiceImpl implements ILogService {
 
 	/**
 	 * 将页面转换为视图页面
-	 * @param logPage	页面对象 
+	 * @param logPage	页面对象
 	 */
 	private Page<LogView> convertLogPage2PageView(Page<Log> logPage,int pageNo, int pageSize){
 		if(logPage == null)return null;
@@ -149,29 +162,6 @@ public class LogServiceImpl implements ILogService {
 			if(logView!=null)list.add(logView);
 		}
 		return new Page<>(startIndex, logPage.getTotalCount(), pageSize, list);
-	}
-
-	/**
-	 * 获得指定页面视图数据
-	 * @param pageNo   页号，从1开始
-	 * @param pageSize 每页的记录数 
-	 */
-	@Override
-	public Page<LogView> getPageView(int pageNo, int pageSize){
-		Page<Log> logPage = getPage(pageNo,pageSize);
-		return convertLogPage2PageView(logPage,pageNo, pageSize);
-	}
-
-	/**
-	 * 获得指定页面视图数据
-	 * @param userId
-	 * @param pageNo   页号，从1开始
-	 * @param pageSize 每页的记录数 
-	 */
-	@Override
-	public Page<LogView> getPageViewByUserId(String userId,int pageNo, int pageSize){
-		Page<Log> logPage = getPageByUserId(userId,pageNo,pageSize);
-		return convertLogPage2PageView(logPage,pageNo, pageSize);
 	}
 
 }

@@ -3,6 +3,7 @@ package cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.camunda.flow
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.common.exception.BusinessException;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.account.User;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.log.Log;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.*;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.acceptance.*;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.appearance.*;
@@ -12,6 +13,7 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.project
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.project.ProjectDesignCompany;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.CompanyUser;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.account.IUserService;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.log.ILogService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.*;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.materialreview.IProjectReviewService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.ICompanyUserService;
@@ -27,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -56,7 +59,7 @@ public class ProjectFlow {
     private RepositoryService repositoryService;
     @Autowired
     private CompanyUser companyUser;
-
+    private final ILogService logService;
     public ProjectFlow(IUserService userService,
                        IProjectUserService projectUserService,
                        ICompanyUserService companyUserService,
@@ -66,7 +69,8 @@ public class ProjectFlow {
                        IProjectReviewService projectReviewService,
                        IProjectCompanyService projectCompanyService,
                        IProjectOpHistoryBusiness projectHistoryBusiness,
-                       IProjectUserService projectUserService1) {
+                       IProjectUserService projectUserService1,
+                       ILogService logService) {
         this.userService = userService;
         this.companyUserService = companyUserService;
         this.projectDesignCompanyService = projectDesignCompanyService;
@@ -76,6 +80,7 @@ public class ProjectFlow {
         this.projectCompanyService = projectCompanyService;
         this.projectHistoryBusiness = projectHistoryBusiness;
         this.projectUserService = projectUserService1;
+        this.logService= logService;
     }
 
     /**
@@ -314,7 +319,9 @@ public class ProjectFlow {
 
             //增加审核历史过程
             projectHistoryBusiness.addCreateProject(project.getId(), user.getId(), "创建项目", "创建项目");
-
+            // 增加日志信息，0为操作类型
+            Log log = new Log(user.getId(), project.getId(), "创建项目", 0 , new Date());
+            logService.add(log);
             result = "项目创建成功";
         }
 
@@ -366,7 +373,10 @@ public class ProjectFlow {
             //增加审核历史过程
             projectHistoryBusiness.addSubmitProjectMaterial(project.getId(), user.getId(), "设计公司提交项目材料参数",
                                                             "设计公司提交项目材料参数");
+            // 增加日志信息，0为操作类型
+            Log log = new Log(user.getId(), project.getId(), "设计公司提交项目材料参数", 0 , new Date());
 
+            logService.add(log);
             result = "提交项目材料参数成功";
         }
 
@@ -451,8 +461,8 @@ public class ProjectFlow {
                                                                            "设计部审核项目材料",
                                                                            "项目经理分发审核项目材料，交给项目经理直接审核",
                                                                            projectReviewId);
-
-
+            Log log = new Log(user.getId(), businessId, "项目经理分发审核项目材料，交给项目经理直接审核", 0 , new Date());
+            logService.add(log);
             result = "项目经理对项目材料分发给项目经理进行直接审核成功";
 
 
@@ -525,7 +535,8 @@ public class ProjectFlow {
                                                                            "项目经理将项目材料分发给项目员工进行审核",
                                                                            "");
 
-
+            Log log = new Log(user.getId(), businessId, "项目经理将项目材料分发给项目员工进行审核", 0 , new Date());
+            logService.add(log);
             result = "项目经理将项目材料分发给项目员工进行审核成功";
         }
 
@@ -590,7 +601,8 @@ public class ProjectFlow {
                                                                     "设计部审核项目材料",
                                                                     "项目员工对项目材料进行审核，并给出审核结果", "");
 
-
+            Log log = new Log(user.getId(), businessId, "项目员工对项目材料进行审核，并给出审核结果", 0 , new Date());
+            logService.add(log);
             result = "项目经理将项目材料分发给项目员工进行审核成功";
         }
 
@@ -669,7 +681,8 @@ public class ProjectFlow {
                                                                                           "项目经理对项目材料进行审核，并给出审核结果",
                                                                                           "");
 
-
+            Log log = new Log(user.getId(), businessId, "项目经理对项目材料进行审核，并给出审核结果", 0 , new Date());
+            logService.add(log);
             result = "项目经理对材料品牌审核成功";
         }
 
@@ -755,7 +768,8 @@ public class ProjectFlow {
                                                                           "项目经理项目审核汇总意见，并给出审核结果",
                                                                           "");
 
-
+            Log log = new Log(user.getId(), businessId, "项目经理项目审核汇总意见，并给出审核结果", 0 , new Date());
+            logService.add(log);
             result = "项目经理项目审核汇总成功";
         }
 
@@ -878,7 +892,8 @@ public class ProjectFlow {
                                                               "工程部分发监理单位与总包单位",
                                                               "工程部项目经理分发监理单位与总包单位");
 
-
+            Log log = new Log(user.getId(), businessId, "项目经理项目审核汇总意见，并给出审核结果", 0 , new Date());
+            logService.add(log);
             result = "项目经理分发监理单位与总包单位成功";
         }
 
@@ -936,8 +951,6 @@ public class ProjectFlow {
             projectHistoryBusiness.addAdminSetDesignAndEngineeringDepartmentUsers(businessId, user.getId(),
                                                                                   "管理员设置员工",
                                                                                   "管理员设置设计单位员工，设置设计部、工程部等项目经理和项目员工");
-
-
             result = "管理员设置设计单位、设计部、工程部等员工成功";
         }
 
@@ -1063,6 +1076,8 @@ public class ProjectFlow {
                 projectHistoryBusiness.addGeneralContractorSelectBrandAndUseMaterial(businessId, user.getId(),
                         "总包单位选择品牌，物料使用申请",
                         "总包单位选择品牌，物料使用申请");
+                Log log = new Log(user.getId(), businessId, "总包单位选择品牌，物料使用申请", 0 , new Date());
+                logService.add(log);
             } else if (nLen0 > 0 && nlen1 > 0) {
                 //拆分任务
                 //1.第一个，仍然在原来的流程实例中
@@ -1079,6 +1094,8 @@ public class ProjectFlow {
                 projectHistoryBusiness.addGeneralContractorSelectBrandAndUseMaterial(businessId, user.getId(),
                         "总包单位选择品牌，物料使用申请",
                         "总包单位选择品牌，物料使用申请");
+                Log log = new Log(user.getId(), businessId, "总包单位选择品牌，物料使用申请", 0 , new Date());
+                logService.add(log);
                 //2.第二个，新建一个流程实例
                 String useMaterialBrandSelectId1 = projectBusinessService.addFormOfGeneralContractorBrandSelectAndUseMaterial(
                         useMaterialForm1);
@@ -1366,7 +1383,8 @@ public class ProjectFlow {
                                                                "监理单位审核品牌、物料使用申请",
                                                                "监理单位对总包单位提交的品牌、物料使用申请进行审核",
                                                                projectAppearanceReviewModeId);
-
+            Log log = new Log(user.getId(), businessId, "监理单位对总包单位提交的品牌、物料使用申请进行审核", 0 , new Date());
+            logService.add(log);
 
             result = "监理单位对总包单位提交的品牌、物料使用申请进行审核成功";
         }
@@ -1446,6 +1464,8 @@ public class ProjectFlow {
                     "工程部项目经理将总包单位提交的品牌、物料使用申请分发给项目经理进行直接审核",
                     projectAppearanceReviewModeId
             );
+            Log log = new Log(user.getId(), businessId, "工程部项目经理将总包单位提交的品牌、物料使用申请分发给项目经理成功", 0 , new Date());
+            logService.add(log);
             result = "工程部项目经理将总包单位提交的品牌、物料使用申请分发给项目经理成功";
         }
 
@@ -1512,7 +1532,8 @@ public class ProjectFlow {
                                                                                                  projectAppearanceReviewModeId
             );
 
-
+            Log log = new Log(user.getId(), businessId, "项目经理将项目材料分发给项目员工进行审核", 0 , new Date());
+            logService.add(log);
             result = "项目经理将项目材料分发给项目员工进行审核成功";
         }
 
@@ -1578,7 +1599,8 @@ public class ProjectFlow {
                                                                                           projectAppearanceReviewUserId
             );
 
-
+            Log log = new Log(user.getId(), businessId, "项目员工对项目材料品牌、物料申请进行审核", 0 , new Date());
+            logService.add(log);
             result = "项目员工对材料品牌、物料申请审核成功";
         }
 
@@ -1644,7 +1666,8 @@ public class ProjectFlow {
                     projectAppearanceReviewUserId
             );
 
-
+            Log log = new Log(user.getId(), businessId, "项目经理对项目材料品牌、物料申请进行审核", 0 , new Date());
+            logService.add(log);
             result = "项目经理对材料品牌、物料申请审核成功";
         }
 
@@ -1722,7 +1745,8 @@ public class ProjectFlow {
                     projectReviewUserId
             );
 
-
+            Log log = new Log(user.getId(), businessId, "项目经理项目审核汇总意见，并给出审核结果", 0 , new Date());
+            logService.add(log);
             result = "项目经理项目审核汇总成功";
         }
 
@@ -1799,7 +1823,8 @@ public class ProjectFlow {
                     projectAppearanceReviewModeId
             );
 
-
+            Log log = new Log(user.getId(), businessId, "设计公司项目员工对项目材料品牌、物料申请进行审核", 0 , new Date());
+            logService.add(log);
             result = "设计公司项目员工对材料品牌、物料申请审核成功";
         }
 
@@ -1860,7 +1885,8 @@ public class ProjectFlow {
                     projectAppearanceReviewModeId
             );
 
-
+            Log log = new Log(user.getId(), businessId, "设计部项目员工对项目材料品牌、物料申请进行审核", 0 , new Date());
+            logService.add(log);
             //项目经理审批结果
             int nReviewResult = projectAppearanceReviewManagerDirectForm.getProjectAppearanceReviewUser().getReviewResult();
 
@@ -1946,7 +1972,8 @@ public class ProjectFlow {
                     projectDesignDepartmentAppearanceReviewModeId
             );
 
-
+            Log log = new Log(user.getId(), businessId, "项目经理将项目材料分发给项目员工进行审核", 0 , new Date());
+            logService.add(log);
             result = "项目经理将项目材料分发给项目员工进行审核成功";
         }
 
@@ -2011,7 +2038,8 @@ public class ProjectFlow {
                     "项目员工对项目材料品牌、物料申请进行审核",
                     projectAppearanceReviewUserId
             );
-
+            Log log = new Log(user.getId(), businessId, "项目员工对项目材料品牌、物料申请进行审核", 0 , new Date());
+            logService.add(log);
 
             result = "项目员工对材料品牌、物料申请审核成功";
         }
@@ -2080,7 +2108,8 @@ public class ProjectFlow {
                     "项目经理对项目材料品牌、物料申请进行审核",
                     projectAppearanceReviewUserId
             );
-
+            Log log = new Log(user.getId(), businessId, "项目经理对项目材料品牌、物料申请进行审核", 0 , new Date());
+            logService.add(log);
 
             result = "项目经理对材料品牌、物料申请审核成功";
         }
@@ -2159,7 +2188,8 @@ public class ProjectFlow {
                     "项目经理项目审核汇总意见，并给出审核结果",
                     projectReviewUserId
             );
-
+            Log log = new Log(user.getId(), businessId, "项目经理项目审核汇总意见，并给出审核结果", 0 , new Date());
+            logService.add(log);
 
             result = "项目经理项目审核汇总成功";
         }
@@ -2221,7 +2251,8 @@ public class ProjectFlow {
                     "设计部项目经理分发给项目经理直接审核",
                     projectAppearanceReviewModeId
             );
-
+            Log log = new Log(user.getId(), businessId, "设计部项目经理分发给项目经理直接审核", 0 , new Date());
+            logService.add(log);
 
             //项目经理审批结果
             int nReviewResult = projectAppearanceReviewManagerDirectForm.getProjectAppearanceReviewUser().getReviewResult();
@@ -2305,7 +2336,8 @@ public class ProjectFlow {
                     "项目经理将项目材料分发给项目员工进行审核",
                     projectAppearanceReviewModeId
             );
-
+            Log log = new Log(user.getId(), businessId, "项目经理将项目材料分发给项目员工进行审核", 0 , new Date());
+            logService.add(log);
 
             result = "项目经理将项目材料分发给项目员工进行审核成功";
         }
@@ -2371,7 +2403,8 @@ public class ProjectFlow {
                     "项目员工对项目材料品牌、物料申请进行审核",
                     projectAppearanceReviewUserId
             );
-
+            Log log = new Log(user.getId(), businessId, "项目员工对项目材料品牌、物料申请进行审核", 0 , new Date());
+            logService.add(log);
 
             result = "项目员工对材料品牌、物料申请审核成功";
         }
@@ -2440,7 +2473,8 @@ public class ProjectFlow {
                     "项目经理对项目材料品牌、物料申请进行审核",
                     projectAppearanceReviewUserId
             );
-
+            Log log = new Log(user.getId(), businessId, "项目经理对项目材料品牌、物料申请进行审核", 0 , new Date());
+            logService.add(log);
 
             result = "项目经理对材料品牌、物料申请审核成功";
         }
@@ -2518,7 +2552,8 @@ public class ProjectFlow {
                     "工程部项目经理项目审核汇总意见，并给出审核结果",
                     projectReviewUserId
             );
-
+            Log log = new Log(user.getId(), businessId, "工程部项目经理项目审核汇总意见，并给出审核结果", 0 , new Date());
+            logService.add(log);
 
             result = "工程部项目经理项目审核汇总成功";
         }
@@ -2581,6 +2616,8 @@ public class ProjectFlow {
                                                                    "总包单位订购物料",
                                                                    "总包单位订购物料",
                                                                    buyMaterialId);
+                    Log log = new Log(user.getId(), businessId, "总包单位订购物料", 0 , new Date());
+                    logService.add(log);
 
                     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processKey, businessId);
                     runtimeService.createProcessInstanceModification(processInstance.getId())
@@ -2604,7 +2641,8 @@ public class ProjectFlow {
                                                            "总包单位订购物料",
                                                            "总包单位订购物料",
                                                            buyMaterialIdFirst);
-
+            Log log = new Log(user.getId(), businessId, "总包单位订购物料", 0 , new Date());
+            logService.add(log);
 
             result = "总包单位订购物料成功";
         }
@@ -2706,7 +2744,8 @@ public class ProjectFlow {
                                                                             "总包单位填报工程材料、设备报验资料",
                                                                             "总包单位填报工程材料、设备报验资料",
                                                                             buyMaterialId);
-
+            Log log = new Log(user.getId(), businessId, "总包单位填报工程材料、设备报验资料", 0 , new Date());
+            logService.add(log);
 
             result = "总总包单位填报工程材料、设备报验资料";
         }
@@ -2782,7 +2821,8 @@ public class ProjectFlow {
                                                                           "监理判断是否需要复试",
                                                                           "监理判断是否需要复试",
                                                                           projectMaterialRetestId);
-
+            Log log = new Log(user.getId(), businessId, "监理判断是否需要复试", 0 , new Date());
+            logService.add(log);
 
             result = "监理判断不需要复试";
         }
@@ -2831,6 +2871,8 @@ public class ProjectFlow {
                             "总包单位申报项目材料批次验",
                             "总包单位申报项目材料批次验收",
                             projectMaterialAcceptanceBatchId);
+               Log log = new Log(user.getId(), businessId, "总包单位申报项目材料批次验收", 0 , new Date());
+               logService.add(log);
            }else if (projectMaterialAcceptanceBatchForm.getProjectMaterialAcceptanceList().size() > 1){
                ProjectMaterialAcceptanceBatchForm projectMaterialAcceptanceBatchForm0 = new ProjectMaterialAcceptanceBatchForm();
                projectMaterialAcceptanceBatchForm0.setProjectId(projectMaterialAcceptanceBatchForm.getProjectId());
@@ -2858,6 +2900,8 @@ public class ProjectFlow {
                             "总包单位申报项目材料批次验",
                             "总包单位申报项目材料批次验收",
                             projectMaterialAcceptanceBatchId);
+                   Log log = new Log(user.getId(), businessId, "总包单位申报项目材料批次验收", 0 , new Date());
+                   logService.add(log);
                    String processKey = "Process_Project_Material";
                    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processKey, businessId);
                    runtimeService.createProcessInstanceModification(processInstance.getId())
@@ -2971,7 +3015,8 @@ public class ProjectFlow {
                                                                          "监理单位审核材料批次验收",
                                                                          "监理单位对材料批次验收进行审核",
                                                                          projectMaterialAcceptanceReviewModeId);
-
+            Log log = new Log(user.getId(), businessId, "监理单位对材料批次验收进行审核", 0 , new Date());
+            logService.add(log);
 
             result = "监理单位对材料批次验收进行审核";
         }
@@ -3033,7 +3078,8 @@ public class ProjectFlow {
                     "项目经理直接验收项目材料",
                     projectMaterialAcceptanceReviewModeId
             );
-
+            Log log = new Log(user.getId(), businessId, "项目经理直接验收项目材料", 0 , new Date());
+            logService.add(log);
 
             //项目经理审批结果
             int nReviewResult = projectMaterialAcceptanceReviewManagerDirectForm.getProjectMaterialAcceptanceReviewUser().getReviewResult();
@@ -3119,7 +3165,8 @@ public class ProjectFlow {
                     "项目经理将项目材料分发给项目员工进行审核",
                     projectMaterialAcceptanceReviewModeId
             );
-
+            Log log = new Log(user.getId(), businessId, "项目经理将项目材料分发给项目员工进行审核", 0 , new Date());
+            logService.add(log);
 
             result = "项目经理将项目材料分发给项目员工进行审核成功";
         }
@@ -3190,7 +3237,8 @@ public class ProjectFlow {
                     "项目员工对项目材料验收进行审核",
                     projectMaterialAcceptanceReviewUserId
             );
-
+            Log log = new Log(user.getId(), businessId, "项目员工对项目材料验收进行审核", 0 , new Date());
+            logService.add(log);
 
             result = "项目员工对项目材料验收进行审核成功";
         }
@@ -3264,6 +3312,8 @@ public class ProjectFlow {
                     "项目经理审核",
                     projectMaterialAcceptanceReviewUserId
             );
+            Log log = new Log(user.getId(), businessId, "材料验收项目经理审核", 0 , new Date());
+            logService.add(log);
 
 
             result = "项目经理审核成功";
@@ -3343,7 +3393,8 @@ public class ProjectFlow {
                     "项目经理项目审核汇总意见",
                     projectReviewUserId
             );
-
+            Log log = new Log(user.getId(), businessId, "材料验收项目经理项目审核汇总意见", 0 , new Date());
+            logService.add(log);
 
             result = "项目经理项目审核汇总成功";
         }
@@ -3408,7 +3459,8 @@ public class ProjectFlow {
                     "工程部项目经理项目结束项目",
                     projectEndId
             );
-
+            Log log = new Log(user.getId(), businessId, "工程部项目经理项目结束项目", 0 , new Date());
+            logService.add(log);
 
             result = "项目经理项目结束项目";
         }

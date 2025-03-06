@@ -1,9 +1,11 @@
 package cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.camunda.generalcontractor;
 
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.account.User;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.log.Log;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectUser;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.account.IUserService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.camunda.designdepartment.ProjectMaterialIntoStorage;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.log.ILogService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IProjectOpHistoryBusiness;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IProjectUserService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -13,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,13 +27,15 @@ public class GeneralContractorNewProjectMaterialAcceptance implements JavaDelega
     private final IProjectOpHistoryBusiness projectHistoryBusiness;
     private final IUserService userService;
     private final IProjectUserService projectUserService;
-
+    private final ILogService logService;
     public GeneralContractorNewProjectMaterialAcceptance(IProjectOpHistoryBusiness projectHistoryBusiness,
                                                          IUserService userService,
-                                                         IProjectUserService projectUserService) {
+                                                         IProjectUserService projectUserService,
+                                                         ILogService logService) {
         this.projectHistoryBusiness = projectHistoryBusiness;
         this.userService = userService;
         this.projectUserService = projectUserService;
+        this.logService= logService;
     }
 
     @Override
@@ -68,5 +73,7 @@ public class GeneralContractorNewProjectMaterialAcceptance implements JavaDelega
                 "总包单位发起项目验收",
                 ""
         );
+        Log log = new Log(user.getId(), businessId, "总包单位发起项目验收", 0 , new Date());
+        logService.add(log);
     }
 }
