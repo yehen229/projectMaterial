@@ -196,8 +196,16 @@ export async function serverGetProjectMaterialPageView(
   }
 }
 
+// 用于设计部分发审核接口
 export async function serverGetProjectMaterialPageViewByProject(
   projectId: string,
+  name: string,
+  location: string,
+  itemMark: string,
+  technology: string,
+  installation: string,
+  brand: string,
+  brandPrivate: string,
   pageNo: number,
   pageSize: number
 ): Promise<IServerResponseData<IServerPage<IServerProjectMaterialView>>> {
@@ -208,6 +216,13 @@ export async function serverGetProjectMaterialPageViewByProject(
     >(BASEURL.projectmaterial + "page-view-by-project-id", {
       params: {
         projectId: projectId,
+        name: name,
+        location: location,
+        itemMark: itemMark,
+        technology: technology,
+        installation: installation,
+        brand: brand,
+        brandPrivate: brandPrivate,
         pageNo: pageNo,
         pageSize: pageSize,
       },
@@ -278,10 +293,60 @@ export async function serverGetProjectMaterialPageViewByCurrentUserProject(
   }
 }
 
+export async function serverGetProjectMaterialPageViewForDesignDepartmentManager(
+  projectId: string,
+  name: String,
+  location: String,
+  itemMark: String,
+  technology: String,
+  installation: String,
+  brand: String,
+  brandPrivate: String,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerProjectMaterialView>>> {
+  try {
+    let res;
+      res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerProjectMaterialView>>
+      >(
+        BASEURL.projectmaterial +
+        "page-view-by-search",
+        {
+          params: {
+            projectId: projectId,
+            name: name,
+            location: location,
+            itemMark: itemMark,
+            technology: technology,
+            installation: installation,
+            brand: brand,
+            brandPrivate: brandPrivate,
+            pageNo: pageNo,
+            pageSize: pageSize,
+          },
+        }
+      );
+    
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
 export async function serverGetProjectMaterialPageViewByTaskIdAndProjectId(
   projectId: string,
   taskId: string,
   designCompanyIndex: number,
+  name: String,
+  location: String,
+  itemMark: String,
+  technology: String,
+  installation: String,
+  brandPublic: String,
+  brandPrivate: String,
   pageNo: number,
   pageSize: number
 ): Promise<IServerResponseData<IServerPage<IServerProjectMaterialView>>> {
@@ -297,6 +362,13 @@ export async function serverGetProjectMaterialPageViewByTaskIdAndProjectId(
           projectId: projectId,
           taskId: taskId,
           designCompanyIndex: designCompanyIndex,
+          name: name,
+          location: location,
+          itemMark: itemMark,
+          technology: technology,
+          installation: installation,
+          brandPublic: brandPublic,
+          brandPrivate: brandPrivate,
           pageNo: pageNo,
           pageSize: pageSize,
         },

@@ -20,6 +20,23 @@ export interface IServerProject {
   deletedAt: Date | null; //deleted_at,null表示未删，否则 表示删除时间null表示未删，否则 表示删除时间
 }
 
+export interface IServerSearchProject {
+  id: string; //id,主键
+  userId: string; //t_user_id,外键,	t_user_id<-表t_user.id,创建者创建者
+  name: string; //name,项目名称项目名称
+  location: string; //location,项目地点项目地点
+  totalTaxIncluded: number; //total_tax_included,总投资_含税，万元总投资_含税，万元
+  totalTaxNotIncluded: number; //total_tax_not_included,总投资_不含税，万元总投资_不含税，万元
+  buildingAreaAboveGround: number; //building_area_above_ground,建筑面积：地上，平米建筑面积：地上，平米
+  buildingAreaUnderGround: number; //building_area_under_ground,建筑面积：地下，平米建筑面积：地下，平米
+  companyConstructionId: string; //t_company_construction_id,外键,	t_company_construction_id<-表t_company.id,建设单位：建设单位类型、内部（设计部、工程部）建设单位：建设单位类型、内部（设计部、工程部）
+  companyDesignId: string;
+  note: string; //note,其它其它
+  createDatetime: Date; //create_datetime,项目创建时间项目创建时间
+  endDatetime: Date; //end_datetime,项目结束时间
+  deletedAt: Date | null; //deleted_at,null表示未删，否则 表示删除时间null表示未删，否则 表示删除时间
+}
+
 export interface IServerProjectDesignCompany {
   id: string; //id,主键
   projectId: string;

@@ -111,7 +111,8 @@ const dialogShowDetailsVisible = ref(false); //控制“显示对话框”是否
 const loading = ref(false);
 
 const searchText = ref("");
-const searchSelect = ref("1");
+const searchSelect = ref("0");
+const resultSelect = ref("0");
 
 const pageNo = ref(1); //第几页
 const pageSize = ref(getUserPageSize()); //每页多少数据
@@ -142,8 +143,11 @@ onMounted(async () => {
 
 const getProjectReviewUserViewPageFromServer = async () => {
   console.log(projectUserTask);
- 
-  
+  let search = searchText.value.trim();
+  let reviewUser = "", reviewResult;
+  if (search) {
+    pageNo.value = 1;
+  }
   if (
     projectUserTask &&
     projectUserTask.projectView &&
@@ -151,18 +155,38 @@ const getProjectReviewUserViewPageFromServer = async () => {
     projectUserTask.projectView.project.id &&
     projectUserTask.taskId
   ) {
-    const ret = await serverGetProjectReviewUserViewPageByTaskId(
+    if (searchSelect.value == "0") {
+      reviewUser = search;
+      const ret = await serverGetProjectReviewUserViewPageByTaskId(
       projectUserTask.projectView.project.id,
       projectUserTask.taskId,
       designCompanyIndex.value,
+      reviewUser,
+      -1,
       pageNo.value,
       pageSize.value
 
-    );
-    console.log(ret);
-    if (ret && ret.code == 200) {
-      projectReviewUserViewPageData.value = ret.data;
+      );
+      console.log(ret);
+      if (ret && ret.code == 200) {
+        projectReviewUserViewPageData.value = ret.data;
+      }
+    } else if (searchSelect.value == "1") {
+      const ret = await serverGetProjectReviewUserViewPageByTaskId(
+      projectUserTask.projectView.project.id,
+      projectUserTask.taskId,
+      designCompanyIndex.value,
+        reviewUser,
+      Number(resultSelect.value),
+      pageNo.value,
+      pageSize.value
+      );
+      console.log(ret);
+      if (ret && ret.code == 200) {
+        projectReviewUserViewPageData.value = ret.data;
+      }
     }
+    
   }
 };
 
@@ -230,7 +254,6 @@ const onPageSizeChange = async (value: number) => {
 
 const onSearchClick = async () => {
   let search = searchText.value.trim();
-
   if (search) {
     pageNo.value = 1;
   }
@@ -298,8 +321,19 @@ const downProjectReviewUserFileFromServer = async (
               placeholder="Select"
               style="width: 115px"
             >
-              <el-option label="审核人" value="0" />
-              <el-option label="审核结果" value="1" />
+                <el-option label="审核人" value="0" />
+                <el-option label="审核状态" value="1" />
+            </el-select>
+          </template>
+          <template #prefix v-if="searchSelect == '1'">
+            <el-select
+              v-model="resultSelect"
+              placeholder="Select"
+              style="width: 100px"
+            >
+              <el-option label="尚未审核" value="0" />
+              <el-option label="审核通过" value="1" />
+              <el-option label="审核未通过" value="2" />
             </el-select>
           </template>
           <template #append>

@@ -67,7 +67,9 @@ export async function serverGetProjectReviewUserViewListByProjectIdAndTaskId(
 export async function serverGetProjectReviewUserViewPageByTaskId(
   projectId: string,
   taskId: string,
-  designCompanyIndex:number,
+  designCompanyIndex: number,
+  reviewUser: string,
+  reviewResult: number,
   pageNo: number,
   pageSize: number
 ): Promise<IServerResponseData<IServerPage<IServerProjectReviewUserView>>> {
@@ -83,6 +85,8 @@ export async function serverGetProjectReviewUserViewPageByTaskId(
           projectId: projectId,
           taskId: taskId,
           designCompanyIndex: designCompanyIndex,
+          reviewUser: reviewUser,
+          reviewResult: reviewResult,
           pageNo: pageNo,
           pageSize: pageSize,
         },

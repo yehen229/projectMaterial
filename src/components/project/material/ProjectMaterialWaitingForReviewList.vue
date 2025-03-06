@@ -129,48 +129,70 @@ const getProjectFromServer = async (projectId: string) => {
 
 const getProjectMaterialViewFromSever = async () => {
   let search = searchText.value.trim();
-
+  let name = "", location = "", itemMark = "", technology = "", installation = "", brandPublic = "", brandPrivate = "";
   if (search) {
-    console.log(searchSelect.value);
-
-    if (searchSelect.value == "0") {
-      //单位类型
-      //   console.log(search);
-      const ret = await serverGetCompanyPageByCompanyName(
-        projectId,
-        searchText.value,
-        pageNo.value,
-        pageSize.value
-      );
-      if (ret && ret.code == 200) {
-        projectMaterialViewPageData.value = ret.data;
-      }
-    } else if (searchSelect.value == "1") {
-      //单位名称
-      const ret = await serverGetCompanyPageByCompanyType(
-        projectId,
-        searchText.value,
-        pageNo.value,
-        pageSize.value
-      );
+    switch (searchSelect.value) {
+      case "0":
+        name = search;
+        break;
+      case "1":
+        location = search;
+        break;
+      case "2":
+        itemMark = search;
+        break;
+      case "3":
+        technology = search;
+        break;
+      case "4":
+        installation = search;
+        break;
+      case "5":
+        brandPublic = search;
+        break;
+      case "6":
+        brandPrivate = search;
+        break;
+      default:
+        break;
+    }
+    const ret = await serverGetProjectMaterialPageViewByTaskIdAndProjectId(
+      projectId,
+      taskId,
+      designCompanyIndex,
+      name,
+      location,
+      itemMark,
+      technology,
+      installation,
+      brandPublic,
+      brandPrivate,
+      pageNo.value,
+      pageSize.value
+    );
       if (ret && ret.code == 200) {
         projectMaterialViewPageData.value = ret.data;
       }
     }
-  } else {
+   else {
     //console.log(projectId);
     const ret = await serverGetProjectMaterialPageViewByTaskIdAndProjectId(
       projectId,
       taskId,
       designCompanyIndex,
+      name,
+      location,
+      itemMark,
+      technology,
+      installation,
+      brandPublic,
+      brandPrivate,
       pageNo.value,
       pageSize.value
     );
-    //   console.log(ret);
     if (ret && ret.code == 200) {
       projectMaterialViewPageData.value = ret.data;
     }
-    // console.log(projectMaterialViewPageData.value);
   }
 };
 
@@ -213,18 +235,32 @@ const onShowProjectMaterialDialogOk = async (
   dialogShowDetailsVisible.value = false;
 };
 
-const onPagePrevClick = (value: number) => {};
-const onPageNextClick = (value: number) => {};
+const onPagePrevClick = async (value: number) => {
+  if (value == 1) {
+    pageNo.value = 1;
+  } else {
+    pageNo.value = value - 1;
+  }
+  await getProjectMaterialViewFromSever();
+};
+const onPageNextClick = async (value: number) => {
+  if (value == totalCount.value / pageSize.value) {
+    pageNo.value = value;
+  } else {
+    pageNo.value = value + 1;
+  }
+  await getProjectMaterialViewFromSever();
+};
 const onPageCurrentChange = async (value: number) => {
   pageNo.value = value;
   await getProjectMaterialViewFromSever();
 };
 
-const onPageSizeChange = async (value: number) => {
-  pageSize.value = value;
-  setUserPageSize(value);
-  await getProjectMaterialViewFromSever();
-};
+// const onPageSizeChange = async (value: number) => {
+//   pageSize.value = value;
+//   setUserPageSize(value);
+//   await getProjectMaterialViewFromSever();
+// };
 
 const onSearchClick = async () => {
   let search = searchText.value.trim();
@@ -328,8 +364,9 @@ const onShowProjectMaterialDiffDialogCancel = () => {
                 <el-option label="编号" value="2" />
                 <el-option label="技术要求" value="3" />
                 <el-option label="施工要求" value="4" />
-                <el-option label="品牌" value="5" />
-                <el-option label="审核状态" value="6" />
+                <el-option label="品牌（公有）" value="5" />
+                <el-option label="品牌（私有）" value="6" />
+                <!-- <el-option label="审核状态" value="6" /> -->
               </el-select>
             </template>
             <template #append>
@@ -385,7 +422,7 @@ const onShowProjectMaterialDiffDialogCancel = () => {
         <el-col :span="6">技术要求 </el-col>
         <el-col :span="4"> 施工要求</el-col>
         <el-col :span="2"> 品牌</el-col>
-        <el-col :span="2"> 审核状态 </el-col>
+        <!-- <el-col :span="2"> 审核状态 </el-col> -->
         <el-col :span="2"> 操作 </el-col>
       </el-row>
 
@@ -576,21 +613,19 @@ const onShowProjectMaterialDiffDialogCancel = () => {
       </el-row>
 
       <el-pagination
-        :hide-on-single-page="true"
+        :hide-on-single-page="false"
         class="page-class"
         background
         v-model:current-page="pageNo"
         v-model:page-size="pageSize"
-        :page-sizes="[10, 50, 100, 200, 300, 400]"
-        layout="total, sizes, prev, pager, next"
+        layout="total, prev, pager, next"
         :total="totalCount"
         @prev-click="onPagePrevClick"
         @next-click="onPageNextClick"
         @current-change="onPageCurrentChange"
-        @size-change="onPageSizeChange"
       />
 
-      <el-pagination
+      <!-- <el-pagination
         :hide-on-single-page="true"
         class="page-class"
         background
@@ -603,7 +638,7 @@ const onShowProjectMaterialDiffDialogCancel = () => {
         @next-click="onPageNextClick"
         @current-change="onPageCurrentChange"
         @size-change="onPageSizeChange"
-      />
+      /> -->
     </div>
   </div>
 </template>

@@ -62,6 +62,7 @@ import {
   serverGetProjectMaterialPage,
   serverGetProjectMaterialPageView,
   serverGetProjectMaterialPageViewByProject,
+  serverGetProjectMaterialPageViewForDesignDepartmentManager
 } from "@/server/project/projectmaterial";
 
 import {
@@ -128,48 +129,113 @@ const getProjectFromServer = async (projectId: string) => {
   }
 };
 
+// const getProjectMaterialViewFromSever = async () => {
+//   let search = searchText.value.trim();
+
+//   if (search) {
+//     console.log(searchSelect.value);
+
+//     if (searchSelect.value == "0") {
+//       //单位类型
+//       //   console.log(search);
+//       const ret = await serverGetCompanyPageByCompanyName(
+//         projectId,
+//         searchText.value,
+//         pageNo.value,
+//         pageSize.value
+//       );
+//       if (ret && ret.code == 200) {
+//         projectMaterialViewPageData.value = ret.data;
+//       }
+//     } else if (searchSelect.value == "1") {
+//       //单位名称
+//       const ret = await serverGetCompanyPageByCompanyType(
+//         projectId,
+//         searchText.value,
+//         pageNo.value,
+//         pageSize.value
+//       );
+//       if (ret && ret.code == 200) {
+//         projectMaterialViewPageData.value = ret.data;
+//       }
+//     }
+//   } else {
+//     //console.log(projectId);
+//     const ret = await serverGetProjectMaterialPageViewByProject(
+//       projectId,
+//       pageNo.value,
+//       pageSize.value
+//     );
+//     //   console.log(ret);
+//     if (ret && ret.code == 200) {
+//       projectMaterialViewPageData.value = ret.data;
+//     }
+//     // console.log(projectMaterialViewPageData.value);
+//   }
+// };
+
 const getProjectMaterialViewFromSever = async () => {
   let search = searchText.value.trim();
-
+  let name = "", location = "", itemMark = "", technology = "", installation = "", brand = "", brandPrivate = "";
   if (search) {
     console.log(searchSelect.value);
-
-    if (searchSelect.value == "0") {
-      //单位类型
-      //   console.log(search);
-      const ret = await serverGetCompanyPageByCompanyName(
-        projectId,
-        searchText.value,
-        pageNo.value,
-        pageSize.value
-      );
-      if (ret && ret.code == 200) {
-        projectMaterialViewPageData.value = ret.data;
-      }
-    } else if (searchSelect.value == "1") {
-      //单位名称
-      const ret = await serverGetCompanyPageByCompanyType(
-        projectId,
-        searchText.value,
-        pageNo.value,
-        pageSize.value
-      );
-      if (ret && ret.code == 200) {
-        projectMaterialViewPageData.value = ret.data;
-      }
+    switch (searchSelect.value) {
+      case "0":
+        name = search;
+        break;
+      case "1":
+        location = search;
+        break;
+      case "2":
+        itemMark = search;
+        break;
+      case "3":
+        technology = search;
+        break;
+      case "4":
+        installation = search;
+        break;
+      case "5":
+        brand = search;
+        break;
+      case "6":
+        brandPrivate = search;
+        break;
+      default:
+        break;
     }
+    const ret = await serverGetProjectMaterialPageViewByProject(
+        projectId,
+        name,
+        location,
+        itemMark,
+        technology,
+        installation,
+        brand,
+        brandPrivate,
+        pageNo.value,
+        pageSize.value
+    );
+    if (ret && ret.code == 200) {
+        projectMaterialViewPageData.value = ret.data;
+      }
   } else {
-    //console.log(projectId);
     const ret = await serverGetProjectMaterialPageViewByProject(
       projectId,
+      name,
+      location,
+      itemMark,
+      technology,
+      installation,
+      brand,
+      brandPrivate,
       pageNo.value,
       pageSize.value
     );
-    //   console.log(ret);
+    console.log(ret);
     if (ret && ret.code == 200) {
       projectMaterialViewPageData.value = ret.data;
     }
-    // console.log(projectMaterialViewPageData.value);
   }
 };
 
@@ -309,8 +375,9 @@ const textElipsisValue = ref(false);
                 <el-option label="编号" value="2" />
                 <el-option label="技术要求" value="3" />
                 <el-option label="施工要求" value="4" />
-                <el-option label="品牌" value="5" />
-                <el-option label="审核状态" value="6" />
+                <el-option label="品牌（共有）" value="5" />
+                <el-option label="品牌（私有）" value="6" />
+                <!-- <el-option label="审核状态" value="6" /> -->
               </el-select>
             </template>
             <template #append>
@@ -436,10 +503,10 @@ const textElipsisValue = ref(false);
             <span
               v-for="(
                 brandPrivateViewItem, brandPrivateIndex
-              ) in projectBrandList"
+              ) in projectMaterialViewItem.projectMaterialBrandPrivateViewList"
               :key="brandPrivateIndex"
             >
-              <el-tag type="info" style="margin-right: 10px">{{
+              <el-tag type="info">{{
                 brandPrivateViewItem.projectBrandView.brandView.brand.name
               }}</el-tag>
             </span>

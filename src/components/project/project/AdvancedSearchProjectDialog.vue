@@ -50,6 +50,7 @@ import {
   IServerProjectMaterial,
   IServerProjectMaterialView,
   IServerProjectMaterialForm,
+  IServerSearchProject
 } from "@/server/types/project/project";
 
 import {
@@ -164,7 +165,7 @@ const rules = reactive<FormRules>({
 
 //event
 const emit = defineEmits<{
-  (e: "onDilalogOk", project: IServerProject): void;
+  (e: "onDilalogOk", project: IServerSearchProject): void;
   (e: "onDilalogCancel"): void;
 }>();
 
@@ -217,7 +218,7 @@ const onOk = () => {
       try {
         console.log(projectForm.approvalDate);
 
-        const project: IServerProject = {
+        const project: IServerSearchProject = {
           id: "", // 在后端生成
           userId: userId,
           name: projectForm.name,
@@ -265,7 +266,7 @@ const resetForm = () => {
 <template>
   <div>
     <el-dialog
-      title="新增项目"
+      title="高级搜索"
       v-model="dialogFormVisible"
       :before-close="handleClose"
       width="1200px"

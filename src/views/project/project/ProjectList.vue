@@ -8,6 +8,7 @@ import {
   IServerProjectUser,
   IServerProjectUserView,
   IServerProjectForm,
+  IServerSearchProject
 } from "@/server/types/project/project";
 import {
   serverProjectAdd,
@@ -16,6 +17,9 @@ import {
   serverGetProjectViewById,
   serverGetProjectPageView,
   serverGetProjectPageViewByKeyword,
+  serverGetProjectPageViewByProjectName,
+  serverGetProjectPageViewByProjectLocation,
+  serverGetProjectPageViewByParams
 } from "@/server/project/project";
 
 //服务器返回到前端的类型
@@ -131,27 +135,75 @@ const onProjectMaterialButtonClick = (
 };
 
 // 点击搜索按钮
+// const onSearchClick = async () => {
+//   let search = searchText.value.trim();
+
+//   if (search) {
+//     pageNo.value = 1;
+//   }
+
+//   try {
+//     // 调用 API 搜索包含特定关键字的项目
+//     const ret = await serverGetProjectPageViewByKeyword(
+//       search,
+//       pageNo.value,
+//       pageSize.value
+//     );
+
+//     if (ret && ret.code == 200) {
+//       projectViewPage.value = ret.data;
+//     }
+//   } catch (error) {
+//     ElMessage.error("搜索失败");
+//     console.error("获取项目列表失败", error);
+//   }
+// };
+
+// 点击搜索按钮
 const onSearchClick = async () => {
   let search = searchText.value.trim();
-
+  let projectName = "";
+  let projectLocation = "";
   if (search) {
     pageNo.value = 1;
   }
+  if (searchText.value == "") {
+    await fetchTableData();
+  } else {
+      if (searchSelect.value == "1") {
+      projectLocation = search;
+      try {
+        const ret = await serverGetProjectPageViewByProjectLocation(
+          projectLocation,
+          pageNo.value,
+          pageSize.value
+        );
 
-  try {
-    // 调用 API 搜索包含特定关键字的项目
-    const ret = await serverGetProjectPageViewByKeyword(
-      search,
-      pageNo.value,
-      pageSize.value
-    );
+        if (ret && ret.code == 200) {
+          projectViewPage.value = ret.data;
+        }
+      } catch (error) {
+        ElMessage.error("搜索失败");
+        console.error("获取项目列表失败", error);
+      }
+      
+    } else if(searchSelect.value == "0") { 
+      projectName = search;
+      try {
+        const ret = await serverGetProjectPageViewByProjectName(
+          projectName,
+          pageNo.value,
+          pageSize.value
+        );
 
-    if (ret && ret.code == 200) {
-      projectViewPage.value = ret.data;
+        if (ret && ret.code == 200) {
+          projectViewPage.value = ret.data;
+        }
+      } catch (error) {
+        ElMessage.error("搜索失败");
+        console.error("获取项目列表失败", error);
+      }
     }
-  } catch (error) {
-    ElMessage.error("搜索失败");
-    console.error("获取项目列表失败", error);
   }
 };
 
@@ -183,21 +235,22 @@ onMounted(async () => {
  * 向前翻页
  * @param value
  */
-const onPagePrevClick = (value: number) => {};
+const onPagePrevClick = (value: number) => {
+    pageNo.value = pageNo.value - 1;
+    onSearchClick();
+};
 
 /**
  * 向后翻页
  * @param value
  */
-const onPageNextClick = (value: number) => {};
-const onPageCurrentChange = async (value: number) => {
-  pageNo.value = value;
-  await fetchTableData();
+const onPageNextClick = (value: number) => {
+    pageNo.value = pageNo.value + 1;
+    onSearchClick();
 };
 
-const onPageSizeChange = async (value: number) => {
-  pageSize.value = value;
-  setUserPageSize(value);
+const onPageCurrentChange = async (value: number) => {
+  pageNo.value = value;
   await fetchTableData();
 };
 
@@ -260,7 +313,31 @@ const onAdvancedSearchDialogCancel = () => {
   dialogFormAdvancedSearchVisible.value = false;
 };
 
-const onAdvancedSearchDialogOk = async (project: IServerProject) => {
+const onAdvancedSearchDialogOk = async (project: IServerSearchProject) => {
+  try {
+    // 调用 API 搜索包含特定关键字的项目
+    const ret = await serverGetProjectPageViewByParams(
+      project.name,
+      project.location,
+      project.totalTaxIncluded,
+      project.totalTaxNotIncluded,
+      project.buildingAreaAboveGround,
+      project.buildingAreaUnderGround,
+      project.companyConstructionId,
+      project.companyDesignId,
+      project.note,
+      project.createDatetime,
+      project.endDatetime,
+      pageNo.value,
+      pageSize.value
+    );
+
+    if (ret && ret.code == 200) {
+      projectViewPage.value = ret.data;
+    }
+  } catch (error) {
+    ElMessage.error("搜索失败");
+  }
   dialogFormAdvancedSearchVisible.value = false;
 };
 
@@ -301,11 +378,11 @@ const goBack = () => {
   ></UpdateProjectDialog>
 
   <!--高级搜索对话框-->
-  <AdvancedSearchProjectDialog
+  <!-- <AdvancedSearchProjectDialog
     :dialogVisible="dialogFormAdvancedSearchVisible"
     @onDilalogCancel="onAdvancedSearchDialogCancel"
     @onDilalogOk="onAdvancedSearchDialogOk"
-  ></AdvancedSearchProjectDialog>
+  ></AdvancedSearchProjectDialog> -->
 
   <div class="tab-container">
     <div class="top-toolbar">
@@ -340,11 +417,11 @@ const goBack = () => {
         </el-input>
       </div>
 
-      <div style="margin-left: 10px">
+      <!-- <div style="margin-left: 10px">
         <el-button :icon="Search" @click="onAdvancedSearchClick"
           >高级搜索...</el-button
         >
-      </div>
+      </div> -->
     </div>
 
     <!--显示内容-->
@@ -469,18 +546,16 @@ const goBack = () => {
     </div>
 
     <el-pagination
-      :hide-on-single-page="true"
+      :hide-on-single-page="false"
       class="page-class"
       background
       v-model:current-page="pageNo"
       v-model:page-size="pageSize"
-      :page-sizes="[10, 50, 100, 200, 300, 400]"
-      layout="total, sizes, prev, pager, next"
+      layout="total, prev, pager, next"
       :total="totalCount"
       @prev-click="onPagePrevClick"
       @next-click="onPageNextClick"
       @current-change="onPageCurrentChange"
-      @size-change="onPageSizeChange"
     />
   </div>
 </template>

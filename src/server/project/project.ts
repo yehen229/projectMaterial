@@ -171,6 +171,120 @@ export async function serverGetProjectPageViewByKeyword(
   }
 }
 
+
+/**
+ * 获取项目信息（项目名查询）
+ * @param projectName 项目名
+ * @param pageNo 页码
+ * @param pageSize 页面大小
+ * @returns 项目列表
+ */
+export async function serverGetProjectPageViewByProjectName(
+  projectName: string,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerProjectView>>
+    >(BASEURL.project + "page-view-by-project-name", {
+      params: {
+        projectName: projectName,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+/**
+ * 获取项目信息（项目位置查询）
+ * @param projectLocation 项目位置
+ * @param pageNo 页码
+ * @param pageSize 页面大小
+ * @returns 项目列表
+ */
+export async function serverGetProjectPageViewByProjectLocation(
+  projectLocation: string,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerProjectView>>
+    >(BASEURL.project + "page-view-by-project-location", {
+      params: {
+        projectLocation: projectLocation,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+
+/**
+ * 高级搜索（全查询）
+ * 
+ * @param pageNo 页码
+ * @param pageSize 页面大小
+ * @returns 项目列表
+ */
+export async function serverGetProjectPageViewByParams(
+  name: string,
+  location: string,
+  totalTaxIncluded: number,
+  totalTaxNotIncluded: number,
+  buildingAreaAboveGround: number,
+  buildingAreaUnderGround: number,
+  companyConstructionId: string,
+  companyDesignId: string,
+  note: string,
+  createDatetime: Date,
+  endDatetime: Date,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerProjectView>>
+    >(BASEURL.project + "page-view-by-params", {
+      params: {
+        name: name,
+        location: location,
+        totalTaxIncluded: totalTaxIncluded,
+        totalTaxNotIncluded: totalTaxNotIncluded,
+        buildingAreaAboveGround: buildingAreaAboveGround,
+        buildingAreaUnderGround: buildingAreaUnderGround,
+        companyConstructionId: companyConstructionId,
+        companyDesignId: companyDesignId,
+        note: note,
+        createDatetime: createDatetime,
+        endDatetime: endDatetime,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+
+
 /**
  * 得到总包单位参与的没有结项的项目页面
  * @param generalContractorCompanyId
