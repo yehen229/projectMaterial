@@ -181,12 +181,25 @@ public class ProjectReviewUserRepositoryImpl implements IProjectReviewUserReposi
      */
     @Override
     public int getCountByProjectReviewIdAndUserAndResult(String projectReviewId, String reviewUser, int reviewResult) {
-        Integer i = jdbcTemplate.queryForObject("""
+        Integer i = 0;
+        if(reviewUser != "") {
+            reviewUser = "%" + reviewUser + "%";
+            i = jdbcTemplate.queryForObject("""
                                                         SELECT count(*) 
                                                         FROM t_project_review_user
-                                                        WHERE t_project_review_id=? AND deleted_at IS NULL
+                                                        INNER JOIN t_user ON t_project_review_user.t_user_id=t_user.id
+                                                        WHERE t_project_review_user.t_project_review_id=? AND t_project_review_user.deleted_at IS NULL AND t_user.real_name LIKE ?
                                                         """,
-                                                Integer.class, projectReviewId);
+                    Integer.class, projectReviewId, reviewUser);
+        } else if(reviewResult != -1) {
+            i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*) 
+                                                        FROM t_project_review_user
+                                                        WHERE t_project_review_id=? AND deleted_at IS NULL AND review_result=?
+                                                        """,
+                    Integer.class, projectReviewId, reviewResult);
+        }
+
         return i == null ? 0 : i;
     }
 
@@ -469,13 +482,33 @@ public class ProjectReviewUserRepositoryImpl implements IProjectReviewUserReposi
                                                                   int reviewResult,
                                                                   int pageNo,
                                                                   int pageSize) {
-        return jdbcTemplate.query("""
+        if(reviewUser != "") {
+            reviewUser = "%" + reviewUser + "%";
+            return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_project_review_user
+                                          INNER JOIN t_user ON t_project_review_user.t_user_id=t_user.id
+                                          WHERE t_project_review_user.t_project_review_id=? AND t_project_review_user.deleted_at IS NULL AND t_user.real_name LIKE ?
+                                          LIMIT ?,?
+                                          """,
+                    new ProjectReviewUserMapper(), projectReviewId, reviewUser, pageNo * pageSize, pageSize);
+        } else if(reviewResult != -1) {
+            return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_project_review_user
+                                          WHERE t_project_review_id=? AND deleted_at IS NULL AND review_result=?
+                                          LIMIT ?,?
+                                          """,
+                    new ProjectReviewUserMapper(), projectReviewId, reviewResult, pageNo * pageSize, pageSize);
+        } else {
+            return jdbcTemplate.query("""
                                           SELECT * 
                                           FROM t_project_review_user
                                           WHERE t_project_review_id=? AND deleted_at IS NULL
                                           LIMIT ?,?
                                           """,
-                                  new ProjectReviewUserMapper(), projectReviewId, pageNo * pageSize, pageSize);
+                    new ProjectReviewUserMapper(), projectReviewId, pageNo * pageSize, pageSize);
+        }
     }
 
     /**
