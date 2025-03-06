@@ -5,6 +5,7 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.log.Log;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.log.LogView;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.log.ProjectLogView;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.project.Project;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Company;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.account.IUserService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.log.ILogService;
 
@@ -205,9 +206,21 @@ public class LogServiceImpl implements ILogService {
             projectLogView.setUser(userService.getById(log.getT_user_id()));
 
 //			2.通过t_project_id得到项目信息
-            projectLogView.setProject(projectService.getById(log.getT_project_id()));
-//3.获取单位信息
-            projectLogView.setCompany(companyUserService.getCompanyByUserId(log.getT_user_id()));
+            if (!log.getT_project_id().equals("123"))
+                projectLogView.setProject(projectService.getById(log.getT_project_id()));
+            else {
+                Project project = new Project();
+//                project.setName("无");
+                projectLogView.setProject(project);
+            }
+//           3.获取单位信息
+            if (!log.getT_project_id().equals("123"))
+                projectLogView.setCompany(companyUserService.getCompanyByUserId(log.getT_user_id()));
+            else {
+                Company company = new Company();
+//                company.setName("无");
+                projectLogView.setCompany(company);
+            }
 
             if (projectLogView != null) list.add(projectLogView);
         }
