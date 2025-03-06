@@ -2604,6 +2604,8 @@ public class ProjectFlow {
             /*
             如果购买的物品有多个，则需要分裂任务，每个任务处理一个物品
             */
+            String buyMaterialSelectId = projectBusinessService.addFormOfGeneralContractorBuyMaterialSelect(buyMaterialForm);
+
             String buyMaterialIdFirst = buyMaterialIdList.getFirst();
             if (buyMaterialIdList.size() > 1) {
                 //在此分裂任务,将订购物品分裂成多个任务

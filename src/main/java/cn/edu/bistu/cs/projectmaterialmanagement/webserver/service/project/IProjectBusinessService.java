@@ -194,7 +194,7 @@ public interface IProjectBusinessService {
     Page<ProjectReviewUserView> getProjectMaterialUserUserReViewPageByTaskId(String projectReviewId,
                                                                              Integer pageNo,
                                                                              Integer pageSize);
-
+    String addFormOfGeneralContractorBuyMaterialSelect(BuyMaterialForm buyMaterialForm);
     List<String> addFormOfGeneralContractorBuyProjectMaterial(BuyMaterial[] buyMaterials);
 
     Page<BuyMaterialView> getBuyMaterialViewPageByProjectId(String projectId,
