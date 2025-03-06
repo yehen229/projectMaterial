@@ -189,7 +189,7 @@ const gorouter = () => {
               </el-menu-item-group>
             </el-sub-menu>
 
-            <el-menu-item index="3" v-if="USER_ROLES == 'Admin'">
+            <el-menu-item index="logsManage" v-if="USER_ROLES == 'Admin'">
               <el-icon>
                 <document />
               </el-icon>

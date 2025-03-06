@@ -1,56 +1,57 @@
 import axios from "axios";
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-import { ElMessage } from "element-plus";
+import type {AxiosInstance, AxiosRequestConfig, AxiosResponse} from "axios";
+import {ElMessage} from "element-plus";
 
-import { useRouter } from "vue-router/dist/vue-router";
+import {useRouter} from "vue-router/dist/vue-router";
 
-import { getUserID, clearCookies } from "@/cookies/user";
+import {getUserID, clearCookies} from "@/cookies/user";
 
 const router = useRouter();
 
 const BASEURL = {
-  //apiUrl: "http://211.68.36.45:8000", //学校机房production
-  //apiUrl: "https://api.pythonkaoshi.com", //阿里云
-  qrcode: "/qrcode/v1/",
-  apiUrl: "http://127.0.0.1:9000", //pro
-  //apiUrl: "https://74.48.81.138:9000", //dev
+    //apiUrl: "http://211.68.36.45:8000", //学校机房production
+    //apiUrl: "https://api.pythonkaoshi.com", //阿里云
+    qrcode: "/qrcode/v1/",
+    apiUrl: "http://127.0.0.1:9000", //pro
+    //apiUrl: "https://74.48.81.138:9000", //dev
 
-  statisticalanalysis: "/statisticalanalysis/v1/", //权限管理
-  user: "/user/v1/", //用户管理
-  role: "/sysrole/v1/", //角色管理
-  userrole: "/sysuserrole/v1/", //权限管理
+    logManage: "/log/v1/",
+    statisticalanalysis: "/statisticalanalysis/v1/", //权限管理
+    user: "/user/v1/", //用户管理
+    role: "/sysrole/v1/", //角色管理
+    userrole: "/sysuserrole/v1/", //权限管理
 
-  project: "/project/v1/",
-  projectuser: "/projectuser/v1/",
-  company: "/company/v1/",
-  companyuser: "/companyuser/v1/",
+    project: "/project/v1/",
+    projectuser: "/projectuser/v1/",
+    company: "/company/v1/",
+    companyuser: "/companyuser/v1/",
 
-  material: "/material/v1/", //物料管理
-  materialbrand: "/materialbrand/v1/", //物料品牌管理
-  materialclassifydivision: "/materialclassifydivision/v1/", //物料分类管理-大类
-  materialclassifygroup: "/materialclassifygroup/v1/", //物料分类管理-中类
-  materialclassifysection: "/materialclassifysection/v1/", //物料分类管理-小类
+    material: "/material/v1/", //物料管理
+    materialbrand: "/materialbrand/v1/", //物料品牌管理
+    materialclassifydivision: "/materialclassifydivision/v1/", //物料分类管理-大类
+    materialclassifygroup: "/materialclassifygroup/v1/", //物料分类管理-中类
+    materialclassifysection: "/materialclassifysection/v1/", //物料分类管理-小类
 
-  materialphoto: "/materialphoto/v1/", //物料图片管理
+    materialphoto: "/materialphoto/v1/", //物料图片管理
 
-  brand: "/brand/v1/", //品牌管理
-  brandpublic: "/brandpublic/v1/", //品牌公共管理
-  projectbrand: "/projectbrand/v1/",
-  projectmaterialbrandprivate: "/projectmaterialbrandprivate/v1/",
-  projectmaterial: "/projectmaterial/v1/",
-  projectreview: "/projectreview/v1/",
-  projectreviewuserfile: "/projectreviewuserfile/v1/",
-  usematerial: "/usematerial/v1/",
-  usematerialnewbrandfile: "/usematerialnewbrandfile/v1/",
-  projectappearancereview: "/projectappearancereview/v1/",
-  projectappearancereviewuserfile: "/projectappearancereviewuserfile/v1/",
-  buymaterial: "/buymaterial/v1/",
-  projectmaterialverificationdocumentfile:
-    "/projectmaterialverificationdocumentfile/v1/",
-  projectmaterialacceptancereviewuserfile:
-    "/projectmaterialacceptancereviewuserfile/v1/",
+    brand: "/brand/v1/", //品牌管理
+    brandpublic: "/brandpublic/v1/", //品牌公共管理
+    projectbrand: "/projectbrand/v1/",
+    projectmaterialbrandprivate: "/projectmaterialbrandprivate/v1/",
+    projectmaterial: "/projectmaterial/v1/",
+    projectreview: "/projectreview/v1/",
+    projectreviewuserfile: "/projectreviewuserfile/v1/",
+    usematerial: "/usematerial/v1/",
+    usematerialnewbrandfile: "/usematerialnewbrandfile/v1/",
+    projectappearancereview: "/projectappearancereview/v1/",
+    projectappearancereviewuserfile: "/projectappearancereviewuserfile/v1/",
+    buymaterial: "/buymaterial/v1/",
+    projectmaterialverificationdocumentfile:
+        "/projectmaterialverificationdocumentfile/v1/",
+    projectmaterialacceptancereviewuserfile:
+        "/projectmaterialacceptancereviewuserfile/v1/",
 
-  projectmaterialflow: "/projectmaterialflow/v1/", //流程管理
+    projectmaterialflow: "/projectmaterialflow/v1/", //流程管理
 };
 
 axios.defaults.timeout = 60000;
@@ -63,55 +64,55 @@ axios.defaults.withCredentials = false;
 // 但是即使token存在，也有可能token是过期的，所以在每次的请求头中携带token
 // 后台根据携带的token判断用户的登录情况，并返回给我们对应的状态码
 axios.interceptors.request.use((config) => {
-  const token = localStorage.getItem("ACCESS_TOKEN");
-  if (token) {
-    config.headers.Authorization = "Bearer " + token;
-  }
-  return config;
+    const token = localStorage.getItem("ACCESS_TOKEN");
+    if (token) {
+        config.headers.Authorization = "Bearer " + token;
+    }
+    return config;
 });
 
 // 添加响应拦截器
 axios.interceptors.response.use(
-  function (response) {
-    // 2xx 范围内的状态码都会触发该函数。
-    // 对响应数据做点什么
+    function (response) {
+        // 2xx 范围内的状态码都会触发该函数。
+        // 对响应数据做点什么
 
-    return response.data;
-  },
-  function (error) {
-    // 超出 2xx 范围的状态码都会触发该函数。
-    // 对响应错误做点什么
+        return response.data;
+    },
+    function (error) {
+        // 超出 2xx 范围的状态码都会触发该函数。
+        // 对响应错误做点什么
 
-    if (error.response.status === 401) {
-      // 401 说明 token 验证失败
-      // 可以直接跳转到登录页面，重新登录获取 token
-      clearCookies();
-      location.href = "/login";
-    } else if (error.response.status === 500) {
-      // 服务器错误
-      // do something
-      ElMessage({
-        showClose: true,
-        message: `${error.response.data.message}`,
-        type: "error",
-      });
+        if (error.response.status === 401) {
+            // 401 说明 token 验证失败
+            // 可以直接跳转到登录页面，重新登录获取 token
+            clearCookies();
+            location.href = "/login";
+        } else if (error.response.status === 500) {
+            // 服务器错误
+            // do something
+            ElMessage({
+                showClose: true,
+                message: `${error.response.data.message}`,
+                type: "error",
+            });
 
-      return Promise.reject(error.response.data);
-    } else {
-      ElMessage({
-        showClose: true,
-        message: `${error.response.data.message}`,
-        type: "error",
-      });
+            return Promise.reject(error.response.data);
+        } else {
+            ElMessage({
+                showClose: true,
+                message: `${error.response.data.message}`,
+                type: "error",
+            });
+        }
+        // 返回 response 里的错误信息
+        return Promise.reject(error.response.data);
     }
-    // 返回 response 里的错误信息
-    return Promise.reject(error.response.data);
-  }
 );
 
 axios.defaults.baseURL = BASEURL.apiUrl;
 
-export { BASEURL, axios };
+export {BASEURL, axios};
 
 /*
 class Request {

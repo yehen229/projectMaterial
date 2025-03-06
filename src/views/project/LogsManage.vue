@@ -17,6 +17,8 @@ import {
   byprojectname_getList, getAllList_agree, getAllList_disagree, getchart_projectname_totalReviewResulDisagree,
   serverGetProjectListPageView
 } from "@/server/project/statisticalanalysis";
+import {byprojectname_Search, serverGetlogListPageView} from "@/server/project/logManage";
+import {formatDate} from "@/utils/utils";
 
 // 二维码生成器 qr-code
 const qrCodeValue = ref("123")
@@ -34,7 +36,7 @@ const getBar_Chart_data=ref()
 const transformDataForChart= (data)=>{
   return data.map(item => ([
     item.totalReviewResulDisagree,
-     item.projectName
+    item.projectName
   ]));
 }
 const chartOptions = ref({
@@ -74,7 +76,7 @@ const getdisagreecount = async () => {
 const fetchTableData = async () => {
   try {
     // 调用 API 获取项目列表
-    const ret = await serverGetProjectListPageView(pageNo.value, pageSize.value);
+    const ret = await serverGetlogListPageView(pageNo.value, pageSize.value);
 
     if (ret && ret.code == 200) {
       projectViewPage.value = ret.data;
@@ -85,7 +87,7 @@ const fetchTableData = async () => {
   }
 };
 
-const projectViewPage = ref<IServerPage<IServerProjectView>>();
+const projectViewPage = ref();
 
 const tableData = computed(   () => {
   return projectViewPage.value?.result;
@@ -135,7 +137,7 @@ const inputSearch = async () => {
     let projectname = inputProjectName.value.trim();
     let materialname = inputMaterialName.value.trim();
     // 调用 API 获取项目列表
-    const ret = await byprojectname_getList(inputProjectName.value,pageNo.value, pageSize.value);
+    const ret = await byprojectname_Search(inputProjectName.value,pageNo.value, pageSize.value);
 
     if (ret && ret.code == 200) {
       projectViewPage.value = ret.data;
@@ -155,27 +157,8 @@ const inputReset = async () => {
   pageSize.value = 10;
 
   ifclickserarch.value = 0
-  await fetchTableData();
+  await inputSearch();
 }
-
-const getporit = (successfulresult, totalresult) => {
-  if (totalresult === 0) {
-    return "0%";
-  }
-  let porit = successfulresult / totalresult * 100;
-  return Math.floor(porit) + "%";
-};
-const onProjectDetailsButtonClick = (projectItem:string
-) => {
-  const projectlist = {
-    project:{
-      id:"",
-    }
-  }
-  projectlist.project.id=projectItem
-  console.log(projectItem)
-  router.push({ path: `/project-details/${projectlist.project.id}` });
-};
 
 const chartRef = ref(null);
 const getchart=()=>{
@@ -275,25 +258,12 @@ const getchart_bar= async ()=>{
     <!--    <button @click="handleDownload">下载二维码</button>-->
     <el-card>
 
-      <el-row :gutter="20">
-        <el-col :span="12">
-          <div ref="chartRef" style="width: 100%; height: 400px;"></div>
-        </el-col>
-        <el-col :span="12">
-          <div ref="chartRef_bar" style="width: 100%; height: 400px;"></div>
-        </el-col>
-
-      </el-row>
-
-
-
-
       <div style="margin-left: 0.1%;margin-bottom: 1%;margin-top: 1%">
-        <span>项目名称：</span>
+        <span>操作者：</span>
         <el-input
             v-model="inputProjectName"
             style="width: 240px"
-            placeholder="请输入项目名称"
+            placeholder="请输入操作者"
             :prefix-icon="Search"
         />
 
@@ -308,77 +278,103 @@ const getchart_bar= async ()=>{
             v-loading="loading"
             stripe
         >
-          <!--        <el-table-column type="selection" :selectable="selectlist()" width="55" />-->
-
-          <el-table-column label="项目名称">
+          <el-table-column label="操作者">
             <template #default="scope">
               <div
                   style="display: flex; align-items: center"
                   class="project-title"
               >
-                {{ scope.row.projectName }}
+                {{ scope.row.user.realName }}
               </div>
             </template>
 
           </el-table-column>
 
-          <el-table-column label="项目状态">
-            <template #default="scope">
-              <div
-                  style="display: flex; align-items: center"
-                  class="project-title"
-                  v-if="scope.row.checkProjectWhetherEnd==true"
-              >
-                <el-tag type="success">{{"已完成"}}</el-tag>
-              </div>
-              <div
-                  style="display: flex; align-items: center"
-                  class="project-title"
-                  v-if="scope.row.checkProjectWhetherEnd==false"
-              >
-                <el-tag type="info"> {{"进行中"}}</el-tag>
-
-              </div>
-            </template>
-          </el-table-column>
-
-          <el-table-column label="通过率">
+          <el-table-column label="单位">
             <template #default="scope">
               <div
                   style="display: flex; align-items: center"
                   class="project-title"
               >
-                {{ getporit(scope.row.totalReviewResultAgree,scope.row.totalReviewResult) }}
+                {{ scope.row.company.name }}
               </div>
             </template>
           </el-table-column>
 
-
-          <el-table-column label="审核不通过次数">
+          <el-table-column label="单位">
             <template #default="scope">
               <div
                   style="display: flex; align-items: center"
                   class="project-title"
               >
-                {{ scope.row.totalReviewResulDisagree+"项" }}
+                {{ scope.row.company.name }}
               </div>
             </template>
           </el-table-column>
-
-          <el-table-column label="项目详细信息">
+          <el-table-column label="项目">
             <template #default="scope">
               <div
                   style="display: flex; align-items: center"
                   class="project-title"
               >
-                <el-button
-                    size="small"
-                    @click="onProjectDetailsButtonClick(scope.row.projectId)"
-                > 项目详细信息
-                </el-button>
+                {{ scope.row.project.name }}
               </div>
             </template>
           </el-table-column>
+          <el-table-column label="操作">
+            <template #default="scope">
+              <div
+                  style="display: flex; align-items: center"
+                  class="project-title"
+              >
+                {{ scope.row.log.step_description }}
+              </div>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="时间">
+            <template #default="scope">
+              <div
+                  style="display: flex; align-items: center"
+                  class="project-title"
+              >
+                {{formatDate(scope.row.log.op_datetime)
+                   }}
+              </div>
+            </template>
+          </el-table-column>
+<!--          <el-table-column label="项目">-->
+<!--            <template #default="scope">-->
+<!--              <div-->
+<!--                  style="display: flex; align-items: center"-->
+<!--                  class="project-title"-->
+<!--              >-->
+<!--                {{ getporit(scope.row.totalReviewResultAgree,scope.row.totalReviewResult) }}-->
+<!--              </div>-->
+<!--            </template>-->
+<!--          </el-table-column>          <el-table-column label="操作">-->
+<!--            <template #default="scope">-->
+<!--              <div-->
+<!--                  style="display: flex; align-items: center"-->
+<!--                  class="project-title"-->
+<!--              >-->
+<!--                {{ getporit(scope.row.totalReviewResultAgree,scope.row.totalReviewResult) }}-->
+<!--              </div>-->
+<!--            </template>-->
+<!--          </el-table-column>-->
+
+
+<!--          <el-table-column label="时间">-->
+<!--            <template #default="scope">-->
+<!--              <div-->
+<!--                  style="display: flex; align-items: center"-->
+<!--                  class="project-title"-->
+<!--              >-->
+<!--                {{ scope.row.totalReviewResulDisagree+"项" }}-->
+<!--              </div>-->
+<!--            </template>-->
+<!--          </el-table-column>-->
+
 
 
 
