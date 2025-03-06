@@ -190,6 +190,10 @@ const getProjectReviewUserViewPageFromServer = async () => {
   }
 };
 
+const clearText = () => {
+  searchText.value = "";
+};
+
 watchEffect(async () => {
   // 在 3.5 之前只运行一次
   // 在 3.5+ 中在 "foo" prop 变化时重新执行
@@ -320,6 +324,7 @@ const downProjectReviewUserFileFromServer = async (
               v-model="searchSelect"
               placeholder="Select"
               style="width: 115px"
+              @change="clearText()"
             >
                 <el-option label="审核人" value="0" />
                 <el-option label="审核状态" value="1" />
@@ -330,6 +335,7 @@ const downProjectReviewUserFileFromServer = async (
               v-model="resultSelect"
               placeholder="Select"
               style="width: 100px"
+              @change="clearText()"
             >
               <el-option label="尚未审核" value="0" />
               <el-option label="审核通过" value="1" />
