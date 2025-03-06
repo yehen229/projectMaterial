@@ -174,7 +174,10 @@ public class ProjectOpHistoryServiceImpl implements IProjectOpHistoryService {
     public Page<ProjectOpHistory> getPageByProjectId(String projectId,
                                                      int pageNo,
                                                      int pageSize) {
+
         return projectOpHistoryRepository.getPageByProjectId(projectId, pageNo, pageSize);
+//        转换视图格式
+
     }
 
 

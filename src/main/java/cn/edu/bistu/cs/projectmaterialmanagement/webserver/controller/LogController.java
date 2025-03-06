@@ -2,6 +2,7 @@ package cn.edu.bistu.cs.projectmaterialmanagement.webserver.controller;
 
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.log.Log;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.log.ProjectLogView;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.log.ILogRepository;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.log.ILogService;
 
@@ -63,8 +64,8 @@ public class LogController {
 
 
     @GetMapping(value = "page")
-    public Page<Log> getPage(@RequestParam(value = "pageNo", required = false) Integer pageNo,
-                             @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+    public Page<ProjectLogView> getPage(@RequestParam(value = "pageNo", required = false) Integer pageNo,
+                                        @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         pageNo = pageNo == null ? 1 : pageNo;
         pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
         return logService.getPage(pageNo, pageSize);

@@ -203,6 +203,7 @@ public class LogRepositoryImpl implements ILogRepository {
         return jdbcTemplate.query("""
                                           SELECT * 
                                           FROM t_log_admin 
+                                          order by op_datetime desc
                                           LIMIT ?,?
                                           """,
                 new LogMapper(), pageNo * pageSize, pageSize);

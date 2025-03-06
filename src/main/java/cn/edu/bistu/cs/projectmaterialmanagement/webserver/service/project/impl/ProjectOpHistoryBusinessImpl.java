@@ -590,10 +590,10 @@ public class ProjectOpHistoryBusinessImpl implements IProjectOpHistoryBusiness {
         ProjectOpHistory projectOpHistory = projectOpHistoryService.getById(id);
         if (projectOpHistory == null) return null;
         ProjectOpHistoryView projectOpHistoryView = new ProjectOpHistoryView();
+
         projectOpHistoryView.setProject(projectService.getById(projectOpHistory.getProjectId()));
         projectOpHistoryView.setProjectOpHistory(projectOpHistory);
         projectOpHistoryView.setUser(userService.getById(projectOpHistory.getUserId()));
-
         projectOpHistoryView.setCompany(companyUserService.getCompanyByUserId(projectOpHistory.getUserId()));
         return projectOpHistoryView;
     }

@@ -3,10 +3,14 @@ package cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.log.impl;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.log.Log;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.log.LogView;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.log.ProjectLogView;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.account.IUserService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.log.ILogService;
 
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.log.ILogRepository;
 
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IProjectService;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.ICompanyUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -17,13 +21,18 @@ import java.util.ArrayList;
 
 @Service
 public class LogServiceImpl implements ILogService {
-
+	private final IProjectService projectService;
+	private final IUserService userService;
+	private final ICompanyUserService companyUserService;
 	private static final Logger log =
 			LoggerFactory.getLogger(LogServiceImpl.class);
 
 	private final ILogRepository logRepository;
 
-	public LogServiceImpl(ILogRepository logRepository){
+	public LogServiceImpl(ILogRepository logRepository, IProjectService projectService, IUserService userService, ICompanyUserService companyUserService) {
+		this.userService = userService;
+		this.companyUserService = companyUserService;
+		this.projectService = projectService;
 		this.logRepository=logRepository;
 	}
 
@@ -118,10 +127,33 @@ public class LogServiceImpl implements ILogService {
 	 * @param pageSize 每页的记录数
 	 */
 	@Override
-	public Page<Log> getPage(int pageNo, int pageSize){
-		return logRepository.getPage(pageNo,pageSize);
-	}
+	public Page<ProjectLogView> getPage(int pageNo, int pageSize){
+		Page<Log> page = logRepository.getPage(pageNo, pageSize);
+		return convertProjectOplogPage2PageView(page, pageNo, pageSize);
+//		return logRepository.getPage(pageNo,pageSize);
 
+	}
+	private Page<ProjectLogView> convertProjectOplogPage2PageView(Page<Log> pagelog,
+																	  int pageNo,
+																	  int pageSize) {
+		if (pagelog == null) return null;
+		int startIndex = Page.getStartOfPage(pageNo, pageSize);
+		List<ProjectLogView> list = new ArrayList<>();
+		for (Log log : pagelog.getResult()) {
+			ProjectLogView projectLogView = new ProjectLogView();
+			projectLogView.setLog(log);
+//			1.通过t_user_id得到用户信息
+			projectLogView.setUser(userService.getById(log.getT_user_id()));
+
+//			2.通过t_project_id得到项目信息
+			projectLogView.setProject(projectService.getById(log.getT_project_id()));
+//3.获取单位信息
+			projectLogView.setCompany(companyUserService.getCompanyByUserId(log.getT_user_id()));
+
+			if (projectLogView != null) list.add(projectLogView);
+		}
+		return new Page<>(startIndex, pagelog.getTotalCount(), pageSize, list);
+	}
 	/**
 	 * 获得指定页面数据
 	 * @param userId
