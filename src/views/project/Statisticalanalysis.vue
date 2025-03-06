@@ -152,7 +152,7 @@ const inputReset = async () => {
   inputMaterialName.value = "";
   inputbatch.value = -1;
   pageNo.value = 1;
-  pageSize.value = 5;
+  pageSize.value = 10;
 
   ifclickserarch.value = 0
   await fetchTableData();

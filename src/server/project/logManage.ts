@@ -27,3 +27,27 @@ export async function serverGetlogListPageView(
         throw err;
     }
 }
+
+
+export async function byprojectname_Search(
+    projectName:string,
+    pageNo: number,
+    pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
+    try {
+        let res = await axios.get<
+            any,
+            IServerResponseData<IServerPage<IServerProjectView>>
+        >(BASEURL.logManage + "searchpage", {
+            params: {
+                projectName:projectName,
+                pageNo: pageNo,
+                pageSize: pageSize,
+            },
+        });
+        return res;
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+}

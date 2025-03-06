@@ -17,7 +17,7 @@ import {
   byprojectname_getList, getAllList_agree, getAllList_disagree, getchart_projectname_totalReviewResulDisagree,
   serverGetProjectListPageView
 } from "@/server/project/statisticalanalysis";
-import {serverGetlogListPageView} from "@/server/project/logManage";
+import {byprojectname_Search, serverGetlogListPageView} from "@/server/project/logManage";
 import {formatDate} from "@/utils/utils";
 
 // 二维码生成器 qr-code
@@ -137,7 +137,7 @@ const inputSearch = async () => {
     let projectname = inputProjectName.value.trim();
     let materialname = inputMaterialName.value.trim();
     // 调用 API 获取项目列表
-    const ret = await byprojectname_getList(inputProjectName.value,pageNo.value, pageSize.value);
+    const ret = await byprojectname_Search(inputProjectName.value,pageNo.value, pageSize.value);
 
     if (ret && ret.code == 200) {
       projectViewPage.value = ret.data;
@@ -154,10 +154,10 @@ const inputReset = async () => {
   inputMaterialName.value = "";
   inputbatch.value = -1;
   pageNo.value = 1;
-  pageSize.value = 5;
+  pageSize.value = 10;
 
   ifclickserarch.value = 0
-  await fetchTableData();
+  await inputSearch();
 }
 
 const chartRef = ref(null);
@@ -258,7 +258,18 @@ const getchart_bar= async ()=>{
     <!--    <button @click="handleDownload">下载二维码</button>-->
     <el-card>
 
+      <div style="margin-left: 0.1%;margin-bottom: 1%;margin-top: 1%">
+        <span>操作者：</span>
+        <el-input
+            v-model="inputProjectName"
+            style="width: 240px"
+            placeholder="请输入操作者"
+            :prefix-icon="Search"
+        />
 
+        <el-button type="primary" :icon="Search" style="margin-left: 1%" @click="inputSearch">搜索</el-button>
+        <el-button type="primary" :icon="Refresh" @click="inputReset">重置</el-button>
+      </div>
       <div class="project-container">
         <el-table
             :data="tableData"
