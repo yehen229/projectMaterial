@@ -26,6 +26,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/Index.vue"),
     children: [
       {
+        path:"logsManage",
+        component: () => import("@/views/project/LogsManage.vue"),
+
+      },
+      {
         path:"statisticalanalysis",
         component: () => import("@/views/project/Statisticalanalysis.vue"),
       },
