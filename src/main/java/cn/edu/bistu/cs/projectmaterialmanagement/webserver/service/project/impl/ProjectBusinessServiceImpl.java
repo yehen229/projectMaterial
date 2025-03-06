@@ -76,6 +76,7 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
 
 
     private final IBuyMaterialService buyMaterialService;
+    private final IBuyMaterialSelectService buyMaterialSelectService;
     private final IProjectMaterialVerificationDocumentService projectMaterialVerificationDocumentService;
     private final IProjectMaterialVerificationDocumentFileService projectMaterialVerificationDocumentFileService;
 
@@ -132,6 +133,7 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
             IProjectAppearanceReviewUserFileService projectAppearanceReviewUserFileService,
             IProjectAppearanceBusinessService projectAppearanceBusinessService,
             IBuyMaterialService buyMaterialService,
+            IBuyMaterialSelectService buyMaterialSelectService,
             IProjectMaterialVerificationDocumentService projectMaterialVerificationDocumentService,
             IProjectMaterialVerificationDocumentFileService projectMaterialVerificationDocumentFileService,
             IProjectMaterialRetestService projectMaterialRetestService,
@@ -184,6 +186,7 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
         this.projectAppearanceReviewUserFileService = projectAppearanceReviewUserFileService;
         this.projectAppearanceBusinessService = projectAppearanceBusinessService;
         this.buyMaterialService = buyMaterialService;
+        this.buyMaterialSelectService = buyMaterialSelectService;
         this.projectMaterialVerificationDocumentService = projectMaterialVerificationDocumentService;
         this.projectMaterialVerificationDocumentFileService = projectMaterialVerificationDocumentFileService;
         this.projectMaterialRetestService = projectMaterialRetestService;
@@ -2448,6 +2451,57 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
                                                                                     Integer pageNo,
                                                                                     Integer pageSize) {
         return projectReviewBusinessService.getPageViewByProjectReviewId(projectReviewId, reviewUser, reviewResult, pageNo, pageSize);
+    }
+    @Override
+    public String addFormOfGeneralContractorBuyMaterialSelect(BuyMaterialForm buyMaterialForm){
+        if (buyMaterialForm == null || buyMaterialForm.getBuyMaterials().length == 0)
+            throw new BusinessException("参数为空");
+        User user = userService.getCurrentLoginUser();
+        if (user == null)
+            throw new BusinessException("用户未登录，添加失败");
+        BuyMaterialSelect buyMaterialSelect = new BuyMaterialSelect();
+        buyMaterialSelect.setUserId(user.getId());
+        buyMaterialSelect.setProjectId(buyMaterialForm.getProjectId());
+        buyMaterialSelect.setCreateDatetime(new Date());
+        String buyMaterialSelectId = buyMaterialSelectService.add(buyMaterialSelect);
+        if (buyMaterialSelectId == null)
+            throw new BusinessException("添加失败");
+        List<String> buyMaterialIds = new ArrayList<>();
+        for (BuyMaterial buyMaterial : buyMaterialForm.getBuyMaterials()) {
+            UseMaterial useMaterial = useMaterialService.getById(buyMaterial.getUseMaterialId());
+            if (useMaterial == null) {
+                throw new BusinessException("不存在该物料使用申请");
+            }
+
+            if ((buyMaterial.getProjectMaterialBrandPrivateId() == null || buyMaterial.getProjectMaterialBrandPrivateId().isEmpty())
+                    && (buyMaterial.getProjectMaterialBrandPublicId() == null || buyMaterial.getProjectMaterialBrandPublicId().isEmpty())) {
+                throw new BusinessException("请选择品牌");
+            }
+
+            if (buyMaterial.getProjectMaterialBrandPrivateId() == null || buyMaterial.getProjectMaterialBrandPrivateId().isEmpty()) {
+                buyMaterial.setProjectMaterialBrandPrivateId(null);
+            } else {
+                buyMaterial.setProjectMaterialBrandPublicId(null);
+            }
+
+            if (!buyMaterial.getUserId().equalsIgnoreCase(user.getId())) {
+                throw new BusinessException("用户信息错误");
+            }
+
+            if (buyMaterial.getMaterialCount().compareTo(BigDecimal.ZERO) <= 0) {
+                throw new BusinessException("数量必须大于0");
+            }
+
+            if (buyMaterial.getMaterialUnit() == null || buyMaterial.getMaterialUnit().isEmpty()) {
+                throw new BusinessException("数量单位为空");
+            }
+
+            buyMaterial.setBuyMaterialSelectId(buyMaterialSelectId); // 关联批次 ID
+
+            String buyMaterialId = buyMaterialService.add(buyMaterial);
+            buyMaterialIds.add(buyMaterialId);
+        }
+        return buyMaterialSelectId;
     }
 
     @Override

@@ -6,20 +6,19 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.log.Log;
 import java.util.List;
 
 /** Log Service Interface 
-*/
+ */
 public interface ILogRepository{
 
 	String add(Log log);
-	int delete(Log log);
-	int update(Log log);
-	int deleteById(String id);
-	int deleteByUserId(String userId);
-
 	int getCount();
 	int getCountByUserId(String userId);
+	int getCountByProjectId(String projectId);
 	Log getById(String id);
 	List<Log> getByUserId(String userId);
+	List<Log> getByProjectId(String projectId);
 	Page<Log> getPage(int pageNo, int pageSize);
+	List<Log> getAllLog();
 	Page<Log> getPageByUserId(String userId,int pageNo, int pageSize);
+	Page<Log> getPageByProjectId(String projectId, int pageNo, int pageSize);
 
 }

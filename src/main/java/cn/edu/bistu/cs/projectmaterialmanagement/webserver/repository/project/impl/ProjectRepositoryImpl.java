@@ -520,6 +520,7 @@ public class ProjectRepositoryImpl implements IProjectRepository {
         long totalCount = getCountByKeyword(keyword);
         if (totalCount < 1) return new Page<>();
         int startIndex = Page.getStartOfPage(pageNo, pageSize);
+
         List<Project> resultData = getPageQueryByKeyword(keyword, pageNo - 1, pageSize);
         return new Page<>(0, totalCount, (int) totalCount, resultData);
     }
