@@ -33,6 +33,7 @@ public interface IUserService extends UserDetailsService {
 
     User getByUserName(String userName);
 
+    User getByRealName(String realName);
 
     boolean isAdmin(String id);
 

@@ -1095,6 +1095,27 @@ public class ProjectUserServiceImpl implements IProjectUserService {
         }
         return null;
     }
+ @Override
+    public Page<ProjectAllUserView> getPageAllUserViewByRealName(String realName,
+                                                                 Integer pageNo,
+                                                                 Integer pageSize) {
+        User user = userService.getByRealName(realName);
+        if (user == null) return null;
+
+        Page<ProjectUser> projectUserPage = projectUserRepository.getPageByUserId(user.getId(), pageNo, pageSize);
+
+        if (projectUserPage != null) {
+            int startIndex = Page.getStartOfPage(pageNo, pageSize);
+            List<ProjectAllUserView> list = new ArrayList<>();
+            for (ProjectUser projectUser : projectUserPage.getResult()) {
+                ProjectAllUserView projectAllUserView = getProjectAllUserViewByProject(
+                        projectService.getById(projectUser.getProjectId()));
+                list.add(projectAllUserView);
+            }
+            return new Page<>(startIndex, projectUserPage.getTotalCount(), pageSize, list);
+        }
+        return null;
+    }
 
     @Override
     public Page<CompanyUserView> convert(Page<CompanyUserView> companyUserViewPage,

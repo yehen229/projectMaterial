@@ -201,6 +201,7 @@ public interface IProjectUserService {
 
     Page<ProjectAllUserView> getPageAllUserViewByUserName(String userName, Integer pageNo, Integer pageSize);
 
+    Page<ProjectAllUserView> getPageAllUserViewByRealName(String realName, Integer pageNo, Integer pageSize);
 
     Page<CompanyUserView> convert(Page<CompanyUserView> companyUserViewPage, Integer pageNo, Integer pageSize);
 
