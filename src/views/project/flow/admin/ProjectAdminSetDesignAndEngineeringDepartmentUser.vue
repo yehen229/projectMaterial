@@ -4,7 +4,7 @@
  * 主要功能：增删改查
  */
 
-import { computed, onMounted, reactive, ref, Ref } from "vue";
+import { computed, onMounted, reactive, ref, Ref, watch, watchEffect } from "vue";
 
 import { useRouter, useRoute, onBeforeRouteUpdate } from "vue-router";
 
@@ -128,6 +128,14 @@ const radioUserType = ref(0);
 const projectUserTask: Ref<IServerProjectUserTask | undefined> = ref();
 
 const projectId = ref("");
+
+watchEffect(async () => {
+  if (dialogFormNewVisible.value == false) {
+    await getProjectAllUsersPageViewFromSever();
+  }
+}
+  
+);
 
 onBeforeRouteUpdate(async (to) => {
   if (typeof to.params.id === "string") {
@@ -382,6 +390,7 @@ const onSubmitProjectUserTask = async () => {
       <!--工程部员工列表，包括项目经理和项目员工-->
       <ProjectUserItem
         :projectAllUserView="projectAllUserPageViewData"
+        :refreashPage="getProjectAllUsersPageViewFromSever"
         :type="2"
         @onNew="onNewEngineeringDepartmentProjectUserButtonClick"
         @onDelete="onDeleteProjectUserButtonClick"
