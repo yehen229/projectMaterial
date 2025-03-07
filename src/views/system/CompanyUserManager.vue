@@ -105,7 +105,7 @@ const loading = ref(false);
 const updateCompanyUserView = ref<IServerCompanyUserView>();
 
 const searchText = ref("");
-const searchSelect = ref("用户名称");
+const searchSelect = ref("0");
 
 const rules = reactive<FormRules>({
   name: [{ required: true, message: "请输入角色名称", trigger: "blur" }],
@@ -138,7 +138,7 @@ const getCompanyUserPageViewFromSever = async () => {
 
   if (search) {
     console.log(searchSelect.value);
-    if (searchSelect.value == "用户名称") {
+    if (searchSelect.value == "0") {
       //用户名称
       const ret = await serverGetCompanyUserPageViewByUserName(
         searchText.value,
@@ -148,7 +148,7 @@ const getCompanyUserPageViewFromSever = async () => {
       if (ret && ret.code == 200) {
         companyUserViewPage.value = ret.data;
       }
-    } else if (searchSelect.value == "项目名称") {
+    } else if (searchSelect.value == "1") {
       //项目名称
       const ret = await serverGetCompanyUserPageViewByProjectName(
         searchText.value,
@@ -158,7 +158,7 @@ const getCompanyUserPageViewFromSever = async () => {
       if (ret && ret.code == 200) {
         companyUserViewPage.value = ret.data;
       }
-    } else if (searchSelect.value == "单位名称") {
+    } else if (searchSelect.value == "2") {
       //单位名称
       const ret = await serverGetCompanyUserPageViewByCompanyName(
         searchText.value,
@@ -376,29 +376,29 @@ const onDownloadExcelButtonClick = async () => {
   loading.value = true;
   let search = searchText.value.trim();
 
-  if (search) {
-    if (searchSelect.value == "用户名称") {
-      //用户名称
-      const ret = await serverDownloadCompanyUserByUserNamer(
-        searchText.value,
-        downloadFilename
-      );
-    } else if (searchSelect.value == "项目名称") {
-      //项目名称
-      const ret = await serverDownloadCompanyUserByProjectName(
-        searchText.value,
-        downloadFilename
-      );
-    } else if (searchSelect.value == "单位名称") {
-      //单位名称
-      const ret = await serverDownloadCompanyUserByCompanyName(
-        searchText.value,
-        downloadFilename
-      );
-    }
-  } else {
+  // if (search) {
+  //   if (searchSelect.value == "0") {
+  //     //用户名称
+  //     const ret = await serverDownloadCompanyUserByUserNamer(
+  //       searchText.value,
+  //       downloadFilename
+  //     );
+  //   } else if (searchSelect.value == "1") {
+  //     //项目名称
+  //     const ret = await serverDownloadCompanyUserByProjectName(
+  //       searchText.value,
+  //       downloadFilename
+  //     );
+  //   } else if (searchSelect.value == "2") {
+  //     //单位名称
+  //     const ret = await serverDownloadCompanyUserByCompanyName(
+  //       searchText.value,
+  //       downloadFilename
+  //     );
+  //   }
+  // } else {
     await serverDownloadAllCompanyUser(downloadFilename);
-  }
+  // }
 
   loading.value = false;
 };
@@ -445,9 +445,9 @@ const goBack = () => {
         <el-button :icon="Plus" type="primary" @click="onNewButtonClick">
           新增用户
         </el-button>
-        <el-button :icon="Upload" @click="onExcelUploadButtonClick">
+        <!-- <el-button :icon="Upload" @click="onExcelUploadButtonClick">
           导入用户（Excel）
-        </el-button>
+        </el-button> -->
         <el-button :icon="Download" @click="onDownloadExcelButtonClick">
           导出用户（Excel）
         </el-button>

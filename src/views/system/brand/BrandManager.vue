@@ -319,12 +319,12 @@ const goBack = () => {
         <el-button :icon="Plus" type="primary" @click="onNewButtonClick">
           新增品牌
         </el-button>
-        <el-button :icon="Upload" @click="onExcelUploadButtonClick">
+        <!-- <el-button :icon="Upload" @click="onExcelUploadButtonClick">
           导入品牌（Excel）
         </el-button>
         <el-button :icon="Download" @click="onDownloadExcelButtonClick">
           导出品牌（Excel）
-        </el-button>
+        </el-button> -->
       </div>
 
       <!--搜索框-->

@@ -308,3 +308,142 @@ export async function serverGetMaterialPageViewByClassifySectionId(
     throw err;
   }
 }
+
+
+export async function serverGetMaterialPageViewByNameAndBindType(
+  name: string,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerMaterialView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerMaterialView>>
+    >(BASEURL.material + "page-view-by-name-and-bind-type", {
+      params: {
+        name: name,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function serverGetMaterialPageViewByLocationAndBindType(
+  location: string,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerMaterialView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerMaterialView>>
+    >(BASEURL.material + "page-view-by-location-and-bind-type", {
+      params: {
+        location: location,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function serverGetMaterialPageViewByTechnologyAndBindType(
+  technology: string,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerMaterialView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerMaterialView>>
+    >(BASEURL.material + "page-view-by-technology-and-bind-type", {
+      params: {
+        technology: technology,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function serverGetMaterialPageViewByItemMarkAndBindType(
+  itemMark: string,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerMaterialView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerMaterialView>>
+    >(BASEURL.material + "page-view-by-item-mark-and-bind-type", {
+      params: {
+        itemMark: itemMark,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function serverGetMaterialPageViewByInstallationAndBindType(
+  installation: string,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerMaterialView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerMaterialView>>
+    >(BASEURL.material + "page-view-by-installation-and-bind-type", {
+      params: {
+        installation: installation,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function serverGetMaterialPageViewByBrandAndBindType(
+  brand: string,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerMaterialView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerMaterialView>>
+    >(BASEURL.material + "page-view-by-brand-and-bind-type", {
+      params: {
+        brand: brand,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}

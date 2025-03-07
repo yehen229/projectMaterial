@@ -45,9 +45,12 @@ import {
   serverGetMaterialById,
   serverGetMaterialPage,
   serverGetMaterialPageView,
-  serverGetMaterialPageViewByName,
-  serverGetMaterialPageViewByLocation,
-  serverGetMaterialPageViewByItemMark,
+  serverGetMaterialPageViewByNameAndBindType,
+  serverGetMaterialPageViewByLocationAndBindType,
+  serverGetMaterialPageViewByItemMarkAndBindType,
+  serverGetMaterialPageViewByTechnologyAndBindType,
+  serverGetMaterialPageViewByInstallationAndBindType,
+  serverGetMaterialPageViewByBrandAndBindType,
   serverGetMaterialPageViewByClassifySectionId,
 } from "@/server/system/material";
 
@@ -90,7 +93,7 @@ const getMaterialFromSever = async () => {
     if (searchSelect.value == "0") {
       //名字
       console.log(search);
-      const ret = await serverGetMaterialPageViewByName(
+      const ret = await serverGetMaterialPageViewByNameAndBindType(
         searchText.value,
         pageNo.value,
         pageSize.value
@@ -100,7 +103,7 @@ const getMaterialFromSever = async () => {
       }
     } else if (searchSelect.value == "1") {
       //位置
-      const ret = await serverGetMaterialPageViewByLocation(
+      const ret = await serverGetMaterialPageViewByLocationAndBindType(
         searchText.value,
         pageNo.value,
         pageSize.value
@@ -110,7 +113,7 @@ const getMaterialFromSever = async () => {
       }
     } else if (searchSelect.value == "2") {
       //编号
-      const ret = await serverGetMaterialPageViewByItemMark(
+      const ret = await serverGetMaterialPageViewByItemMarkAndBindType(
         searchText.value,
         pageNo.value,
         pageSize.value
@@ -120,7 +123,27 @@ const getMaterialFromSever = async () => {
       }
     } else if (searchSelect.value == "3") {
       //类别
-      const ret = await serverGetMaterialPageViewByClassifySectionId(
+      const ret = await serverGetMaterialPageViewByTechnologyAndBindType(
+        searchText.value,
+        pageNo.value,
+        pageSize.value
+      );
+      if (ret && ret.code == 200) {
+        materialViewPageData.value = ret.data;
+      }
+    } else if (searchSelect.value == "4") {
+      //类别
+      const ret = await serverGetMaterialPageViewByInstallationAndBindType(
+        searchText.value,
+        pageNo.value,
+        pageSize.value
+      );
+      if (ret && ret.code == 200) {
+        materialViewPageData.value = ret.data;
+      }
+    } else if (searchSelect.value == "5") {
+      //类别
+      const ret = await serverGetMaterialPageViewByBrandAndBindType(
         searchText.value,
         pageNo.value,
         pageSize.value

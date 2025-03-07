@@ -216,6 +216,22 @@ const getProjectMaterialViewFromSever = async () => {
       projectMaterialViewPageData.value = ret.data;
     }
     console.log(projectMaterialViewPageData.value);
+  } else {
+    const ret = await serverGetProjectMaterialPageViewByProject(
+      props.projectId,
+      name,
+      location,
+      itemMark,
+      technology,
+      installation,
+      brand,
+      brandPrivate,
+      pageNo.value,
+      pageSize.value
+    );
+    if (ret && ret.code == 200) {
+      projectMaterialViewPageData.value = ret.data;
+    }
   }
 };
 
