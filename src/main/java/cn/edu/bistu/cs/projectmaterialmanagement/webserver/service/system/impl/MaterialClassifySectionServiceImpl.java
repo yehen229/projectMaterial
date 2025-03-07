@@ -6,6 +6,7 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.system.IMa
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IMaterialClassifyDivisionService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IMaterialClassifyGroupService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IMaterialClassifySectionService;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -37,10 +38,32 @@ public class MaterialClassifySectionServiceImpl implements IMaterialClassifySect
         return materialClassifySectionViewList;
     }
 
+    private List<MaterialClassifySectionView> getMaterialClassifyGroupChildrenByName(MaterialClassifyGroup materialClassifyGroup, String name) {
+        if (materialClassifyGroup == null) return null;
+        List<MaterialClassifySection> materialClassifySectionList = getByMaterialClassifyGroupId(materialClassifyGroup.getId());
+        if (materialClassifySectionList == null || materialClassifySectionList.isEmpty()) return null;
+
+        List<MaterialClassifySectionView> materialClassifySectionViewList = new ArrayList<>();
+        for (MaterialClassifySection materialClassifySection : materialClassifySectionList) {
+            if(materialClassifySection.getName().contains(name)) {
+                MaterialClassifySectionView materialClassifySectionView = getViewById(materialClassifySection.getId());
+                if (materialClassifySectionView != null)
+                    materialClassifySectionViewList.add(materialClassifySectionView);
+            }
+        }
+        return materialClassifySectionViewList;
+    }
+
     private MaterialClassifyGroupTreeItem getmaterialClassifyGroupTreeItem(MaterialClassifyGroup materialClassifyGroup) {
         MaterialClassifyGroupTreeItem materialClassifyGroupTreeItem = new MaterialClassifyGroupTreeItem();
         materialClassifyGroupTreeItem.setMaterialClassifyGroupView(materialClassifyGroupService.getMaterialClassifyGroupView(materialClassifyGroup));
         materialClassifyGroupTreeItem.setChildren(getMaterialClassifyGroupChildren(materialClassifyGroup));
+        return materialClassifyGroupTreeItem;
+    }
+    private MaterialClassifyGroupTreeItem getmaterialClassifyGroupTreeItemByName(MaterialClassifyGroup materialClassifyGroup, String name) {
+        MaterialClassifyGroupTreeItem materialClassifyGroupTreeItem = new MaterialClassifyGroupTreeItem();
+        materialClassifyGroupTreeItem.setMaterialClassifyGroupView(materialClassifyGroupService.getMaterialClassifyGroupView(materialClassifyGroup));
+        materialClassifyGroupTreeItem.setChildren(getMaterialClassifyGroupChildrenByName(materialClassifyGroup, name));
         return materialClassifyGroupTreeItem;
     }
 
@@ -58,11 +81,40 @@ public class MaterialClassifySectionServiceImpl implements IMaterialClassifySect
 
     }
 
+    private List<MaterialClassifyGroupTreeItem> getMaterialClassifyDivisionChildrenByName(MaterialClassifyDivision materialClassifyDivision, String name) {
+        if (materialClassifyDivision == null) return null;
+        List<MaterialClassifyGroup> materialClassifyGroupList = materialClassifyGroupService.getByMaterialClassifyDivisionId(materialClassifyDivision.getId());
+        if (materialClassifyGroupList == null || materialClassifyGroupList.isEmpty()) return null;
+
+        List<MaterialClassifyGroupTreeItem> materialClassifyGroupTreeItemList = new ArrayList<>();
+        for (MaterialClassifyGroup materialClassifyGroup : materialClassifyGroupList) {
+            if(materialClassifyGroup.getName().contains(name)){
+                MaterialClassifyGroupTreeItem materialClassifyGroupTreeItem = getmaterialClassifyGroupTreeItem(materialClassifyGroup);
+                materialClassifyGroupTreeItemList.add(materialClassifyGroupTreeItem);
+            } else {
+                MaterialClassifyGroupTreeItem materialClassifyGroupTreeItem = getmaterialClassifyGroupTreeItemByName(materialClassifyGroup, name);
+                if(materialClassifyGroupTreeItem.getChildren().size() != 0){
+                    materialClassifyGroupTreeItemList.add(materialClassifyGroupTreeItem);
+                }
+            }
+        }
+        return materialClassifyGroupTreeItemList;
+
+    }
+
     private MaterialClassifyDivisionTreeItem getMaterialClassifyDivisionTreeItem(MaterialClassifyDivision materialClassifyDivision) {
         if (materialClassifyDivision == null) return null;
         MaterialClassifyDivisionTreeItem divisionTreeItem = new MaterialClassifyDivisionTreeItem();
         divisionTreeItem.setMaterialClassifyDivision(materialClassifyDivision);
         divisionTreeItem.setChildren(getMaterialClassifyDivisionChildren(materialClassifyDivision));
+        return divisionTreeItem;
+    }
+
+    private MaterialClassifyDivisionTreeItem getMaterialClassifyDivisionTreeItemByName(MaterialClassifyDivision materialClassifyDivision, String name) {
+        if (materialClassifyDivision == null) return null;
+        MaterialClassifyDivisionTreeItem divisionTreeItem = new MaterialClassifyDivisionTreeItem();
+        divisionTreeItem.setMaterialClassifyDivision(materialClassifyDivision);
+        divisionTreeItem.setChildren(getMaterialClassifyDivisionChildrenByName(materialClassifyDivision, name));
         return divisionTreeItem;
     }
 
@@ -219,6 +271,28 @@ public class MaterialClassifySectionServiceImpl implements IMaterialClassifySect
             MaterialClassifyDivisionTreeItem divisionTreeItem = getMaterialClassifyDivisionTreeItem(materialClassifyDivision);
             if (divisionTreeItem != null)
                 children.add(divisionTreeItem);
+        }
+        tree.setChildren(children);
+        return tree;
+    }
+
+    @Override
+    public MaterialClassifyTree getTreeByName(String name) {
+        List<MaterialClassifyDivision> materialClassifyDivisionList = materialClassifyDivisionService.getAllList();
+        if (materialClassifyDivisionList == null || materialClassifyDivisionList.isEmpty()) return null;
+        MaterialClassifyTree tree = new MaterialClassifyTree();
+
+        List<MaterialClassifyDivisionTreeItem> children = new ArrayList<>();
+        for (MaterialClassifyDivision materialClassifyDivision : materialClassifyDivisionList) {
+            if(materialClassifyDivision.getName().contains(name)) {
+                MaterialClassifyDivisionTreeItem divisionTreeItem = getMaterialClassifyDivisionTreeItem(materialClassifyDivision);
+                if (divisionTreeItem != null)
+                    children.add(divisionTreeItem);
+            } else {
+                MaterialClassifyDivisionTreeItem divisionTreeItem = getMaterialClassifyDivisionTreeItemByName(materialClassifyDivision, name);
+                if (divisionTreeItem != null)
+                    children.add(divisionTreeItem);
+            }
         }
         tree.setChildren(children);
         return tree;
