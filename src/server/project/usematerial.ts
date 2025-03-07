@@ -60,7 +60,7 @@ export async function serverDownloadUseMaterialNewBrandFileById(
   try {
     let res = await axios.get(
       BASEURL.usematerialnewbrandfile +
-        "download-use-material-new-brand-file-by-id",
+      "download-use-material-new-brand-file-by-id",
       {
         params: {
           projectId: projectId,
@@ -92,6 +92,155 @@ export async function serverGetUseMaterialPageViewByProject(
     >(BASEURL.usematerial + "page-use-material-view-by-project-id", {
       params: {
         projectId: projectId,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+export async function serverGetUseMaterialPageViewByProjectAndName(
+  projectId: string,
+  name: string,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerUseMaterialView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerUseMaterialView>>
+    >(BASEURL.usematerial + "page-use-material-view-by-project-id-and-name", {
+      params: {
+        projectId: projectId,
+        name: name,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function serverGetUseMaterialPageViewByProjectAndLocation(
+  projectId: string,
+  location: string,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerUseMaterialView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerUseMaterialView>>
+    >(BASEURL.usematerial + "page-use-material-view-by-project-id-and-location", {
+      params: {
+        projectId: projectId,
+        location: location,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function serverGetUseMaterialPageViewByProjectAndItemMark(
+  projectId: string,
+  itemMark: string,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerUseMaterialView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerUseMaterialView>>
+    >(BASEURL.usematerial + "page-use-material-view-by-project-id-and-item-mark", {
+      params: {
+        projectId: projectId,
+        itemMark: itemMark,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function serverGetUseMaterialPageViewByProjectAndTechnology(
+  projectId: string,
+  technology: string,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerUseMaterialView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerUseMaterialView>>
+    >(BASEURL.usematerial + "page-use-material-view-by-project-id-and-technology", {
+      params: {
+        projectId: projectId,
+        technology: technology,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function serverGetUseMaterialPageViewByProjectAndInstallation(
+  projectId: string,
+  installation: string,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerUseMaterialView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerUseMaterialView>>
+    >(BASEURL.usematerial + "page-use-material-view-by-project-id-and-installation", {
+      params: {
+        projectId: projectId,
+        installation: installation,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function serverGetUseMaterialPageViewByProjectAndBrand(
+  projectId: string,
+  brand: string,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerUseMaterialView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerUseMaterialView>>
+    >(BASEURL.usematerial + "page-use-material-view-by-project-id-and-brand", {
+      params: {
+        projectId: projectId,
+        brand: brand,
         pageNo: pageNo,
         pageSize: pageSize,
       },
@@ -231,7 +380,7 @@ export async function serverDeleteBuyMaterialVerificationDocumentTempFiles(
   try {
     let res = await axios.post<any, IServerResponseData<string>>(
       BASEURL.buymaterial +
-        "delete-buy-material-verification-document-temp-file",
+      "delete-buy-material-verification-document-temp-file",
       files
     );
     return res;
@@ -279,7 +428,7 @@ export async function serverDownloadBuyMaterialVerificationDocumentFilesById(
   try {
     let res = await axios.get(
       BASEURL.projectmaterialverificationdocumentfile +
-        "download-buy-material-verification-document-file-by-id",
+      "download-buy-material-verification-document-file-by-id",
       {
         params: {
           projectId: projectId,

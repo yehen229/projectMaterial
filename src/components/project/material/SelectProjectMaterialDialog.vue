@@ -349,8 +349,8 @@ const textElipsisValue = ref(false);
                   <el-option label="编号" value="2" />
                   <el-option label="技术要求" value="3" />
                   <el-option label="施工要求" value="4" />
-                  <el-option label="品牌" value="5" />
-                  <el-option label="审核状态" value="6" />
+                  <el-option label="品牌（公有）" value="5" />
+                  <el-option label="品牌（私有）" value="6" />
                 </el-select>
               </template>
               <template #append>

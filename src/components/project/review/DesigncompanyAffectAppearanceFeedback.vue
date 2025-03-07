@@ -134,6 +134,8 @@ const emit = defineEmits<{
   ): void;
 }>();
 
+watchEffect()
+
 onMounted(async () => {
   await getProjectReviewUserViewPageFromServer();
 });

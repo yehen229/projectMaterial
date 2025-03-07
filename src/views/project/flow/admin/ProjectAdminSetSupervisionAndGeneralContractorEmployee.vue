@@ -4,7 +4,7 @@
  * 主要功能：增删改查
  */
 
-import { computed, onMounted, reactive, ref, Ref } from "vue";
+import { computed, onMounted, reactive, ref, Ref, watchEffect } from "vue";
 
 import { useRouter, useRoute, onBeforeRouteUpdate } from "vue-router";
 
@@ -138,6 +138,12 @@ onBeforeRouteUpdate(async (to) => {
   }
 
   await getProjectAllUsersPageViewFromSever();
+});
+
+watchEffect(async () => {
+  if (dialogFormNewVisible.value == false) {
+    await getProjectAllUsersPageViewFromSever();
+  }
 });
 
 onMounted(async () => {

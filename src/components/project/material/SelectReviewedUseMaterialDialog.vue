@@ -112,7 +112,15 @@ import {
   serverGetProjectBrandViewListByProjectId,
 } from "@/server/project/projectbrand";
 
-import { serverGetUseMaterialPageViewByProject } from "@/server/project/usematerial";
+import {
+  serverGetUseMaterialPageViewByProject,
+  serverGetUseMaterialPageViewByProjectAndName,
+  serverGetUseMaterialPageViewByProjectAndLocation,
+  serverGetUseMaterialPageViewByProjectAndItemMark,
+  serverGetUseMaterialPageViewByProjectAndTechnology,
+  serverGetUseMaterialPageViewByProjectAndInstallation,
+  serverGetUseMaterialPageViewByProjectAndBrand
+ } from "@/server/project/usematerial";
 import { IServerUseMaterialView } from "@/server/types/project/review";
 
 //服务器返回到前端的类型
@@ -176,14 +184,10 @@ const getProjectFromServer = async (projectId: string) => {
 
 const getProjectMaterialViewFromSever = async () => {
   let search = searchText.value.trim();
-
   if (search) {
-    console.log(searchSelect.value);
-
     if (searchSelect.value == "0") {
-      //单位类型
       console.log(search);
-      const ret = await serverGetCompanyPageByCompanyName(
+      const ret = await serverGetUseMaterialPageViewByProjectAndName(
         props.projectId,
         searchText.value,
         pageNo.value,
@@ -193,8 +197,50 @@ const getProjectMaterialViewFromSever = async () => {
         projectMaterialViewPageData.value = ret.data;
       }
     } else if (searchSelect.value == "1") {
+      const ret = await serverGetUseMaterialPageViewByProjectAndLocation(
+        props.projectId,
+        searchText.value,
+        pageNo.value,
+        pageSize.value
+      );
+      if (ret && ret.code == 200) {
+        projectMaterialViewPageData.value = ret.data;
+      }
+    } else if (searchSelect.value == "2") {
+      const ret = await serverGetUseMaterialPageViewByProjectAndItemMark(
+        props.projectId,
+        searchText.value,
+        pageNo.value,
+        pageSize.value
+      );
+      if (ret && ret.code == 200) {
+        projectMaterialViewPageData.value = ret.data;
+      }
+    } else if (searchSelect.value == "3") {
       //单位名称
-      const ret = await serverGetCompanyPageByCompanyType(
+      const ret = await serverGetUseMaterialPageViewByProjectAndTechnology(
+        props.projectId,
+        searchText.value,
+        pageNo.value,
+        pageSize.value
+      );
+      if (ret && ret.code == 200) {
+        projectMaterialViewPageData.value = ret.data;
+      }
+    } else if (searchSelect.value == "4") {
+      //单位名称
+      const ret = await serverGetUseMaterialPageViewByProjectAndInstallation(
+        props.projectId,
+        searchText.value,
+        pageNo.value,
+        pageSize.value
+      );
+      if (ret && ret.code == 200) {
+        projectMaterialViewPageData.value = ret.data;
+      }
+    } else if (searchSelect.value == "5") {
+      //单位名称
+      const ret = await serverGetUseMaterialPageViewByProjectAndBrand(
         props.projectId,
         searchText.value,
         pageNo.value,
@@ -331,7 +377,7 @@ const textElipsisValue = ref(false);
                   <el-option label="技术要求" value="3" />
                   <el-option label="施工要求" value="4" />
                   <el-option label="品牌" value="5" />
-                  <el-option label="审核状态" value="6" />
+                  <!-- <el-option label="审核状态" value="6" /> -->
                 </el-select>
               </template>
               <template #append>
