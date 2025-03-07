@@ -37,6 +37,12 @@ public interface IMaterialRepository {
 
     int getCountByLikeNameAndProjectBindType(String name, int projectBindType);
 
+    int getCountByLikeTechnologyAndProjectBindType(String technology, int projectBindType);
+
+    int getCountByLikeInstallationAndProjectBindType(String installation, int projectBindType);
+
+    int getCountByLikeBrandAndProjectBindType(String brand, int projectBindType);
+
     Material getById(String id);
 
     List<Material> getByMaterialClassifySectionId(String materialClassifySectionId);
@@ -69,6 +75,24 @@ public interface IMaterialRepository {
 
 
     Page<Material> getPageByNameAndProjectBindType(String name,
+                                                   int projectBindType,
+                                                   Integer pageNo,
+                                                   Integer pageSize);
+
+
+    Page<Material> getPageByTechnologyAndProjectBindType(String technology,
+                                                   int projectBindType,
+                                                   Integer pageNo,
+                                                   Integer pageSize);
+
+
+    Page<Material> getPageByInstallationAndProjectBindType(String installation,
+                                                   int projectBindType,
+                                                   Integer pageNo,
+                                                   Integer pageSize);
+
+
+    Page<Material> getPageByBrandAndProjectBindType(String brand,
                                                    int projectBindType,
                                                    Integer pageNo,
                                                    Integer pageSize);

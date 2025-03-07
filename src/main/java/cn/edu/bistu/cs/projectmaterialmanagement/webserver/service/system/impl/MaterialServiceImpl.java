@@ -160,4 +160,31 @@ public class MaterialServiceImpl implements IMaterialService {
 
     }
 
+    @Override
+    public Page<Material> getPageByTechnologyAndProjectBindType(String technology,
+                                                          int projectBindType,
+                                                          Integer pageNo,
+                                                          Integer pageSize) {
+        return materialRepository.getPageByTechnologyAndProjectBindType(technology, projectBindType,pageNo, pageSize);
+
+    }
+
+    @Override
+    public Page<Material> getPageByInstallationAndProjectBindType(String installation,
+                                                          int projectBindType,
+                                                          Integer pageNo,
+                                                          Integer pageSize) {
+        return materialRepository.getPageByInstallationAndProjectBindType(installation, projectBindType,pageNo, pageSize);
+
+    }
+
+    @Override
+    public Page<Material> getPageByBrandAndProjectBindType(String brand,
+                                                          int projectBindType,
+                                                          Integer pageNo,
+                                                          Integer pageSize) {
+        return materialRepository.getPageByBrandAndProjectBindType(brand, projectBindType,pageNo, pageSize);
+
+    }
+
 }

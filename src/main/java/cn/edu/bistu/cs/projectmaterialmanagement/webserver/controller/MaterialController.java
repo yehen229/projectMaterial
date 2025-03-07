@@ -103,6 +103,23 @@ public class MaterialController {
         return materialBusinessService.getPageViewByProjectBindType(0,pageNo, pageSize);
     }
 
+    @GetMapping(value = "page-view-by-default-bind-type-and-search-params")
+    public Page<MaterialView> getPageViewByProjectBindTypeAndSearchParams(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "location", required = false) String location,
+            @RequestParam(value = "itemMark", required = false) String itemMark,
+            @RequestParam(value = "technology", required = false) String technology,
+            @RequestParam(value = "installation", required = false) String installation,
+            @RequestParam(value = "brand", required = false) String brand,
+            @RequestParam(value = "pageNo", required = false) Integer pageNo,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+        return materialBusinessService.getPageViewByProjectBindTypeAndSearchParams(0, name, location, itemMark, technology, installation, brand, pageNo, pageSize);
+    }
+
+
+
     @GetMapping(value = "page-view-by-name")
     public Page<MaterialView> getPageViewByName(@RequestParam(value = "name") String name,
                                                 @RequestParam(value = "pageNo", required = false) Integer pageNo,
@@ -110,6 +127,60 @@ public class MaterialController {
         pageNo = pageNo == null ? 1 : pageNo;
         pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
         return materialBusinessService.getPageViewByName(name, pageNo, pageSize);
+    }
+
+    @GetMapping(value = "page-view-by-name-and-bind-type")
+    public Page<MaterialView> getPageViewByNameAndProjectBindType(@RequestParam(value = "name") String name,
+                                                @RequestParam(value = "pageNo", required = false) Integer pageNo,
+                                                @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+        return materialBusinessService.getPageViewByNameAndProjectBindType(name, 0, pageNo, pageSize);
+    }
+
+    @GetMapping(value = "page-view-by-location-and-bind-type")
+    public Page<MaterialView> getPageViewByLocationAndProjectBindType(@RequestParam(value = "location") String location,
+                                                @RequestParam(value = "pageNo", required = false) Integer pageNo,
+                                                @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+        return materialBusinessService.getPageViewByLocationAndProjectBindType(location, 0, pageNo, pageSize);
+    }
+
+    @GetMapping(value = "page-view-by-item-mark-and-bind-type")
+    public Page<MaterialView> getPageViewByItemMarkAndProjectBindType(@RequestParam(value = "itemMark") String itemMark,
+                                                @RequestParam(value = "pageNo", required = false) Integer pageNo,
+                                                @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+        return materialBusinessService.getPageViewByItemMarkAndProjectBindType(itemMark, 0, pageNo, pageSize);
+    }
+
+    @GetMapping(value = "page-view-by-technology-and-bind-type")
+    public Page<MaterialView> getPageViewByTechnologyAndProjectBindType(@RequestParam(value = "technology") String technology,
+                                                @RequestParam(value = "pageNo", required = false) Integer pageNo,
+                                                @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+        return materialBusinessService.getPageViewByTechnologyAndProjectBindType(technology, 0, pageNo, pageSize);
+    }
+
+    @GetMapping(value = "page-view-by-installation-and-bind-type")
+    public Page<MaterialView> getPageViewByInstallationAndProjectBindType(@RequestParam(value = "installation") String installation,
+                                                @RequestParam(value = "pageNo", required = false) Integer pageNo,
+                                                @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+        return materialBusinessService.getPageViewByInstallationAndProjectBindType(installation, 0, pageNo, pageSize);
+    }
+
+    @GetMapping(value = "page-view-by-brand-and-bind-type")
+    public Page<MaterialView> getPageViewByBrandAndProjectBindType(@RequestParam(value = "brand") String brand,
+                                                @RequestParam(value = "pageNo", required = false) Integer pageNo,
+                                                @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+        return materialBusinessService.getPageViewByBrandAndProjectBindType(brand, 0, pageNo, pageSize);
     }
 
     @GetMapping(value = "page-view-by-location")

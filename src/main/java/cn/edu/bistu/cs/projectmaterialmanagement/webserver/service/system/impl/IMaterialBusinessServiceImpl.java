@@ -191,6 +191,20 @@ public class IMaterialBusinessServiceImpl implements IMaterialBusinessService {
     }
 
     @Override
+    public Page<MaterialView> getPageViewByProjectBindTypeAndSearchParams(int projectBindType,
+                                                                          String name,
+                                                                          String location,
+                                                                          String itemMark,
+                                                                          String technology,
+                                                                          String installation,
+                                                                          String brand,
+                                                           Integer pageNo,
+                                                           Integer pageSize) {
+        Page<Material> page = materialService.getPageByProjectBindType(projectBindType, pageNo, pageSize);
+        return convert(page, pageNo, pageSize);
+    }
+
+    @Override
     public Page<MaterialView> getPageViewByNameAndProjectBindType(String name,
                                                                   int projectBindType,
                                                                   Integer pageNo,
@@ -214,6 +228,33 @@ public class IMaterialBusinessServiceImpl implements IMaterialBusinessService {
                                                                       Integer pageNo,
                                                                       Integer pageSize) {
         Page<Material> page = materialService.getPageByItemMarkAndProjectBindType(itemMark, projectBindType,pageNo, pageSize);
+        return convert(page, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<MaterialView> getPageViewByTechnologyAndProjectBindType(String technology,
+                                                                      int projectBindType,
+                                                                      Integer pageNo,
+                                                                      Integer pageSize) {
+        Page<Material> page = materialService.getPageByTechnologyAndProjectBindType(technology, projectBindType,pageNo, pageSize);
+        return convert(page, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<MaterialView> getPageViewByInstallationAndProjectBindType(String installation,
+                                                                      int projectBindType,
+                                                                      Integer pageNo,
+                                                                      Integer pageSize) {
+        Page<Material> page = materialService.getPageByInstallationAndProjectBindType(installation, projectBindType,pageNo, pageSize);
+        return convert(page, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<MaterialView> getPageViewByBrandAndProjectBindType(String brand,
+                                                                      int projectBindType,
+                                                                      Integer pageNo,
+                                                                      Integer pageSize) {
+        Page<Material> page = materialService.getPageByBrandAndProjectBindType(brand, projectBindType,pageNo, pageSize);
         return convert(page, pageNo, pageSize);
     }
 
