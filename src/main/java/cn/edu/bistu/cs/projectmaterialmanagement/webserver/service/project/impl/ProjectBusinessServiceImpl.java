@@ -2313,6 +2313,72 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
 
 
     }
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndName(String projectId,
+                                                                                      String name,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+
+
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndName(projectId, name, pageNo, pageSize);
+
+
+    }
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndLocation(String projectId,
+                                                                                      String location,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+
+
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndLocation(projectId, location, pageNo, pageSize);
+
+
+    }
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndItemMark(String projectId,
+                                                                                      String itemMark,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+
+
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndItemMark(projectId, itemMark, pageNo, pageSize);
+
+
+    }
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndTechnology(String projectId,
+                                                                                      String technology,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+
+
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndTechnology(projectId, technology, pageNo, pageSize);
+
+
+    }
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndInstallation(String projectId,
+                                                                                      String installation,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+
+
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndInstallation(projectId, installation, pageNo, pageSize);
+
+
+    }
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndBrand(String projectId,
+                                                                                      String brand,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+
+
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndBrand(projectId, brand, pageNo, pageSize);
+
+
+    }
 
     /**
      * 总包单位提交了品牌选择、物料使用申请后，经过层层审批，已经获得通过，将这些通过的新品牌增加到项目私有品牌中

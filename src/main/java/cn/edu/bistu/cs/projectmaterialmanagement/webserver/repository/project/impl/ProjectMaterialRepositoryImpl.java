@@ -187,7 +187,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
         if(name != ""){
             name = "%" + name.trim() + "%";
             i = jdbcTemplate.queryForObject("""
-                                                        SELECT count(*) 
+                                                        SELECT DISTINCT count(DISTINCT t_project_material.id)
                                                         FROM t_project_material
                                                         INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
                                                         WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_material.name LIKE ?
@@ -196,7 +196,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
         } else if(location != ""){
             location = "%" + location.trim() + "%";
             i = jdbcTemplate.queryForObject("""
-                                                        SELECT count(*) 
+                                                        SELECT DISTINCT count(DISTINCT t_project_material.id)
                                                         FROM t_project_material
                                                         left join t_material ON t_material.id=t_project_material.t_material_id
                                                         WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_material.location LIKE ?
@@ -205,7 +205,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
         } else if(itemMark != ""){
             itemMark = "%" + itemMark.trim() + "%";
             i = jdbcTemplate.queryForObject("""
-                                                        SELECT count(*) 
+                                                        SELECT DISTINCT count(DISTINCT t_project_material.id)
                                                         FROM t_project_material
                                                         left join t_material ON t_material.id=t_project_material.t_material_id
                                                         WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_material.item_mark LIKE ?
@@ -214,7 +214,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
         } else if(technology != ""){
             technology = "%" + technology.trim() + "%";
             i = jdbcTemplate.queryForObject("""
-                                                        SELECT count(*) 
+                                                        SELECT DISTINCT count(DISTINCT t_project_material.id)
                                                         FROM t_project_material
                                                         left join t_material ON t_material.id=t_project_material.t_material_id
                                                         WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL And t_material.technology LIKE ?
@@ -223,7 +223,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
         } else if(installation != ""){
             installation = "%" + installation.trim() + "%";
             i = jdbcTemplate.queryForObject("""
-                                                        SELECT count(*) 
+                                                        SELECT DISTINCT count(DISTINCT t_project_material.id)
                                                         FROM t_project_material
                                                         left join t_material ON t_material.id=t_project_material.t_material_id
                                                         WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_material.installation LIKE ?
@@ -232,7 +232,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
         } else if(brand != "") {
             brand = "%" + brand.trim() + "%";
             i = jdbcTemplate.queryForObject("""
-                                                      SELECT count(*) FROM t_project_material
+                                                      SELECT DISTINCT count(DISTINCT t_project_material.id) FROM t_project_material
                                                       INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
                                                       INNER JOIN t_project_material_brand_public ON t_project_material.id=t_project_material_brand_public.t_project_material_id
                                                       INNER JOIN t_brand_public ON t_brand_public.id=t_project_material_brand_public.t_brand_public_id
@@ -243,7 +243,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
         } else if(brandPrivate != "") {
             brandPrivate = "%" + brandPrivate.trim() + "%";
             i = jdbcTemplate.queryForObject("""
-                                                      SELECT count(*) FROM t_project_material
+                                                      SELECT DISTINCT count(DISTINCT t_project_material.id) FROM t_project_material
                                                       INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
                                                       INNER JOIN t_project_material_brand_private ON t_project_material.id=t_project_material_brand_private.t_project_material_id
                                                       INNER JOIN t_project_brand ON t_project_brand.id=t_project_material_brand_private.t_project_brand_id
@@ -298,7 +298,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
         if(name != ""){
             name = "%" + name.trim() + "%";
             i = jdbcTemplate.queryForObject("""
-                                                        SELECT count(*) 
+                                                        SELECT DISTINCT count(DISTINCT t_project_material.id)
                                                         FROM t_project_material
                                                         INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
                                                         WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.name LIKE ?
@@ -307,7 +307,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
         } else if(location != ""){
             location = "%" + location.trim() + "%";
             i = jdbcTemplate.queryForObject("""
-                                                        SELECT count(*) 
+                                                        SELECT DISTINCT count(DISTINCT t_project_material.id)
                                                         FROM t_project_material
                                                         left join t_material ON t_material.id=t_project_material.t_material_id
                                                         WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.location LIKE ?
@@ -316,7 +316,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
         } else if(itemMark != ""){
             itemMark = "%" + itemMark.trim() + "%";
             i = jdbcTemplate.queryForObject("""
-                                                        SELECT count(*) 
+                                                        SELECT DISTINCT count(DISTINCT t_project_material.id)
                                                         FROM t_project_material
                                                         left join t_material ON t_material.id=t_project_material.t_material_id
                                                         WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.item_mark LIKE ?
@@ -325,7 +325,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
         } else if(technology != ""){
             technology = "%" + technology.trim() + "%";
             i = jdbcTemplate.queryForObject("""
-                                                        SELECT count(*) 
+                                                        SELECT DISTINCT count(DISTINCT t_project_material.id)
                                                         FROM t_project_material
                                                         left join t_material ON t_material.id=t_project_material.t_material_id
                                                         WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL And t_material.technology LIKE ?
@@ -334,7 +334,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
         } else if(installation != ""){
             installation = "%" + installation.trim() + "%";
             i = jdbcTemplate.queryForObject("""
-                                                        SELECT count(*) 
+                                                        SELECT DISTINCT count(DISTINCT t_project_material.id)
                                                         FROM t_project_material
                                                         left join t_material ON t_material.id=t_project_material.t_material_id
                                                         WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.installation LIKE ?
@@ -343,7 +343,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
         } else if(brand != "") {
             brand = "%" + brand.trim() + "%";
             i = jdbcTemplate.queryForObject("""
-                                                      SELECT count(*) FROM t_project_material
+                                                      SELECT DISTINCT count(DISTINCT t_project_material.id) FROM t_project_material
                                                       INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
                                                       INNER JOIN t_project_material_brand_public ON t_project_material.id=t_project_material_brand_public.t_project_material_id
                                                       INNER JOIN t_brand_public ON t_brand_public.id=t_project_material_brand_public.t_brand_public_id
@@ -354,7 +354,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
         } else if(brandPrivate != "") {
             brandPrivate = "%" + brandPrivate.trim() + "%";
             i = jdbcTemplate.queryForObject("""
-                                                      SELECT count(*) FROM t_project_material
+                                                      SELECT DISTINCT count(DISTINCT t_project_material.id) FROM t_project_material
                                                       INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
                                                       INNER JOIN t_project_material_brand_private ON t_project_material.id=t_project_material_brand_private.t_project_material_id
                                                       INNER JOIN t_project_brand ON t_project_brand.id=t_project_material_brand_private.t_project_brand_id
@@ -673,7 +673,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
         if(name != "") {
             name = "%" + name.trim() + "%";
             return jdbcTemplate.query("""
-                                          SELECT * 
+                                          SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
                                           INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
                                           WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.name LIKE ?
@@ -683,7 +683,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
         } else if(location != "") {
             location = "%" + location.trim() + "%";
             return jdbcTemplate.query("""
-                                          SELECT * 
+                                          SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
                                           INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
                                           WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.location LIKE ?
@@ -693,7 +693,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
         } else if(itemMark != "") {
             itemMark = "%" + itemMark.trim() + "%";
             return jdbcTemplate.query("""
-                                          SELECT * 
+                                          SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
                                           INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
                                           WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.item_mark LIKE ?
@@ -703,7 +703,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
         } else if(technology != "") {
             technology = "%" + technology.trim() + "%";
             return jdbcTemplate.query("""
-                                          SELECT * 
+                                          SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
                                           INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
                                           WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.technology LIKE ?
@@ -713,7 +713,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
         } else if(installation != "") {
             installation = "%" + installation.trim() + "%";
             return jdbcTemplate.query("""
-                                          SELECT * 
+                                          SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
                                           INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
                                           WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.installation LIKE ?
@@ -723,7 +723,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
         } else if(brand != "") {
             brand = "%" + brand.trim() + "%";
             return jdbcTemplate.query("""
-                                          SELECT * 
+                                          SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
                                           INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
                                           INNER JOIN t_project_material_brand_public ON t_project_material.id=t_project_material_brand_public.t_project_material_id
@@ -736,7 +736,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
         } else if(brandPrivate != "") {
             brandPrivate = "%" + brandPrivate.trim() + "%";
             return jdbcTemplate.query("""
-                                          SELECT * 
+                                          SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
                                           INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
                                           INNER JOIN t_project_material_brand_private ON t_project_material.id=t_project_material_brand_private.t_project_material_id
@@ -771,7 +771,7 @@ private List<ProjectMaterial> getPageQueryByProjectIdWithParams(String projectId
         if(name != "") {
             name = "%" + name.trim() + "%";
             return jdbcTemplate.query("""
-                                          SELECT * 
+                                          SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
                                           INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
                                           WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_material.name LIKE ?
@@ -781,7 +781,7 @@ private List<ProjectMaterial> getPageQueryByProjectIdWithParams(String projectId
         } else if(location != "") {
             location = "%" + location.trim() + "%";
             return jdbcTemplate.query("""
-                                          SELECT * 
+                                          SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
                                           INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
                                           WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_material.location LIKE ?
@@ -791,7 +791,7 @@ private List<ProjectMaterial> getPageQueryByProjectIdWithParams(String projectId
         } else if(itemMark != "") {
             itemMark = "%" + itemMark.trim() + "%";
             return jdbcTemplate.query("""
-                                          SELECT * 
+                                          SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
                                           INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
                                           WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_material.item_mark LIKE ?
@@ -801,7 +801,7 @@ private List<ProjectMaterial> getPageQueryByProjectIdWithParams(String projectId
         } else if(technology != "") {
             technology = "%" + technology.trim() + "%";
             return jdbcTemplate.query("""
-                                          SELECT * 
+                                          SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
                                           INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
                                           WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_material.technology LIKE ?
@@ -811,7 +811,7 @@ private List<ProjectMaterial> getPageQueryByProjectIdWithParams(String projectId
         } else if(installation != "") {
             installation = "%" + installation.trim() + "%";
             return jdbcTemplate.query("""
-                                          SELECT * 
+                                          SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
                                           INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
                                           WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_material.installation LIKE ?
@@ -821,7 +821,7 @@ private List<ProjectMaterial> getPageQueryByProjectIdWithParams(String projectId
         } else if(brand != "") {
             brand = "%" + brand.trim() + "%";
             return jdbcTemplate.query("""
-                                          SELECT * 
+                                          SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
                                           INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
                                           INNER JOIN t_project_material_brand_public ON t_project_material.id=t_project_material_brand_public.t_project_material_id
@@ -834,7 +834,7 @@ private List<ProjectMaterial> getPageQueryByProjectIdWithParams(String projectId
         } else if(brandPrivate != "") {
             brandPrivate = "%" + brandPrivate.trim() + "%";
             return jdbcTemplate.query("""
-                                          SELECT * 
+                                          SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
                                           INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
                                           INNER JOIN t_project_material_brand_private ON t_project_material.id=t_project_material_brand_private.t_project_material_id
@@ -847,7 +847,7 @@ private List<ProjectMaterial> getPageQueryByProjectIdWithParams(String projectId
         }
         else {
             return jdbcTemplate.query("""
-                                          SELECT * 
+                                          SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
                                           WHERE t_project_id=? AND deleted_at IS NULL 
                                           LIMIT ?,?
