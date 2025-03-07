@@ -14,6 +14,7 @@ import {
   IServerMaterialClassifySection,
   IServerMaterialClassifySectionView,
   IServerMaterialClassifyTree,
+  IServerMaterialClassifyTreeByName,
   IServerMaterialPhoto,
   IServerMaterialPhotoView,
 } from "@/server/types/system/material";
@@ -132,6 +133,25 @@ export async function serverGetMaterialClassifyTree(): Promise<
       any,
       IServerResponseData<IServerMaterialClassifyTree>
     >(BASEURL.materialclassifysection + "get-tree");
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function serverGetMaterialClassifyTreeByName(
+  name: string
+): Promise<
+  IServerResponseData<IServerMaterialClassifyTree>
+> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerMaterialClassifyTree>
+    >(BASEURL.materialclassifysection + "get-tree-by-name", {
+      params: { name: name }
+    });
     return res;
   } catch (err) {
     console.log(err);

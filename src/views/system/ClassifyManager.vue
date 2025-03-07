@@ -71,6 +71,7 @@ import {
   serverMaterialClassifySectionUpdate,
   serverGetMaterialClassifySectionById,
   serverGetMaterialClassifyTree,
+  serverGetMaterialClassifyTreeByName,
   serverGetMaterialClassifySectionPage,
 } from "@/server/system/materialclassifysection";
 
@@ -223,35 +224,17 @@ const generateTree = (tree: IServerMaterialClassifyTree) => {
 
 const getTreeFromSever = async () => {
   let search = searchText.value.trim();
-
+  let name = "";
   if (search) {
-    console.log(searchSelect.value);
-
-    if (searchSelect.value == "0") {
-      //单位类型
-      console.log(search);
-      const ret = await serverGetCompanyPageByCompanyName(
-        searchText.value,
-        pageNo.value,
-        pageSize.value
-      );
-      if (ret && ret.code == 200) {
-        generateTree(ret.data);
-      }
-    } else if (searchSelect.value == "1") {
-      //单位名称
-      const ret = await serverGetCompanyPageByCompanyType(
-        searchText.value,
-        pageNo.value,
-        pageSize.value
-      );
+    if (searchSelect.value == "名称") {
+      name = searchText.value;
+      const ret = await serverGetMaterialClassifyTreeByName(name);
       if (ret && ret.code == 200) {
         generateTree(ret.data);
       }
     }
   } else {
     const ret = await serverGetMaterialClassifyTree();
-    console.log(ret);
     if (ret && ret.code == 200) {
       generateTree(ret.data);
     }
@@ -538,38 +521,38 @@ const onExcelUploadButtonClick = () => {
  * @param index
  * @param row
  */
-const onDownloadExcelButtonClick = async () => {
-  const downloadFilename = "用户名单";
+// const onDownloadExcelButtonClick = async () => {
+//   const downloadFilename = "用户名单";
 
-  loading.value = true;
-  let search = searchText.value.trim();
+//   loading.value = true;
+//   let search = searchText.value.trim();
 
-  if (search) {
-    if (searchSelect.value == "用户名称") {
-      //用户名称
-      const ret = await serverDownloadCompanyUserByUserNamer(
-        searchText.value,
-        downloadFilename
-      );
-    } else if (searchSelect.value == "项目名称") {
-      //项目名称
-      const ret = await serverDownloadCompanyUserByProjectName(
-        searchText.value,
-        downloadFilename
-      );
-    } else if (searchSelect.value == "单位名称") {
-      //单位名称
-      const ret = await serverDownloadCompanyUserByCompanyName(
-        searchText.value,
-        downloadFilename
-      );
-    }
-  } else {
-    await serverDownloadAllCompanyUser(downloadFilename);
-  }
+//   if (search) {
+//     if (searchSelect.value == "用户名称") {
+//       //用户名称
+//       const ret = await serverDownloadCompanyUserByUserNamer(
+//         searchText.value,
+//         downloadFilename
+//       );
+//     } else if (searchSelect.value == "项目名称") {
+//       //项目名称
+//       const ret = await serverDownloadCompanyUserByProjectName(
+//         searchText.value,
+//         downloadFilename
+//       );
+//     } else if (searchSelect.value == "单位名称") {
+//       //单位名称
+//       const ret = await serverDownloadCompanyUserByCompanyName(
+//         searchText.value,
+//         downloadFilename
+//       );
+//     }
+//   } else {
+//     await serverDownloadAllCompanyUser(downloadFilename);
+//   }
 
-  loading.value = false;
-};
+//   loading.value = false;
+// };
 </script>
 
 <template>
@@ -648,12 +631,12 @@ const onDownloadExcelButtonClick = async () => {
         >
           新增大类(专业)
         </el-button>
-        <el-button :icon="Upload" @click="onExcelUploadButtonClick">
+        <!-- <el-button :icon="Upload" @click="onExcelUploadButtonClick">
           导入分类（Excel）
-        </el-button>
-        <el-button :icon="Download" @click="onDownloadExcelButtonClick">
+        </el-button> -->
+        <!-- <el-button :icon="Download" @click="onDownloadExcelButtonClick">
           导出分类（Excel）
-        </el-button>
+        </el-button> -->
       </div>
 
       <!--搜索框-->
