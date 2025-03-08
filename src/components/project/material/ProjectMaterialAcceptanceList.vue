@@ -267,6 +267,7 @@ watchEffect(async () => {
 });
 
 const collapsed = ref(false);
+const textElipsisValue = ref(false);
 </script>
 
 <template>
@@ -298,6 +299,43 @@ const collapsed = ref(false);
       </el-icon>
     </div>
     <div class="project-container" v-show="!collapsed">
+      <div class="top-toolbar">
+        <!--搜索框-->
+        <div class="input-with-select">
+          <el-input v-model="searchText" placeholder="输入搜索内容">
+            <template #prepend>
+              <el-select
+                v-model="searchSelect"
+                placeholder="Select"
+                style="width: 115px"
+              >
+                <el-option label="材料名称" value="0" />
+                <el-option label="材料位置" value="1" />
+                <el-option label="编号" value="2" />
+                <el-option label="技术要求" value="3" />
+                <el-option label="施工要求" value="4" />
+                <el-option label="品牌" value="5" />
+                <el-option label="审核状态" value="6" />
+              </el-select>
+            </template>
+            <template #append>
+              <el-button :icon="Search" @click="onSearchClick" />
+            </template>
+          </el-input>
+        </div>
+        <div>
+          <el-switch
+            v-model="textElipsisValue"
+            inline-prompt
+            style="
+              --el-switch-on-color: #13ce66;
+              --el-switch-off-color: #ff4949;
+            "
+            active-text="自动调整高度"
+            inactive-text="显示全部内容"
+          />
+        </div>
+      </div>
       <el-table
         :data="tableData"
         style="width: 100%"
@@ -307,57 +345,47 @@ const collapsed = ref(false);
       >
         <el-table-column label="材料名称" show-overflow-tooltip>
           <template #default="scope">
-            <div style="display: flex; align-items: center">
-              <span style="margin-left: 10px">{{
-                scope.row.projectMaterialView.material.name
-              }}</span>
+            <div :class="{ textEllipsis: textElipsisValue }">
+              {{ scope.row.projectMaterialView.material.name }}
             </div>
           </template>
         </el-table-column>
 
         <el-table-column label="材料位置" show-overflow-tooltip>
           <template #default="scope">
-            <div style="display: flex; align-items: center">
-              <span style="margin-left: 10px">{{
-                scope.row.projectMaterialView.material.location
-              }}</span>
+            <div :class="{ textEllipsis: textElipsisValue }">
+              {{ scope.row.projectMaterialView.material.location }}
             </div>
           </template>
         </el-table-column>
 
         <el-table-column label="编号" show-overflow-tooltip>
           <template #default="scope">
-            <div style="display: flex; align-items: center">
-              <span style="margin-left: 10px">{{
-                scope.row.projectMaterialView.material.itemMark
-              }}</span>
+            <div :class="{ textEllipsis: textElipsisValue }">
+              {{ scope.row.projectMaterialView.material.itemMark }}
             </div>
           </template>
         </el-table-column>
 
         <el-table-column label="技术要求" show-overflow-tooltip>
           <template #default="scope">
-            <div style="display: flex; align-items: center">
-              <span style="margin-left: 10px">{{
-                scope.row.projectMaterialView.material.technology
-              }}</span>
+            <div :class="{ textEllipsis: textElipsisValue }">
+              {{ scope.row.projectMaterialView.material.technology }}
             </div>
           </template>
         </el-table-column>
 
         <el-table-column label="施工要求" show-overflow-tooltip>
           <template #default="scope">
-            <div style="display: flex; align-items: center">
-              <span style="margin-left: 10px">{{
-                scope.row.projectMaterialView.material.installation
-              }}</span>
+            <div :class="{ textEllipsis: textElipsisValue }">
+              {{ scope.row.projectMaterialView.material.installation }}
             </div>
           </template>
         </el-table-column>
 
         <el-table-column label="品牌" width="300px">
           <template #default="scope">
-            <div style="display: flex; align-items: center">
+            <div :class="{ textEllipsis: textElipsisValue }">
               <div v-if="scope.row.projectMaterialBrandPrivateView != null">
                 {{
                   scope.row.projectMaterialBrandPrivateView.projectBrandView
@@ -376,37 +404,29 @@ const collapsed = ref(false);
 
         <el-table-column label="材料数量" show-overflow-tooltip>
           <template #default="scope">
-            <div style="display: flex; align-items: center">
-              <span style="margin-left: 10px">{{
-                scope.row.projectMaterialAcceptance.materialCount
-              }}</span>
+            <div :class="{ textEllipsis: textElipsisValue }">
+              {{ scope.row.projectMaterialAcceptance.materialCount }}
             </div>
           </template>
         </el-table-column>
         <el-table-column label="数量单位" show-overflow-tooltip>
           <template #default="scope">
-            <div style="display: flex; align-items: center">
-              <span style="margin-left: 10px">{{
-                scope.row.projectMaterialAcceptance.materialUnit
-              }}</span>
+            <div :class="{ textEllipsis: textElipsisValue }">
+              {{ scope.row.projectMaterialAcceptance.materialUnit }}
             </div>
           </template>
         </el-table-column>
         <el-table-column label="验收位置" show-overflow-tooltip>
           <template #default="scope">
-            <div style="display: flex; align-items: center">
-              <span style="margin-left: 10px">{{
-                scope.row.projectMaterialAcceptance.position
-              }}</span>
+            <div :class="{ textEllipsis: textElipsisValue }">
+              {{ scope.row.projectMaterialAcceptance.position }}
             </div>
           </template>
         </el-table-column>
         <el-table-column label="备注" show-overflow-tooltip>
           <template #default="scope">
-            <div style="display: flex; align-items: center">
-              <span style="margin-left: 10px">{{
-                scope.row.projectMaterialAcceptance.note
-              }}</span>
+            <div :class="{ textEllipsis: textElipsisValue }">
+              {{ scope.row.projectMaterialAcceptance.note }}
             </div>
           </template>
         </el-table-column>
@@ -459,5 +479,18 @@ const collapsed = ref(false);
 }
 .download-file:hover {
   color: blue;
+}
+.textEllipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  /* autoprefixer: ignore next */
+  -webkit-box-orient: vertical;
+}
+
+::v-deep .el-table .cell {
+  white-space: pre-line;
 }
 </style>

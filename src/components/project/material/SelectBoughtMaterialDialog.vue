@@ -258,7 +258,10 @@ const projectForm = reactive({
 
 //event
 const emit = defineEmits<{
-  (e: "onDilalogOk", projectMaterialViewList: IServerUseMaterialView[]): void;
+  (
+    e: "onDilalogOk",
+    projectMaterialViewList: IServerProjectMaterialView[]
+  ): void;
   (e: "onDilalogCancel"): void;
 }>();
 
@@ -304,6 +307,7 @@ const cascaderProps = {
   expandTrigger: "hover" as const,
   emitPath: true,
 };
+const textElipsisValue = ref(false);
 </script>
 
 <template>
@@ -340,6 +344,18 @@ const cascaderProps = {
               </template>
             </el-input>
           </div>
+          <div>
+            <el-switch
+              v-model="textElipsisValue"
+              inline-prompt
+              style="
+                --el-switch-on-color: #13ce66;
+                --el-switch-off-color: #ff4949;
+              "
+              active-text="自动调整高度"
+              inactive-text="显示全部内容"
+            />
+          </div>
         </div>
 
         <!--显示内容-->
@@ -361,50 +377,40 @@ const cascaderProps = {
               show-overflow-tooltip
             >
               <template #default="scope">
-                <div style="display: flex; align-items: center">
-                  <span style="margin-left: 10px">{{
-                    scope.row.material.name
-                  }}</span>
+                <div :class="{ textEllipsis: textElipsisValue }">
+                  {{ scope.row.material.name }}
                 </div>
               </template>
             </el-table-column>
 
             <el-table-column label="材料位置" width="170" show-overflow-tooltip>
               <template #default="scope">
-                <div style="display: flex; align-items: center">
-                  <span style="margin-left: 10px">{{
-                    scope.row.material.location
-                  }}</span>
+                <div :class="{ textEllipsis: textElipsisValue }">
+                  {{ scope.row.material.location }}
                 </div>
               </template>
             </el-table-column>
 
             <el-table-column label="编号" width="100" show-overflow-tooltip>
               <template #default="scope">
-                <div style="display: flex; align-items: center">
-                  <span style="margin-left: 10px">{{
-                    scope.row.material.itemMark
-                  }}</span>
+                <div :class="{ textEllipsis: textElipsisValue }">
+                  {{ scope.row.material.itemMark }}
                 </div>
               </template>
             </el-table-column>
 
             <el-table-column label="技术要求" show-overflow-tooltip>
               <template #default="scope">
-                <div style="display: flex; align-items: center">
-                  <span style="margin-left: 10px">{{
-                    scope.row.material.technology
-                  }}</span>
+                <div :class="{ textEllipsis: textElipsisValue }">
+                  {{ scope.row.material.technology }}
                 </div>
               </template>
             </el-table-column>
 
             <el-table-column label="施工要求" width="200" show-overflow-tooltip>
               <template #default="scope">
-                <div style="display: flex; align-items: center">
-                  <span style="margin-left: 10px">{{
-                    scope.row.material.installation
-                  }}</span>
+                <div :class="{ textEllipsis: textElipsisValue }">
+                  {{ scope.row.material.installation }}
                 </div>
               </template>
             </el-table-column>
@@ -473,5 +479,19 @@ const cascaderProps = {
   right: 20px;
   margin-left: 10px;
   flex: 1;
+}
+
+.textEllipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  /* autoprefixer: ignore next */
+  -webkit-box-orient: vertical;
+}
+
+::v-deep .el-table .cell {
+  white-space: pre-line;
 }
 </style>

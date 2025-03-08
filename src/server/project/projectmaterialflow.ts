@@ -704,7 +704,8 @@ export async function submitGeneralContractorNewTaskOfBuyProjectMaterial(
 ): Promise<IServerResponseData<string>> {
   try {
     let res = await axios.post<any, IServerResponseData<string>>(
-      BASEURL.projectmaterialflow + "general-contractor-new-task-of-buy-project-materials",
+      BASEURL.projectmaterialflow +
+        "general-contractor-new-task-of-buy-project-materials",
       buyMaterialForm
     );
     return res;
@@ -866,7 +867,7 @@ export async function serverSubmitProjectMaterialAcceptanceReviewOfEngineeringDe
     let res = await axios.post<any, IServerResponseData<string>>(
       BASEURL.projectmaterialflow +
         "project-material-acceptance-engineering-department-review-of-employee",
-        projectMatrialAcceptanceReviewEmployeeForm
+      projectMatrialAcceptanceReviewEmployeeForm
     );
     return res;
   } catch (err) {
@@ -882,7 +883,7 @@ export async function serverSubmitProjectMaterialAcceptanceRemainReviewOfEnginee
     let res = await axios.post<any, IServerResponseData<string>>(
       BASEURL.projectmaterialflow +
         "project-material-acceptance-engineering-department-remain-review-manager",
-        projectMatrialAcceptanceReviewEmployeeForm
+      projectMatrialAcceptanceReviewEmployeeForm
     );
     return res;
   } catch (err) {
@@ -903,7 +904,7 @@ export async function serverSubmitProjectMaterialAcceptanceReviewOfEngineeringDe
     let res = await axios.post<any, IServerResponseData<string>>(
       BASEURL.projectmaterialflow +
         "project-material-acceptance-engineering-department-review-manager-summary",
-        projectMatrialAcceptanceReviewManagerSummaryForm
+      projectMatrialAcceptanceReviewManagerSummaryForm
     );
     return res;
   } catch (err) {
@@ -1162,12 +1163,16 @@ export async function serverGetPageProjectMaterialAcceptanceReviewUserViewByProj
   pageNo: number,
   pageSize: number
 ): Promise<
-  IServerResponseData<IServerPage<IServerProjectMaterialAcceptanceReviewUserView>>
+  IServerResponseData<
+    IServerPage<IServerProjectMaterialAcceptanceReviewUserView>
+  >
 > {
   try {
     let res = await axios.get<
       any,
-      IServerResponseData<IServerPage<IServerProjectMaterialAcceptanceReviewUserView>>
+      IServerResponseData<
+        IServerPage<IServerProjectMaterialAcceptanceReviewUserView>
+      >
     >(
       BASEURL.projectmaterialflow +
         "page-material-acceptance--review-user-view-by-task-id",
@@ -1349,7 +1354,9 @@ export async function serverGetFeedbackOfSelectBrandReviewedOfSupervisionCompany
 export async function serverGetFeedbackOfProjectMaterialAcceptanceReviewedOfSupervisionCompanyByProjectIdAndTaskId(
   projectId: string,
   taskId: string
-): Promise<IServerResponseData<IServerProjectMaterialAcceptanceReviewUserView>> {
+): Promise<
+  IServerResponseData<IServerProjectMaterialAcceptanceReviewUserView>
+> {
   try {
     let res = await axios.get<
       any,
@@ -1373,7 +1380,9 @@ export async function serverGetFeedbackOfProjectMaterialAcceptanceReviewedOfSupe
 export async function serverGetFeedbackOfProjectMaterialAcceptanceReviewedOfEngineeringDepartmentByProjectIdAndTaskId(
   projectId: string,
   taskId: string
-): Promise<IServerResponseData<IServerProjectMaterialAcceptanceReviewUserView>> {
+): Promise<
+  IServerResponseData<IServerProjectMaterialAcceptanceReviewUserView>
+> {
   try {
     let res = await axios.get<
       any,
@@ -1516,8 +1525,6 @@ export async function serverGetFeedbackOfAffectAppearanceReviewOfDesignDepartmen
   }
 }
 
-
-
 export async function serverGetNotPassedBrandOfSelectBrandReviewedOfSupervisionCompanyByProjectIdAndTaskId(
   projectId: string,
   taskId: string
@@ -1542,4 +1549,3 @@ export async function serverGetNotPassedBrandOfSelectBrandReviewedOfSupervisionC
     throw err;
   }
 }
-

@@ -336,6 +336,14 @@ export interface IServerBuyMaterial {
   deletedAt: Date; //deleted_at,null表示未删，否则 表示删除时间null表示未删，否则 表示删除时间
 }
 
+export interface IServerBuyMaterialBatch {
+  id: string; //id,主键
+  userId: string; //t_user_id,外键,	t_user_id<-表t_user.id,用户用户
+  projectId: string; //t_project,外键,	t_project<-表t_project.id,项目项目
+  createDatetime: Date; //create_datetime
+  deletedAt: Date; //deleted_at
+}
+
 export interface IServerBuyMaterialView {
   buyMaterial: IServerBuyMaterial; //t_buy_material
   user: IServerUser; //外键：t_user_id,关联表为：t_user表,
@@ -374,9 +382,20 @@ export interface IServerGeneralContractorSubProjectMaterialVerificationDocumentF
   project: IServerProject;
   taskId: string;
 }
+
+export interface IServerProjectMaterialRetestBatch {
+  id: string; //id,主键
+  userId: string; //t_user_id,外键,	t_user_id<-表t_user.id
+  projectId: string; //t_project_id,外键,	t_project_id<-表t_project.id
+  buyMaterialBatchId: string; //t_buy_material_batch_id,外键,	t_buy_material_batch_id<-表t_buy_material_batch.id
+  createDatetime: Date; //create_datetime
+  deletedAt: Date;
+} //deleted_at
+
 export interface IServerProjectMaterialRetest {
   id: string; //id,主键
   buyMaterialId: string; //t_buy_material_id,外键,	t_buy_material_id<-表t_buy_material.id
+  projectMaterialRetestBatchId: string; //t_project_material_retest_batch_id
   userId: string; //t_user_id,外键,	t_user_id<-表t_user.id
   needRetest: number; //need_retest,是否需要复检。0：不需要，1需要
   reviewResult: number; //review_result,审核结果，0未审核；1审核通过；2.审核不通过
@@ -386,7 +405,7 @@ export interface IServerProjectMaterialRetest {
 }
 
 export interface IServerProjectMaterialRetestForm {
-  projectMaterialRetest: IServerProjectMaterialRetest;
+  projectMaterialRetestList: IServerProjectMaterialRetest[];
   projectId: string;
   taskId: string;
   reviewTempDir: string;
@@ -395,14 +414,23 @@ export interface IServerProjectMaterialRetestView {
   projectMaterialRetest: IServerProjectMaterialRetest;
   buyMaterial: IServerBuyMaterial;
   user: IServerUser;
-  projectMaterialRetestFileList: IServerProjectMaterialRetestFile[];
+  projectMaterialRetestBatch: IServerProjectMaterialRetestBatch;
 }
-export interface IServerProjectMaterialRetestFile {
+export interface IServerProjectMaterialRetestBatchFile {
   id: string; //id,主键
-  projectMaterialRetestId: string; //t_project_material_retest_id,外键,	t_project_material_retest_id<-表t_project_material_retest.id
+  projectMaterialRetestBatchId: string; //t_project_material_retest_batch_id,外键,	t_project_material_retest_id<-表t_project_material_retest.id
   filePath: string; //file_path,文件路径文件路径
   fileType: number; //file_type,文件类型：工程材料或设备报验材料文件类型：工程材料或设备报验材料
   deletedAt: Date; //deleted_at,null表示未删，否则 表示删除时间null表示未删，否则 表示删除时间
+}
+
+export interface IServerProjectMaterialRetestBatchView {
+  projectMaterialRetestBatch: IServerProjectMaterialRetestBatch; //t_project_material_retest_batch
+  user: IServerUser; //外键：t_user_id,关联表为：t_user表,
+  project: IServerProject; //外键：t_project_id,关联表为：t_project表,
+  buyMaterialBatch: IServerBuyMaterialBatch; //外键：t_buy_material_batch_id,关联表为：t_buy_material_batch表,
+  projectMaterialRetestFileList: IServerProjectMaterialRetestBatchFile[];
+  projectMaterialRetestViewList: IServerProjectMaterialRetestView[];
 }
 
 export interface IServerProjectMaterialAcceptance {

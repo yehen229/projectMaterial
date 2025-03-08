@@ -163,7 +163,9 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const getProjectFromServer = async (projectId: string) => {
+  console.log(projectId);
   const ret = await serverGetProjectViewById(projectId);
+  console.log(ret);
   if (ret && ret.code == 200) {
     projectViewData.value = ret.data;
   }
@@ -171,67 +173,53 @@ const getProjectFromServer = async (projectId: string) => {
 
 const getProjectMaterialViewFromSever = async () => {
   let search = searchText.value.trim();
-  //暂时去掉审核状态
-  let name = "", location = "", itemMark = "", technology = "", installation = "", brand = "", brandPrivate = "";
+
   if (search) {
     console.log(searchSelect.value);
-    switch (searchSelect.value) {
-      case "0":
-        name = search;
-        break;
-      case "1":
-        location = search;
-        break;
-      case "2":
-        itemMark = search;
-        break;
-      case "3":
-        technology = search;
-        break;
-      case "4":
-        installation = search;
-        break;
-      case "5":
-        brand = search;
-        break;
-      case "6":
-        brandPrivate = search;
-        break;
-      default:
-        break;
+
+    if (searchSelect.value == "0") {
+      //单位类型
+      console.log(search);
+      const ret = await serverGetCompanyPageByCompanyName(
+        props.projectId,
+        searchText.value,
+        pageNo.value,
+        pageSize.value
+      );
+      if (ret && ret.code == 200) {
+        projectMaterialViewPageData.value = ret.data;
+      }
+    } else if (searchSelect.value == "1") {
+      //单位名称
+      const ret = await serverGetCompanyPageByCompanyType(
+        props.projectId,
+        searchText.value,
+        pageNo.value,
+        pageSize.value
+      );
+      if (ret && ret.code == 200) {
+        projectMaterialViewPageData.value = ret.data;
+      }
     }
+  } else {
+    console.log(props.projectId);
     const ret = await serverGetProjectMaterialPageViewByProject(
       props.projectId,
-      name,
-      location,
-      itemMark,
-      technology,
-      installation,
-      brand,
-      brandPrivate,
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
       pageNo.value,
       pageSize.value
     );
+    console.log(ret);
     if (ret && ret.code == 200) {
       projectMaterialViewPageData.value = ret.data;
     }
     console.log(projectMaterialViewPageData.value);
-  } else {
-    const ret = await serverGetProjectMaterialPageViewByProject(
-      props.projectId,
-      name,
-      location,
-      itemMark,
-      technology,
-      installation,
-      brand,
-      brandPrivate,
-      pageNo.value,
-      pageSize.value
-    );
-    if (ret && ret.code == 200) {
-      projectMaterialViewPageData.value = ret.data;
-    }
   }
 };
 
@@ -349,8 +337,8 @@ const textElipsisValue = ref(false);
                   <el-option label="编号" value="2" />
                   <el-option label="技术要求" value="3" />
                   <el-option label="施工要求" value="4" />
-                  <el-option label="品牌（公有）" value="5" />
-                  <el-option label="品牌（私有）" value="6" />
+                  <el-option label="品牌" value="5" />
+                  <el-option label="审核状态" value="6" />
                 </el-select>
               </template>
               <template #append>

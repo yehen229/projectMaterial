@@ -91,6 +91,7 @@ import {
   IServerProjectMaterialVerificationDocumentView,
   IServerProjectMaterialVerificationDocumentFile,
   IServerProjectMaterialVerificationDocument,
+  IServerGeneralContractorSubProjectMaterialVerificationDocumentForm,
 } from "@/server/types/project/review";
 
 import {
@@ -272,10 +273,45 @@ const submitProcess = async () => {
     });
     return;
   }
-  const form : IServerGeneralContractorSubProjectMaterialVerificationDocumentForm = {
-    project: projectUserTask.value?.projectView.project,
-    taskId: projectUserTask.value.taskId
+
+  //确保工程材料和 设备报验材料 文件数量必须大于0
+  console.log(buyMaterialViewList);
+  if (!buyMaterialViewList.value) return;
+
+  for (var i = 0; i < buyMaterialViewList.value?.length; i++) {
+    const item = buyMaterialViewList.value[i];
+    if (!item.projectMaterialVerificationDocument) {
+      ElMessageBox.alert(
+        item.buyMaterialView.useMaterialView.projectMaterialView.material.name +
+          ":材料为空，请填报材料",
+        "提示",
+        {
+          confirmButtonText: "确定",
+        }
+      );
+      return;
+    }
+    if (
+      !item.projectMaterialVerificationDocumentFileList ||
+      !item.projectMaterialVerificationDocumentFileList.length
+    ) {
+      ElMessageBox.alert(
+        item.buyMaterialView.useMaterialView.projectMaterialView.material.name +
+          ":文件为空，请填报材料",
+        "提示",
+        {
+          confirmButtonText: "确定",
+        }
+      );
+      return;
+    }
   }
+
+  const form: IServerGeneralContractorSubProjectMaterialVerificationDocumentForm =
+    {
+      project: projectUserTask.value?.projectView.project,
+      taskId: projectUserTask.value.taskId,
+    };
   // 调用API
   const response =
     await serverSubmitGeneralContractorSubProjectMaterialVerificationDocument(

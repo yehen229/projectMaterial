@@ -94,6 +94,7 @@ export const getDesignCompanyIndex = (
 export const getTaskName = (
   projectUserTask: IServerProjectUserTask | undefined | null
 ) => {
+  console.log(projectUserTask);
   if (!projectUserTask) return "";
   switch (projectUserTask.taskDefinitionKey) {
     case "Activity_Project_Material_Design_Department_Manager_And_Employee_Reivew":
@@ -135,6 +136,25 @@ export const getTaskName = (
       else if (projectUserTask.designCompanyEmployee)
         return "设计部项目员工填写审核意见，对于影响外观（总包单位的）品牌和物料进行审核";
       break;
+
+    case "Activity_Engineering_Department_Project_Material_Acceptance_Distribution_Review":
+      if (projectUserTask.engineeringDepartmentManager)
+        return "工程部项目经理对物料验收进行分派任务";
+      else if (projectUserTask.engineeringDepartmentEmployee)
+        return "工程部项目员工填写审核意见，对于物料验收进行审核";
+      break;
+
+    case "Activity_Engineering_Department_Project_Material_Acceptance_Manager_And_Employee_Reivew":
+      // 设计部项目员工对于物料验收进行审核
+      return "工程部项目员工对于物料验收进行审核";
+
+    case "Activity_Engineering_Department_Project_Material_Acceptance_Remain_Employee_Reivew":
+      if (projectUserTask.designDepartmentManager)
+        return "工程部项目经理对于物料验收进行汇总审核";
+      else if (projectUserTask.designCompanyEmployee)
+        return "工程部项目员工填写审核意见，对于物料验收进行审核";
+      break;
+
     default:
       return projectUserTask.taskName;
   }
@@ -253,6 +273,24 @@ export const getTaskTitle = (projectUserTask: IServerProjectUserTask) => {
         return "工程部项目经理对于不影响外观（总包单位的）品牌和物料进行汇总审核";
       else if (projectUserTask.engineeringDepartmentEmployee)
         return "工程部项目员工填写审核意见，对于不影响外观（总包单位的）品牌和物料进行审核";
+      break;
+
+    case "Activity_Engineering_Department_Project_Material_Acceptance_Distribution_Review":
+      if (projectUserTask.engineeringDepartmentManager)
+        return "工程部项目经理对物料验收进行分派任务";
+      else if (projectUserTask.engineeringDepartmentEmployee)
+        return "工程部项目员工填写审核意见，对于物料验收进行审核";
+      break;
+
+    case "Activity_Engineering_Department_Project_Material_Acceptance_Manager_And_Employee_Reivew":
+      // 设计部项目员工对于物料验收进行审核
+      return "工程部项目员工对于物料验收进行审核";
+
+    case "Activity_Engineering_Department_Project_Material_Acceptance_Remain_Employee_Reivew":
+      if (projectUserTask.designDepartmentManager)
+        return "工程部项目经理对于物料验收进行汇总审核";
+      else if (projectUserTask.designCompanyEmployee)
+        return "工程部项目员工填写审核意见，对于物料验收进行审核";
       break;
   }
 };

@@ -126,10 +126,14 @@ const pageSize = ref(getUserPageSize());
 const buyMaterialViewList =
   ref<IServerProjectMaterialVerificationDocumentView[]>();
 
+const buyMaterialViewListRetest = ref<number[]>([]);
+
 const form = reactive({
   radioReviewResult: 1,
   textareaReviewResult: "",
 });
+
+const loading = ref(false);
 
 onBeforeRouteUpdate(async (to) => {
   if (typeof to.params.id === "string") {
@@ -207,6 +211,11 @@ const getBuyMaterialVerificationDocumentPageViewFromServer = async (
   if (ret && ret.code == 200) {
     buyMaterialViewList.value = ret.data;
     console.log(ret.data);
+
+    buyMaterialViewListRetest.value = [];
+    for (let i = 0; i < buyMaterialViewList.value.length; i++) {
+      buyMaterialViewListRetest.value.push(1);
+    }
   }
 };
 
@@ -226,7 +235,21 @@ const handleRadioChange = async () => {
   }
 };
 
-const handleRadioReviewChange = async () => {};
+/**
+ * 监听radio的change事件,用户点击了‘审核结果’
+ */
+const handleRadioReviewChange = async () => {
+  if (form.radioReviewResult == 1) {
+    //审核不通过，即部分通古、部分不通过
+    if (buyMaterialViewList.value) {
+      var count = 0;
+      for (let i = 0; i < buyMaterialViewList.value.length; i++) {
+        //0:不需要复检，1:需要复检
+        buyMaterialViewListRetest.value[i] = 1;
+      }
+    }
+  }
+};
 
 /**
  * 项目经理分发审核，确定是分发给项目员工审核还是直接审核
@@ -245,11 +268,40 @@ const submitProcess = async () => {
 
   if (radio.value === 0) {
     //不需要复检
-    if (radio.value === 0) {
-    }
     await submitToServerNotNeedRecheck(userId);
   } else {
     //需要复检
+    //需要复检，一种是全体通过，一种是部分通过
+    if (form.radioReviewResult == 2) {
+      //审核不通过，即部分通古、部分不通过
+      if (buyMaterialViewList.value) {
+        var count = 0;
+        for (let i = 0; i < buyMaterialViewList.value.length; i++) {
+          //0:不需要复检，1:需要复检
+          count += buyMaterialViewListRetest.value[i];
+        }
+
+        if (count == 0) {
+          ElMessageBox.alert(
+            "选择了“需要复检、审核不通过”，但未选择复检项目",
+            "提示",
+            {
+              confirmButtonText: "确定",
+            }
+          );
+          return;
+        }
+      }
+    } else {
+      if (buyMaterialViewList.value) {
+        var count = 0;
+        for (let i = 0; i < buyMaterialViewList.value.length; i++) {
+          //0:不需要复检，1:需要复检
+          buyMaterialViewListRetest.value[i] = 0;
+        }
+      }
+    }
+
     if (!form.textareaReviewResult) {
       ElMessageBox.alert("审核意见为空，请填写审核意见", "提示", {
         confirmButtonText: "确定",
@@ -282,20 +334,29 @@ const submitToServerNotNeedRecheck = async (userId: string) => {
 
     return;
   }
-  //不需要复检
-  const projectMaterialRetestForm: IServerProjectMaterialRetestForm = {
-    projectId: projectId.value,
-    projectMaterialRetest: {
+
+  var projectMaterialRetestList: IServerProjectMaterialRetest[] = [];
+  for (let i = 0; i < buyMaterialViewList.value.length; i++) {
+    const element = buyMaterialViewList.value[i];
+    var projectMaterialRetest: IServerProjectMaterialRetest = {
       id: "", //id,主键
       buyMaterialId:
         buyMaterialViewList.value[0].buyMaterialView.buyMaterial.id, //t_project_id,外键,	t_project_id<-表t_project.id
+      projectMaterialRetestBatchId: "",
       userId: userId, //t_user_id,外键,	t_user_id<-表t_user.id,项目经理ID项目经理ID
       needRetest: 0, //是否需要复检，0不需要复检，1需要复检
-      reviewResult: 0, //审核结果，0未审核；1审核通过；2.审核不通过
-      reviewContent: "",
+      reviewResult: 1, //审核结果，0未审核；1审核通过；2.审核不通过
+      reviewContent: form.textareaReviewResult,
       reviewDatetime: new Date(),
       deletedAt: new Date(),
-    },
+    };
+    projectMaterialRetestList.push(projectMaterialRetest);
+  }
+
+  //不需要复检
+  const projectMaterialRetestForm: IServerProjectMaterialRetestForm = {
+    projectId: projectId.value,
+    projectMaterialRetestList: projectMaterialRetestList,
     taskId: taskId.value,
     reviewTempDir: "",
   };
@@ -329,21 +390,28 @@ const submitToServerManagerDirect = async (userId: string) => {
     return;
   }
 
-  //直接审核
-  const projectMaterialRetestForm: IServerProjectMaterialRetestForm = {
-    projectId: projectId.value,
-    projectMaterialRetest: {
+  var projectMaterialRetestList: IServerProjectMaterialRetest[] = [];
+  for (let i = 0; i < buyMaterialViewList.value.length; i++) {
+    const element = buyMaterialViewList.value[i];
+    var projectMaterialRetest: IServerProjectMaterialRetest = {
       id: "", //id,主键
       buyMaterialId:
         buyMaterialViewList.value[0].buyMaterialView.buyMaterial.id, //t_project_id,外键,	t_project_id<-表t_project.id
+      projectMaterialRetestBatchId: "",
       userId: userId, //t_user_id,外键,	t_user_id<-表t_user.id,项目经理ID项目经理ID
       needRetest: 1, //是否需要复检，0不需要复检，1需要复检
-
-      reviewResult: 2, //1:不需要复检，2需要复检
+      reviewResult: buyMaterialViewListRetest.value[i], //review_result,审核结果，0未审核；1审核通过；2.审核不通过
       reviewContent: form.textareaReviewResult,
       reviewDatetime: new Date(),
       deletedAt: new Date(),
-    },
+    };
+    projectMaterialRetestList.push(projectMaterialRetest);
+  }
+
+  //直接审核
+  const projectMaterialRetestForm: IServerProjectMaterialRetestForm = {
+    projectId: projectId.value,
+    projectMaterialRetestList: projectMaterialRetestList,
     taskId: taskId.value,
     reviewTempDir: uploadReviewFilesDir.value,
   };
@@ -466,6 +534,7 @@ const httpRequest = async (options: UploadRequestOptions) => {
     });
   } else ElMessage.error(`上传失败`);
 };
+const textElipsisValue = ref(false);
 </script>
 
 <template>
@@ -477,108 +546,210 @@ const httpRequest = async (options: UploadRequestOptions) => {
 
     <div v-if="projectUserTask">
       <div class="review-container container">
-        <el-table
-          :data="buyMaterialViewList"
-          style="width: 100%"
-          stripe
-          show-overflow-tooltip
+        <div class="top-toolbar">
+          <div style="margin-left: auto">
+            <el-switch
+              v-model="textElipsisValue"
+              inline-prompt
+              style="
+                --el-switch-on-color: #13ce66;
+                --el-switch-off-color: #ff4949;
+              "
+              active-text="自动调整高度"
+              inactive-text="显示全部内容"
+            />
+          </div>
+        </div>
+
+        <el-row
+          style="
+            width: 100%;
+            font: 1em sans-serif;
+            border: 1px solid #eee;
+            border-bottom-style: none;
+            padding: 5px;
+            margin: 5px;
+            margin-left: 0px;
+            white-space: pre-wrap;
+            line-height: 1.5;
+            margin-top: 10px;
+            margin-bottom: -5px;
+          "
         >
-          <el-table-column label="材料名称" show-overflow-tooltip>
-            <template #default="scope">
-              <div style="display: flex; align-items: center">
-                <span>{{
-                  scope.row.buyMaterialView.useMaterialView.projectMaterialView
-                    .material.name
-                }}</span>
+          <el-col :span="2">材料名称 </el-col>
+          <el-col :span="2"> 材料位置</el-col>
+          <el-col :span="2">编号 </el-col>
+          <el-col :span="2">材料数量 </el-col>
+          <el-col :span="2"> 数量单位</el-col>
+          <el-col :span="2"> 品牌</el-col>
+          <el-col :span="2"> 批次 </el-col>
+          <el-col :span="4"> 工程材料 </el-col>
+          <el-col :span="4"> 设备报验材料 </el-col>
+          <el-col :span="2" v-if="form.radioReviewResult == 2">
+            复检是否通过
+          </el-col>
+        </el-row>
+
+        <el-row
+          v-for="(
+            projectMaterialVerificationDocumentViewItem,
+            projectMaterialVerificationDocumentViewIndex
+          ) in buyMaterialViewList"
+          style="
+            width: 100%;
+            font: 0.8em sans-serif;
+            border: 1px solid #eee;
+            padding: 5px;
+            margin: 5px;
+            margin-left: 0px;
+            white-space: pre-wrap;
+            line-height: 1.5;
+            color: #606266;
+          "
+          v-loading="loading"
+          :gutter="20"
+        >
+          <!--材料名称-->
+          <el-col :span="2">
+            <div style="display: flex; align-items: center">
+              <div :class="{ textEllipsis: textElipsisValue }">
+                {{
+                  projectMaterialVerificationDocumentViewItem.buyMaterialView
+                    .useMaterialView.projectMaterialView.material.name
+                }}
               </div>
-            </template>
-          </el-table-column>
+            </div>
+          </el-col>
 
-          <el-table-column label="材料位置" show-overflow-tooltip>
-            <template #default="scope">
-              <div style="display: flex; align-items: center">
-                <span>{{
-                  scope.row.buyMaterialView.useMaterialView.projectMaterialView
-                    .material.location
-                }}</span>
+          <!--材料位置-->
+          <el-col :span="2">
+            <div style="display: flex; align-items: center">
+              <div :class="{ textEllipsis: textElipsisValue }">
+                {{
+                  projectMaterialVerificationDocumentViewItem.buyMaterialView
+                    .useMaterialView.projectMaterialView.material.location
+                }}
               </div>
-            </template>
-          </el-table-column>
+            </div>
+          </el-col>
 
-          <el-table-column label="编号" show-overflow-tooltip>
-            <template #default="scope">
-              <div style="display: flex; align-items: center">
-                <span>{{
-                  scope.row.buyMaterialView.useMaterialView.projectMaterialView
-                    .material.itemMark
-                }}</span>
+          <!--编号-->
+          <el-col :span="2">
+            <div style="display: flex; align-items: center">
+              <div :class="{ textEllipsis: textElipsisValue }">
+                {{
+                  projectMaterialVerificationDocumentViewItem.buyMaterialView
+                    .useMaterialView.projectMaterialView.material.itemMark
+                }}
               </div>
-            </template>
-          </el-table-column>
+            </div>
+          </el-col>
 
-          <el-table-column label="材料数量" show-overflow-tooltip>
-            <template #default="scope">
-              <span>{{
-                scope.row.buyMaterialView.buyMaterial.materialCount
-              }}</span>
-            </template>
-          </el-table-column>
+          <!--材料数量-->
+          <el-col :span="2">
+            <div style="display: flex; align-items: center">
+              <div :class="{ textEllipsis: textElipsisValue }">
+                {{
+                  projectMaterialVerificationDocumentViewItem.buyMaterialView
+                    .buyMaterial.materialCount
+                }}
+              </div>
+            </div>
+          </el-col>
 
-          <el-table-column label="数量单位" show-overflow-tooltip>
-            <template #default="scope">
-              <span>{{
-                scope.row.buyMaterialView.buyMaterial.materialUnit
-              }}</span>
-            </template>
-          </el-table-column>
+          <!--数量单位-->
+          <el-col :span="2">
+            <div style="display: flex; align-items: center">
+              <div :class="{ textEllipsis: textElipsisValue }">
+                {{
+                  projectMaterialVerificationDocumentViewItem.buyMaterialView
+                    .buyMaterial.materialUnit
+                }}
+              </div>
+            </div>
+          </el-col>
 
-          <el-table-column label="品牌" show-overflow-tooltip>
-            <template #default="scope">
+          <!--品牌-->
+          <el-col :span="2">
+            <div style="display: flex; flex-wrap: wrap; align-items: center">
               <!--项目物料品牌-->
-              <span v-if="scope.row.projectMaterialBrandPublicView != null">{{
-                scope.row.projectMaterialBrandPublicView.brandPublicView
-                  .brandView.brand.name
-              }}</span>
+              <span
+                v-if="
+                  projectMaterialVerificationDocumentViewItem.buyMaterialView
+                    .projectMaterialBrandPublic != null
+                "
+                >{{
+                  projectMaterialVerificationDocumentViewItem.buyMaterialView
+                    .projectMaterialBrandPublic.brandPublicView.brandView.brand
+                    .name
+                }}</span
+              >
 
               <!--项目私有品牌-->
               <span
-                v-else-if="scope.row.projectMaterialBrandPrivateView != null"
+                v-else-if="
+                  projectMaterialVerificationDocumentViewItem.buyMaterialView
+                    .projectMaterialBrandPrivate != null
+                "
                 >{{
-                  scope.row.projectMaterialBrandPrivateView.projectBrandView
-                    .brandView.brand.name
+                  projectMaterialVerificationDocumentViewItem.buyMaterialView
+                    .projectMaterialBrandPrivate.projectBrandView.brandView
+                    .brand.name
                 }}</span
               >
-            </template>
-          </el-table-column>
+            </div>
+          </el-col>
 
-          <el-table-column label="批次" show-overflow-tooltip>
-            <template #default="scope"> </template>
-          </el-table-column>
+          <!--批次-->
+          <el-col :span="2">
+            <div style="display: flex; align-items: center">
+              <div :class="{ textEllipsis: textElipsisValue }">
+                {{
+                  projectMaterialVerificationDocumentViewItem.buyMaterialView
+                    .buyMaterial.batch
+                }}
+              </div>
+            </div>
+          </el-col>
 
-          <el-table-column label="工程材料" show-overflow-tooltip width="250px">
-            <template #default="scope">
+          <!--工程材料-->
+          <el-col :span="4">
+            <div style="display: flex; align-items: center">
               <BuyMaterialDocument
-                :documentView="scope.row"
+                :documentView="projectMaterialVerificationDocumentViewItem"
                 :fileType="0"
                 :fileReadOnly="true"
               ></BuyMaterialDocument>
-            </template>
-          </el-table-column>
+            </div>
+          </el-col>
 
-          <el-table-column
-            label="设备报验材料"
-            show-overflow-tooltip
-            width="250px"
-          >
-            <template #default="scope">
+          <!--设备报验材料-->
+          <el-col :span="4">
+            <div style="display: flex; align-items: center">
               <BuyMaterialDocument
-                :documentView="scope.row"
+                :documentView="projectMaterialVerificationDocumentViewItem"
                 :fileType="1"
                 :fileReadOnly="true"
               ></BuyMaterialDocument>
-            </template>
-          </el-table-column>
-        </el-table>
+            </div>
+          </el-col>
+
+          <!--是否复检-->
+          <el-col :span="2" v-if="form.radioReviewResult == 2">
+            <div style="display: flex; align-items: center">
+              <el-radio-group
+                v-model="
+                  buyMaterialViewListRetest[
+                    projectMaterialVerificationDocumentViewIndex
+                  ]
+                "
+              >
+                <el-radio :value="1">审核通过</el-radio>
+                <el-radio :value="2">审核不通过</el-radio>
+              </el-radio-group>
+            </div>
+          </el-col>
+        </el-row>
 
         <div style="margin: 10px">
           <el-radio-group v-model="radio" @change="handleRadioChange">
@@ -594,7 +765,7 @@ const httpRequest = async (options: UploadRequestOptions) => {
                 v-model="form.radioReviewResult"
                 @change="handleRadioReviewChange"
               >
-                <el-radio :value="1">审核通过</el-radio>
+                <el-radio :value="1">全体审核通过</el-radio>
                 <el-radio :value="2"
                   >审核不通过，通知禁止使用并退出现场</el-radio
                 >
@@ -643,7 +814,6 @@ const httpRequest = async (options: UploadRequestOptions) => {
           <el-button type="primary" @click="cancelProcess">取消</el-button>
         </div>
       </div>
-      
 
       <!--项目物料列表-->
       <ProjectMaterialList :projectId="projectId" />
@@ -678,5 +848,19 @@ const httpRequest = async (options: UploadRequestOptions) => {
 .review-container {
   border: 1px solid #ccc;
   padding: 10px;
+}
+
+.textEllipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  /* autoprefixer: ignore next */
+  -webkit-box-orient: vertical;
+}
+
+::v-deep .el-table .cell {
+  white-space: pre-line;
 }
 </style>

@@ -490,17 +490,44 @@ const onSelectProjectMaterialDialogOk = async (
                 </el-form-item>
 
                 <!--材料数量-->
-                <el-form-item label="物料数量" :rules="[{ required: true, message: '请输入物料数量', trigger: 'blur' }]">
+                <el-form-item
+                  label="物料数量"
+                  :rules="[
+                    {
+                      required: true,
+                      message: '请输入物料数量',
+                      trigger: 'blur',
+                    },
+                  ]"
+                >
                   <el-input v-model="item.materialCount" />
                 </el-form-item>
 
                 <!--数量单位-->
-                <el-form-item label="数量单位" :rules="[{ required: true, message: '请输入数量单位', trigger: 'blur' }]">
+                <el-form-item
+                  label="数量单位"
+                  :rules="[
+                    {
+                      required: true,
+                      message: '请输入数量单位',
+                      trigger: 'blur',
+                    },
+                  ]"
+                >
                   <el-input v-model="item.materialUnit" />
                 </el-form-item>
 
                 <!--验收位置-->
-                <el-form-item label="验收位置" :rules="[{ required: true, message: '请输入验收位置', trigger: 'blur' }]">
+                <el-form-item
+                  label="验收位置"
+                  :rules="[
+                    {
+                      required: true,
+                      message: '请输入验收位置',
+                      trigger: 'blur',
+                    },
+                  ]"
+                >
                   <el-input v-model="item.position" />
                 </el-form-item>
 
@@ -522,11 +549,11 @@ const onSelectProjectMaterialDialogOk = async (
           <el-button type="primary" @click="cancelProcess">取消</el-button>
         </div>
       </div>
-      <ProjectMaterialAcceptanceFeedback
-                 :projectUserTask="projectUserTask">         
+      <ProjectMaterialAcceptanceFeedback :projectUserTask="projectUserTask">
       </ProjectMaterialAcceptanceFeedback>
-          <EngineeringdepartmentProjectMaterialAcceptanceFeedback
-                        :projectUserTask="projectUserTask">         
+      <EngineeringdepartmentProjectMaterialAcceptanceFeedback
+        :projectUserTask="projectUserTask"
+      >
       </EngineeringdepartmentProjectMaterialAcceptanceFeedback>
 
       <!--项目物料列表-->
