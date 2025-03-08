@@ -3592,6 +3592,8 @@ public class ProjectFlow {
     public Page<ProjectReviewUserView> getProjectMaterialUserUserReViewPageByProjectIdAndTaskId(String projectId,
                                                                                                 String taskId,
                                                                                                 int designCompanyIndex,
+                                                                                                String reviewUser,
+                                                                                                int reviewResult,
                                                                                                 Integer pageNo,
                                                                                                 Integer pageSize) {
 
@@ -3601,7 +3603,7 @@ public class ProjectFlow {
 
         String projectReviewId = (String) taskService.getVariable(taskId,
                                                                   "projectReviewId" + designCompanyIndex);
-        return projectBusinessService.getProjectMaterialUserUserReViewPageByTaskId(projectReviewId, pageNo, pageSize);
+        return projectBusinessService.getProjectMaterialUserUserReViewPageByTaskId(projectReviewId, reviewUser, reviewResult, pageNo, pageSize);
     }
 
 
@@ -3651,10 +3653,17 @@ public class ProjectFlow {
     public Page<ProjectMaterialView> getProjectMaterialPageViewByTaskIdAndProjectId(String projectId,
                                                                                     String taskId,
                                                                                     Integer designCompanyIndex,
+                                                                                    String name,
+                                                                                    String location,
+                                                                                    String itemMark,
+                                                                                    String technology,
+                                                                                    String installation,
+                                                                                    String brandPublic,
+                                                                                    String brandPrivate,
                                                                                     Integer pageNo,
                                                                                     Integer pageSize) {
         String companyId = getDesignCompanyIdByTaskIdAndDesignCompanyIndex(taskId, designCompanyIndex);
-        return projectBusinessService.getProjectMaterialPageViewByProjectIdAndCompanyId(projectId, companyId, pageNo,
+        return projectBusinessService.getProjectMaterialPageViewByProjectIdAndCompanyId(projectId, companyId, name, location, itemMark,technology, installation, brandPublic, brandPrivate, pageNo,
                                                                                         pageSize);
 
     }

@@ -367,10 +367,24 @@ public class ProjectMaterialBusinessServiceImpl implements IProjectMaterialBusin
 
     @Override
     public Page<ProjectMaterialView> getPageViewByProjectId(String projectId,
+                                                            String name,
+                                                            String location,
+                                                            String itemMark,
+                                                            String technology,
+                                                            String installation,
+                                                            String brand,
+                                                            String brandPrivate,
                                                             Integer pageNo,
                                                             Integer pageSize) {
-        Page<ProjectMaterial> projectMaterialPage = projectMaterialService.getPageByProjectId(projectId, pageNo,
-                                                                                              pageSize);
+
+        Page<ProjectMaterial> projectMaterialPage = new Page<ProjectMaterial>();
+        if(name == "" && location == "" && itemMark == "" && technology == "" && installation == "" && brand == "" && brandPrivate == "") {
+            projectMaterialPage = projectMaterialService.getPageByProjectId(projectId, pageNo,
+                    pageSize);
+        } else {
+            projectMaterialPage = projectMaterialService.getPageByProjectIdForDispatchView(projectId, name, location, itemMark, technology, installation, brand, brandPrivate, pageNo, pageSize);
+        }
+
         return convertProjectMaterialPage2PageView(projectMaterialPage, pageNo, pageSize);
     }
 
@@ -426,12 +440,36 @@ public class ProjectMaterialBusinessServiceImpl implements IProjectMaterialBusin
     @Override
     public Page<ProjectMaterialView> getProjectMaterialPageViewByProjectIdAndCompanyId(String projectId,
                                                                                        String companyId,
+                                                                                       String name,
+                                                                                       String location,
+                                                                                       String itemMark,
+                                                                                       String technology,
+                                                                                       String installation,
+                                                                                       String brandPublic,
+                                                                                       String brandPrivate,
                                                                                        Integer pageNo,
                                                                                        Integer pageSize) {
-        Page<ProjectMaterial> projectMaterialPage = projectMaterialService.getPageByProjectIdAndCompanyId(projectId,
-                                                                                                          companyId,
-                                                                                                          pageNo,
-                                                                                                          pageSize);
+        Page<ProjectMaterial> projectMaterialPage = new Page<>();
+        if(name != "" || location != "" || itemMark != "" || technology != "" || installation != "" || brandPublic != "" || brandPrivate != "") {
+            projectMaterialPage = projectMaterialService.getPageBySearchParams(
+                    projectId,
+                    companyId,
+                    name,
+                    location,
+                    itemMark,
+                    technology,
+                    installation,
+                    brandPublic,
+                    brandPrivate,
+                    pageNo,
+                    pageSize
+            );
+        } else {
+            projectMaterialPage = projectMaterialService.getPageByProjectIdAndCompanyId(projectId,
+                    companyId,
+                    pageNo,
+                    pageSize);
+        }
         return convertProjectMaterialPage2PageView(projectMaterialPage, pageNo, pageSize);
     }
 

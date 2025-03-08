@@ -11,7 +11,9 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.project
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.project.ProjectView;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Date;
 
 public interface IProjectBusinessService {
 
@@ -132,11 +134,27 @@ public interface IProjectBusinessService {
     Page<ProjectView> getPageViewByProjectName(String projectName,
                                                int pageNo,
                                                int pageSize);
+    Page<ProjectView> getPageViewByProjectLocation(String projectLocation,
+                                           int pageNo,
+                                           int pageSize);
+
+    Page<ProjectView> getPageViewByParams(String name,
+                                                   String location,
+                                                   BigDecimal totalTaxIncluded,
+                                                   BigDecimal totalTaxNotIncluded,
+                                                   BigDecimal buildingAreaAboveGround,
+                                                   BigDecimal buildingAreaUnderGround,
+                                                   String companyConstructionId,
+                                                   String companyDesignId,
+                                                   String note,
+                                                   Date createDatetime,
+                                                   Date endDatetime,
+                                                   int pageNo,
+                                                   int pageSize);
 
     Page<ProjectView> getPageViewByKeyword(String keyword,
                                            int pageNo,
                                            int pageSize);
-
 
     //总包单位进行品牌选择与物料申请
     String addFormOfGeneralContractorBrandSelectAndUseMaterial(UseMaterialForm useMaterialForm);
@@ -189,9 +207,41 @@ public interface IProjectBusinessService {
                                                                                Integer pageNo,
                                                                                Integer pageSize);
 
+    Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndName(String projectId,
+                                                                               String name,
+                                                                               Integer pageNo,
+                                                                               Integer pageSize);
+
+    Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndLocation(String projectId,
+                                                                               String location,
+                                                                               Integer pageNo,
+                                                                               Integer pageSize);
+
+    Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndItemMark(String projectId,
+                                                                               String itemMark,
+                                                                               Integer pageNo,
+                                                                               Integer pageSize);
+
+    Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndTechnology(String projectId,
+                                                                               String technology,
+                                                                               Integer pageNo,
+                                                                               Integer pageSize);
+
+    Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndInstallation(String projectId,
+                                                                               String installation,
+                                                                               Integer pageNo,
+                                                                               Integer pageSize);
+
+    Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndBrand(String projectId,
+                                                                               String brand,
+                                                                               Integer pageNo,
+                                                                               Integer pageSize);
+
     void setProjectReviewedNewBrandByProjectId(String projectId);
 
     Page<ProjectReviewUserView> getProjectMaterialUserUserReViewPageByTaskId(String projectReviewId,
+                                                                             String reviewUser,
+                                                                             int reviewResult,
                                                                              Integer pageNo,
                                                                              Integer pageSize);
     String addFormOfGeneralContractorBuyMaterialSelect(BuyMaterialForm buyMaterialForm);
@@ -240,6 +290,13 @@ public interface IProjectBusinessService {
 
     Page<ProjectMaterialView> getProjectMaterialPageViewByProjectIdAndCompanyId(String projectId,
                                                                                 String companyId,
+                                                                                String name,
+                                                                                String location,
+                                                                                String itemMark,
+                                                                                String technology,
+                                                                                String installation,
+                                                                                String brandPublic,
+                                                                                String brandPrivate,
                                                                                 Integer pageNo,
                                                                                 Integer pageSize);
 

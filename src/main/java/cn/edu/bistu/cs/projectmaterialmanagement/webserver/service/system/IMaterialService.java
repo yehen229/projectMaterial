@@ -48,5 +48,11 @@ public interface IMaterialService {
 
     Page<Material> getPageByNameAndProjectBindType(String name, int projectBindType,Integer pageNo, Integer pageSize);
 
+    Page<Material> getPageByTechnologyAndProjectBindType(String technology, int projectBindType,Integer pageNo, Integer pageSize);
+
+    Page<Material> getPageByInstallationAndProjectBindType(String installation, int projectBindType,Integer pageNo, Integer pageSize);
+
+    Page<Material> getPageByBrandAndProjectBindType(String brand, int projectBindType,Integer pageNo, Integer pageSize);
+
 
 }

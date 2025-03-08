@@ -39,4 +39,8 @@ public interface IMaterialClassifySectionService {
 
 
     MaterialClassifyTree getTree();
+
+    MaterialClassifyTree getTreeByName(String name);
+
+
 }

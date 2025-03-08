@@ -176,6 +176,33 @@ public class ProjectReviewUserRepositoryImpl implements IProjectReviewUserReposi
         return i == null ? 0 : i;
     }
 
+    /**
+     * 根据外键ProjectReviewId得到总数量
+     */
+    @Override
+    public int getCountByProjectReviewIdAndUserAndResult(String projectReviewId, String reviewUser, int reviewResult) {
+        Integer i = 0;
+        if(reviewUser != "") {
+            reviewUser = "%" + reviewUser + "%";
+            i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*) 
+                                                        FROM t_project_review_user
+                                                        INNER JOIN t_user ON t_project_review_user.t_user_id=t_user.id
+                                                        WHERE t_project_review_user.t_project_review_id=? AND t_project_review_user.deleted_at IS NULL AND t_user.real_name LIKE ?
+                                                        """,
+                    Integer.class, projectReviewId, reviewUser);
+        } else if(reviewResult != -1) {
+            i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*) 
+                                                        FROM t_project_review_user
+                                                        WHERE t_project_review_id=? AND deleted_at IS NULL AND review_result=?
+                                                        """,
+                    Integer.class, projectReviewId, reviewResult);
+        }
+
+        return i == null ? 0 : i;
+    }
+
     @Override
     public int getCountByProjectReviewIdAndResult(String projectReviewId,
                                                   int nReviewResult) {
@@ -370,6 +397,26 @@ public class ProjectReviewUserRepositoryImpl implements IProjectReviewUserReposi
     /**
      * 获得指定页面数据
      *
+     * @param projectReviewId
+     * @param pageNo          页号，从1开始
+     * @param pageSize        每页的记录数
+     */
+    @Override
+    public Page<ProjectReviewUser> getPageByProjectReviewIdAndUserAndResult(String projectReviewId,
+                                                            String reviewUser,
+                                                            int reviewResult,
+                                                            int pageNo,
+                                                            int pageSize) {
+        long totalCount = getCountByProjectReviewIdAndUserAndResult(projectReviewId, reviewUser, reviewResult);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<ProjectReviewUser> resultData = getPageQueryByProjectReviewIdAndUserAndResult(projectReviewId, reviewUser, reviewResult, pageNo - 1, pageSize);
+        return new Page<>(0, totalCount, (int) totalCount, resultData);
+    }
+
+    /**
+     * 获得指定页面数据
+     *
      * @param pageNo   页号，从1开始
      * @param pageSize 每页的记录数
      */
@@ -421,6 +468,47 @@ public class ProjectReviewUserRepositoryImpl implements IProjectReviewUserReposi
                                           LIMIT ?,?
                                           """,
                                   new ProjectReviewUserMapper(), projectReviewId, pageNo * pageSize, pageSize);
+    }
+
+    /**
+     * 根据外键（t_project_review_id）+获得指定页面数据
+     *
+     * @param projectReviewId
+     * @param pageNo          页号，从1开始
+     * @param pageSize        每页的记录数
+     */
+    private List<ProjectReviewUser> getPageQueryByProjectReviewIdAndUserAndResult(String projectReviewId,
+                                                                  String reviewUser,
+                                                                  int reviewResult,
+                                                                  int pageNo,
+                                                                  int pageSize) {
+        if(reviewUser != "") {
+            reviewUser = "%" + reviewUser + "%";
+            return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_project_review_user
+                                          INNER JOIN t_user ON t_project_review_user.t_user_id=t_user.id
+                                          WHERE t_project_review_user.t_project_review_id=? AND t_project_review_user.deleted_at IS NULL AND t_user.real_name LIKE ?
+                                          LIMIT ?,?
+                                          """,
+                    new ProjectReviewUserMapper(), projectReviewId, reviewUser, pageNo * pageSize, pageSize);
+        } else if(reviewResult != -1) {
+            return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_project_review_user
+                                          WHERE t_project_review_id=? AND deleted_at IS NULL AND review_result=?
+                                          LIMIT ?,?
+                                          """,
+                    new ProjectReviewUserMapper(), projectReviewId, reviewResult, pageNo * pageSize, pageSize);
+        } else {
+            return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_project_review_user
+                                          WHERE t_project_review_id=? AND deleted_at IS NULL
+                                          LIMIT ?,?
+                                          """,
+                    new ProjectReviewUserMapper(), projectReviewId, pageNo * pageSize, pageSize);
+        }
     }
 
     /**

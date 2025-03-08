@@ -279,6 +279,51 @@ public class MaterialRepositoryImpl implements IMaterialRepository {
         return i;
     }
 
+    @Override
+    public int getCountByLikeTechnologyAndProjectBindType(String technology,
+                                                    int projectBindType) {
+        technology = "%" + technology + "%";
+        Integer i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*) 
+                                                        FROM t_material
+                                                        WHERE technology LIKE ? 
+                                                          AND material_project_bind_type=? 
+                                                          AND deleted_at IS NULL
+                                                        """,
+                                                Integer.class, technology, projectBindType);
+        return i;
+    }
+
+    @Override
+    public int getCountByLikeInstallationAndProjectBindType(String installation,
+                                                    int projectBindType) {
+        installation = "%" + installation + "%";
+        Integer i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*) 
+                                                        FROM t_material
+                                                        WHERE installation LIKE ? 
+                                                          AND material_project_bind_type=? 
+                                                          AND deleted_at IS NULL
+                                                        """,
+                                                Integer.class, installation,projectBindType);
+        return i;
+    }
+
+    @Override
+    public int getCountByLikeBrandAndProjectBindType(String brand,
+                                                    int projectBindType) {
+        brand = "%" + brand + "%";
+        Integer i = jdbcTemplate.queryForObject("""
+                                          SELECT DISTINCT count(DISTINCT t_material.id)
+                                          FROM t_material
+                                          LEFT JOIN t_material_brand ON t_material.id=t_material_brand.t_material_id
+                                          LEFT JOIN t_brand ON t_brand.id=t_material_brand.t_brand_id
+                                          WHERE t_material.deleted_at IS NULL AND t_material_brand.deleted_at IS NULL AND t_brand.name LIKE ? AND t_material.material_project_bind_type=?
+                                                        """,
+                                                Integer.class, brand, projectBindType);
+        return i;
+    }
+
     /**
      * 根据id得到记录
      */
@@ -497,6 +542,42 @@ public class MaterialRepositoryImpl implements IMaterialRepository {
         return new Page<>(0, totalCount, (int) totalCount, resultData);
 
     }
+    @Override
+    public Page<Material> getPageByTechnologyAndProjectBindType(String technology,
+                                                          int projectBindType,
+                                                          Integer pageNo,
+                                                          Integer pageSize) {
+        long totalCount = getCountByLikeTechnologyAndProjectBindType(technology,projectBindType);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<Material> resultData = getPageQueryByTechnologyAndProjectBindType(technology, projectBindType,pageNo - 1, pageSize);
+        return new Page<>(0, totalCount, (int) totalCount, resultData);
+
+    }
+    @Override
+    public Page<Material> getPageByInstallationAndProjectBindType(String installation,
+                                                          int projectBindType,
+                                                          Integer pageNo,
+                                                          Integer pageSize) {
+        long totalCount = getCountByLikeInstallationAndProjectBindType(installation, projectBindType);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<Material> resultData = getPageQueryByInstallationAndProjectBindType(installation, projectBindType,pageNo - 1, pageSize);
+        return new Page<>(0, totalCount, (int) totalCount, resultData);
+
+    }
+    @Override
+    public Page<Material> getPageByBrandAndProjectBindType(String brand,
+                                                          int projectBindType,
+                                                          Integer pageNo,
+                                                          Integer pageSize) {
+        long totalCount = getCountByLikeBrandAndProjectBindType(brand, projectBindType);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<Material> resultData = getPageQueryByBrandAndProjectBindType(brand, projectBindType,pageNo - 1, pageSize);
+        return new Page<>(0, totalCount, (int) totalCount, resultData);
+
+    }
 
     private List<Material> getPageQueryByNameAndProjectBindType(String name,
                                                                 int projectBindType,
@@ -512,6 +593,57 @@ public class MaterialRepositoryImpl implements IMaterialRepository {
                                           LIMIT ?,?
                                           """,
                                   new MaterialMapper(), name, projectBindType,pageNo * pageSize, pageSize);
+    }
+
+    private List<Material> getPageQueryByTechnologyAndProjectBindType(String technology,
+                                                                int projectBindType,
+                                                                int pageNo,
+                                                                Integer pageSize) {
+        technology = "%" + technology + "%";
+        return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_material
+                                          WHERE technology LIKE ? 
+                                            AND material_project_bind_type=? 
+                                            AND deleted_at IS NULL
+                                          LIMIT ?,?
+                                          """,
+                                  new MaterialMapper(), technology, projectBindType,pageNo * pageSize, pageSize);
+    }
+
+    private List<Material> getPageQueryByInstallationAndProjectBindType(String installation,
+                                                                int projectBindType,
+                                                                int pageNo,
+                                                                Integer pageSize) {
+        installation = "%" + installation + "%";
+        return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_material
+                                          WHERE installation LIKE ? 
+                                            AND material_project_bind_type=? 
+                                            AND deleted_at IS NULL
+                                          LIMIT ?,?
+                                          """,
+                                  new MaterialMapper(), installation, projectBindType,pageNo * pageSize, pageSize);
+    }
+
+    private List<Material> getPageQueryByBrandAndProjectBindType(String brand,
+                                                                int projectBindType,
+                                                                int pageNo,
+                                                                Integer pageSize) {
+        brand = "%" + brand + "%";
+        return jdbcTemplate.query("""
+                                          SELECT DISTINCT t_material.* 
+                                          FROM t_material
+                                          LEFT JOIN t_material_brand ON t_material_brand.t_material_id=t_material.id
+                                          LEFT JOIN t_brand ON t_material_brand.t_brand_id=t_brand.id
+                                          WHERE t_brand.name LIKE ? 
+                                            AND t_material.material_project_bind_type=? 
+                                            AND t_material.deleted_at IS NULL
+                                            AND t_material_brand.deleted_at IS NULL
+                                          LIMIT ?,?
+                                          """,
+                                  new MaterialMapper(), brand, projectBindType,pageNo * pageSize, pageSize);
     }
 
     /**

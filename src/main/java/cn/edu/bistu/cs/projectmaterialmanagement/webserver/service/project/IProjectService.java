@@ -3,6 +3,8 @@ package cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.project.Project;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 public interface IProjectService {
@@ -58,6 +60,24 @@ public interface IProjectService {
                                        int pageNo,
                                        int pageSize);
 
+    Page<Project> getPageByProjectLocation(String projectLocation,
+                                       int pageNo,
+                                       int pageSize);
+
+    Page<Project> getPageByParams(String name,
+                                  String location,
+                                  BigDecimal totalTaxIncluded,
+                                  BigDecimal totalTaxNotIncluded,
+                                  BigDecimal buildingAreaAboveGround,
+                                  BigDecimal buildingAreaUnderGround,
+                                  String companyConstructionId,
+                                  String companyDesignId,
+                                  String note,
+                                  Date createDatetime,
+                                  Date endDatetime,
+                                  int pageNo,
+                                  int pageSize);
+
     Page<Project> getPageByProjectId(String projectId,
                                      int pageNo,
                                      int pageSize);
@@ -65,7 +85,6 @@ public interface IProjectService {
     Page<Project> getPageByKeyword(String keyword,
                                    int pageNo,
                                    int pageSize);
-
 
     Page<Project> getNotEndedProjectPageOfGeneralContractorCompany(String generalContractorCompanyId,
                                                                    Integer pageNo,

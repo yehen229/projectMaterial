@@ -167,6 +167,22 @@ public class ProjectMaterialServiceImpl implements IProjectMaterialService {
     }
 
     @Override
+    public Page<ProjectMaterial> getPageByProjectIdForDispatchView(String projectId,
+                                                                   String name,
+                                                                   String location,
+                                                                   String itemMark,
+                                                                   String technology,
+                                                                   String installation,
+                                                                   String brand,
+                                                                   String brandPrivate,
+                                                    int pageNo,
+                                                    int pageSize) {
+        return projectMaterialRepository.getPageByProjectIdWithParams(projectId, name, location, itemMark, technology, installation, brand, brandPrivate, pageNo, pageSize);
+    }
+
+
+
+    @Override
     public Page<ProjectMaterial> getReviewedAndApprovedUseMaterialViewPageByProjectId(String projectId,
                                                                                       Integer pageNo,
                                                                                       Integer pageSize) {
@@ -181,6 +197,23 @@ public class ProjectMaterialServiceImpl implements IProjectMaterialService {
                                                                 Integer pageSize) {
         return projectMaterialRepository.getPageByProjectIdAndCompanyId(projectId, companyId, pageNo, pageSize);
     }
+
+    @Override
+    public Page<ProjectMaterial> getPageBySearchParams(String projectId,
+                                                                String companyId,
+                                                                String name,
+                                                                String location,
+                                                                String itemMark,
+                                                                String technology,
+                                                                String installation,
+                                                                String brandPublic,
+                                                                String brandPrivate,
+                                                                Integer pageNo,
+                                                                Integer pageSize) {
+        return projectMaterialRepository.getSearchPageByProjectIdAndCompanyId(projectId, companyId, name, location, itemMark, technology, installation, brandPublic, brandPrivate, pageNo, pageSize);
+    }
+
+
 
     @Override
     public Page<ProjectMaterial> getSearchPageByProjectIdAndCompanyId(String projectId,

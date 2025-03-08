@@ -26,6 +26,7 @@ public interface IUserRepository{
 	int getCountLikeEmail(String email);
 	User getById(String id);
 	User getByUserName(String userName);
+	User getByRealName(String realName);
 	User getByTel(String tel);
 	User getByEmail(String email);
 

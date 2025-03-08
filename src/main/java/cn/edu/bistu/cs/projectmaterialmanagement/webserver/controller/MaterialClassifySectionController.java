@@ -71,4 +71,11 @@ public class MaterialClassifySectionController {
         return materialClassifySectionService.getTree();
     }
 
+    //根据名称查询，大类、中类、小类
+    @GetMapping(value = "get-tree-by-name")
+    public MaterialClassifyTree getTreeByName(@RequestParam(value = "name") String name) {
+        return materialClassifySectionService.getTreeByName(name);
+    }
+
+
 }

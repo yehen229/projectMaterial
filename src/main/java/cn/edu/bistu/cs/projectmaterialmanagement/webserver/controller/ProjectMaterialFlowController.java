@@ -990,11 +990,13 @@ public class ProjectMaterialFlowController {
             @RequestParam("projectId") String projectId,
             @RequestParam(value = "taskId") String taskId,
             @RequestParam(value = "designCompanyIndex" ) int designCompanyIndex,
+            @RequestParam(value = "reviewUser") String reviewUser,
+            @RequestParam(value = "reviewResult") int reviewResult,
             @RequestParam(value = "pageNo", required = false) Integer pageNo,
             @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         pageNo = pageNo == null ? 1 : pageNo;
         pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
-        return projectMaterialFlow.getProjectMaterialUserUserReViewPageByProjectIdAndTaskId(projectId, taskId, designCompanyIndex, pageNo,
+        return projectMaterialFlow.getProjectMaterialUserUserReViewPageByProjectIdAndTaskId(projectId, taskId, designCompanyIndex, reviewUser, reviewResult, pageNo,
                                                                                             pageSize);
     }
 
@@ -1160,12 +1162,20 @@ public class ProjectMaterialFlowController {
             @RequestParam("projectId") String projectId,
             @RequestParam(value = "taskId") String taskId,
             @RequestParam(value = "designCompanyIndex") Integer designCompanyIndex,
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "location", required = false) String location,
+            @RequestParam(value = "itemMark", required = false) String itemMark,
+            @RequestParam(value = "technology", required = false) String technology,
+            @RequestParam(value = "installation", required = false) String installation,
+            @RequestParam(value = "brandPublic", required = false) String brandPublic,
+            @RequestParam(value = "brandPrivate", required = false) String brandPrivate,
             @RequestParam(value = "pageNo", required = false) Integer pageNo,
             @RequestParam(value = "pageSize", required = false) Integer pageSize) {
 
         pageNo = pageNo == null ? 1 : pageNo;
         pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
         return projectMaterialFlow.getProjectMaterialPageViewByTaskIdAndProjectId(projectId, taskId, designCompanyIndex,
+                                                                                  name, location, itemMark, technology, installation, brandPublic, brandPrivate,
                                                                                   pageNo, pageSize);
     }
 }

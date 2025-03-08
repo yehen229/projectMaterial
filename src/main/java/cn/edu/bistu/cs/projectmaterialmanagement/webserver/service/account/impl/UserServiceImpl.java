@@ -175,6 +175,11 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public User getByRealName(String realName) {
+        return userRepository.getByRealName(realName);
+    }
+
+    @Override
     public boolean isAdmin(String id) {
         return false;
     }

@@ -26,13 +26,21 @@ public interface IMaterialBusinessService {
 
     Page<MaterialView> getPageByMaterialClassifySectionId(String classifySectionId, Integer pageNo, Integer pageSize);
 
-    Page<MaterialView> getPageViewByProjectBindType(int projectBindType,Integer pageNo, Integer pageSize);
+    Page<MaterialView> getPageViewByProjectBindType(int projectBindType, Integer pageNo, Integer pageSize);
+
+    Page<MaterialView> getPageViewByProjectBindTypeAndSearchParams(int projectBindType, String name, String location, String itemMark, String technology, String installation, String brand, Integer pageNo, Integer pageSize);
 
     Page<MaterialView> getPageViewByNameAndProjectBindType(String name, int projectBindType,Integer pageNo, Integer pageSize);
 
     Page<MaterialView> getPageViewByLocationAndProjectBindType(String location, int projectBindType,Integer pageNo, Integer pageSize);
 
     Page<MaterialView> getPageViewByItemMarkAndProjectBindType(String itemMark, int projectBindType,Integer pageNo, Integer pageSize);
+
+    Page<MaterialView> getPageViewByTechnologyAndProjectBindType(String technology, int projectBindType,Integer pageNo, Integer pageSize);
+
+    Page<MaterialView> getPageViewByInstallationAndProjectBindType(String installation, int projectBindType,Integer pageNo, Integer pageSize);
+
+    Page<MaterialView> getPageViewByBrandAndProjectBindType(String brand, int projectBindType,Integer pageNo, Integer pageSize);
 
     Page<MaterialView> getPageByMaterialClassifySectionIdAndProjectBindType(String classifySectionId, int projectBindType,Integer pageNo, Integer pageSize);
 

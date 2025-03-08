@@ -36,6 +36,19 @@ public interface IProjectMaterialService {
                                              int pageNo,
                                              int pageSize);
 
+    Page<ProjectMaterial> getPageByProjectIdForDispatchView(String projectId,
+                                                            String name,
+                                                            String location,
+                                                            String itemMark,
+                                                            String technology,
+                                                            String installation,
+                                                            String brand,
+                                                            String brandPrivate,
+                                                            int pageNo,
+                                                            int pageSize);
+
+
+
 
     Page<ProjectMaterial> getReviewedAndApprovedUseMaterialViewPageByProjectId(String projectId,
                                                                                Integer pageNo,
@@ -45,6 +58,19 @@ public interface IProjectMaterialService {
                                                          String companyId,
                                                          Integer pageNo,
                                                          Integer pageSize);
+
+    Page<ProjectMaterial> getPageBySearchParams(String projectId,
+                                                         String companyId,
+                                                         String name,
+                                                         String location,
+                                                         String itemMark,
+                                                         String technology,
+                                                         String installation,
+                                                         String brandPublic,
+                                                         String brandPrivate,
+                                                         Integer pageNo,
+                                                         Integer pageSize);
+
 
     Page<ProjectMaterial> getSearchPageByProjectIdAndCompanyId(String projectId,
                                                          String companyId,

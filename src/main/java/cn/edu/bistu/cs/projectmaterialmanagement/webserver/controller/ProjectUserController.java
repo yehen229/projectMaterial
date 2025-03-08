@@ -393,14 +393,14 @@ public class ProjectUserController {
         return projectUserService.getPageAllUserView(pageNo, pageSize);
     }
 
-    @GetMapping(value = "page-all-user-view-by-user-name")
-    public Page<ProjectAllUserView> getPageAllUserViewByUserName(
-            @RequestParam(value = "userName") String userName,
+    @GetMapping(value = "page-all-user-view-by-real-name")
+    public Page<ProjectAllUserView> getPageAllUserViewByRealName(
+            @RequestParam(value = "realName") String realName,
             @RequestParam(value = "pageNo", required = false) Integer pageNo,
             @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         pageNo = pageNo == null ? 1 : pageNo;
         pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
-        return projectUserService.getPageAllUserViewByUserName(userName, pageNo, pageSize);
+        return projectUserService.getPageAllUserViewByRealName(realName, pageNo, pageSize);
     }
 
     @GetMapping(value = "page-all-user-view-by-company-name")

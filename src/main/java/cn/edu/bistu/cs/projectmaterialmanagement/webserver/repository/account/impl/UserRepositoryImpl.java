@@ -225,6 +225,27 @@ public class UserRepositoryImpl implements IUserRepository {
     }
 
     @Override
+    public User getByRealName(String realName) {
+        realName = "%" + realName.trim() + "%";
+        Integer i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*) 
+                                                        FROM t_user 
+                                                        WHERE real_name LIKE ? AND deleted_at IS NULL
+                                                        """, Integer.class, realName);
+        if (i == null || i != 1)
+            return null;
+
+        return jdbcTemplate.queryForObject("""
+                                                   SELECT * 
+                                                   FROM t_user
+                                                   WHERE real_name LIKE ? AND deleted_at IS NULL
+                                                   """,
+                                           new UserMapper(), realName);
+    }
+
+
+
+    @Override
     public User getByTel(String tel) {
         Integer i = jdbcTemplate.queryForObject("""
                                                         SELECT count(*) 

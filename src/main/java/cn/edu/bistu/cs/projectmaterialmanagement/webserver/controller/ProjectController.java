@@ -9,7 +9,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Date;
 
 @RestController
 @RequestMapping("project/v1")
@@ -134,6 +136,35 @@ public class ProjectController {
         return projectBusinessService.getPageViewByProjectName(projectName, pageNo, pageSize);
     }
 
+    @GetMapping(value = "page-view-by-project-location")
+    public Page<ProjectView> getPageViewByProjectLocation(
+            @RequestParam(value = "projectLocation", required = true) String projectLocation,
+            @RequestParam(value = "pageNo", required = false) Integer pageNo,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+        return projectBusinessService.getPageViewByProjectLocation(projectLocation, pageNo, pageSize);
+    }
+
+    @GetMapping(value = "page-view-by-params")
+    public Page<ProjectView> getPageViewByParams(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "location", required = false) String location,
+            @RequestParam(value = "totalTaxIncluded", required = false) BigDecimal totalTaxIncluded,
+            @RequestParam(value = "totalTaxNotIncluded", required = false) BigDecimal totalTaxNotIncluded,
+            @RequestParam(value = "buildingAreaAboveGround", required = false) BigDecimal buildingAreaAboveGround,
+            @RequestParam(value = "buildingAreaUnderGround", required = false) BigDecimal buildingAreaUnderGround,
+            @RequestParam(value = "companyConstructionId", required = false) String companyConstructionId,
+            @RequestParam(value = "companyDesignId", required = false) String companyDesignId,
+            @RequestParam(value = "note", required = false) String note,
+            @RequestParam(value = "createDatetime", required = false) Date createDatetime,
+            @RequestParam(value = "endDatetime", required = false) Date endDatetime,
+            @RequestParam(value = "pageNo", required = false) Integer pageNo,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+        return projectBusinessService.getPageViewByParams(name, location, totalTaxIncluded, totalTaxNotIncluded, buildingAreaAboveGround, buildingAreaUnderGround, companyConstructionId, companyDesignId, note, createDatetime, endDatetime, pageNo, pageSize);
+    }
 
     @GetMapping(value = "page-view-by-keyword")
     public Page<ProjectView> getPageViewByKeyword(

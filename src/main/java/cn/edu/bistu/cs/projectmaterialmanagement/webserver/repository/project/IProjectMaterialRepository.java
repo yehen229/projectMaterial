@@ -41,6 +41,16 @@ public interface IProjectMaterialRepository {
                          String brand,
                          String brandPrivate);
 
+
+    int getCountBySearchNoCompanyId(String projectId,
+                                                 String name,
+                                                 String location,
+                                                 String itemMark,
+                                                 String technology,
+                                                 String installation,
+                                                 String brand,
+                                                 String brandPrivate);
+
     int getCountOfReviewedAndApprovedUseMaterialByProjectId(String projectId);
 
     ProjectMaterial getById(String id);
@@ -56,6 +66,19 @@ public interface IProjectMaterialRepository {
     Page<ProjectMaterial> getPageByProjectId(String projectId,
                                              int pageNo,
                                              int pageSize);
+
+    Page<ProjectMaterial> getPageByProjectIdWithParams(String projectId,
+                                                        String name,
+                                                        String location,
+                                                        String itemMark,
+                                                        String technology,
+                                                        String installation,
+                                                        String brand,
+                                                        String brandPrivate,
+                                             int pageNo,
+                                             int pageSize);
+
+
 
 
     Page<ProjectMaterial> getReviewedAndApprovedUseMaterialViewPageByProjectId(String projectId,
@@ -79,6 +102,7 @@ public interface IProjectMaterialRepository {
                                                          String brandPrivate,
                                                          Integer pageNo,
                                                          Integer pageSize);
+
 
     List<ProjectMaterial> getByProjectIdandCompanyId(String projectId, String companyId);
 }

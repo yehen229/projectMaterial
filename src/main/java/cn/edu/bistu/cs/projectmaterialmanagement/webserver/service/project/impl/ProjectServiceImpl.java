@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -244,6 +246,32 @@ public class ProjectServiceImpl implements IProjectService {
                                               int pageSize) {
         return projectRepository.getPageByProjectName(projectName, pageNo, pageSize);
     }
+    @Override
+    public Page<Project> getPageByProjectLocation(String projectLocation,
+                                              int pageNo,
+                                              int pageSize) {
+        return projectRepository.getPageByProjectLocation(projectLocation, pageNo, pageSize);
+    }
+
+        @Override
+    public Page<Project> getPageByParams(String name,
+                                         String location,
+                                         BigDecimal totalTaxIncluded,
+                                         BigDecimal totalTaxNotIncluded,
+                                         BigDecimal buildingAreaAboveGround,
+                                         BigDecimal buildingAreaUnderGround,
+                                         String companyConstructionId,
+                                         String companyDesignId,
+                                         String note,
+                                         Date createDatetime,
+                                         Date endDatetime,
+                                         int pageNo,
+                                         int pageSize) {
+        return projectRepository.getPageByParams(name, location, totalTaxIncluded, totalTaxNotIncluded, buildingAreaAboveGround, buildingAreaUnderGround, companyConstructionId, companyDesignId, note, createDatetime, endDatetime , pageNo, pageSize);
+    }
+
+
+
 
     @Override
     public Page<Project> getPageByProjectId(String projectId,
@@ -258,6 +286,7 @@ public class ProjectServiceImpl implements IProjectService {
                                           int pageSize) {
         return projectRepository.getPageByKeyword(keyword, pageNo, pageSize);
     }
+
 
     @Override
     public Page<Project> getNotEndedProjectPageOfGeneralContractorCompany(String generalContractorCompanyId,

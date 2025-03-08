@@ -1732,12 +1732,39 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
     }
 
     @Override
+    public Page<ProjectView> getPageViewByProjectLocation(String projectLocation,
+                                                      int pageNo,
+                                                      int pageSize) {
+        Page<Project> projectPage = projectService.getPageByProjectLocation(projectLocation, pageNo, pageSize);
+        return convertProjectPage2PageView(projectPage, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<ProjectView> getPageViewByParams(String name,
+                                                 String location,
+                                                 BigDecimal totalTaxIncluded,
+                                                 BigDecimal totalTaxNotIncluded,
+                                                 BigDecimal buildingAreaAboveGround,
+                                                 BigDecimal buildingAreaUnderGround,
+                                                 String companyConstructionId,
+                                                 String companyDesignId,
+                                                 String note,
+                                                 Date createDatetime,
+                                                 Date endDatetime,
+                                                      int pageNo,
+                                                      int pageSize) {
+        Page<Project> projectPage = projectService.getPageByParams(name, location, totalTaxIncluded, totalTaxNotIncluded, buildingAreaAboveGround, buildingAreaUnderGround, companyConstructionId, companyDesignId, note, createDatetime, endDatetime , pageNo, pageSize);
+        return convertProjectPage2PageView(projectPage, pageNo, pageSize);
+    }
+
+    @Override
     public Page<ProjectView> getPageViewByKeyword(String keyword,
                                                   int pageNo,
                                                   int pageSize) {
         Page<Project> projectPage = projectService.getPageByKeyword(keyword, pageNo, pageSize);
         return convertProjectPage2PageView(projectPage, pageNo, pageSize);
     }
+
 
     @Override
     public String addFormOfGeneralContractorBrandSelectAndUseMaterial(UseMaterialForm useMaterialForm) {
@@ -2286,6 +2313,72 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
 
 
     }
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndName(String projectId,
+                                                                                      String name,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+
+
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndName(projectId, name, pageNo, pageSize);
+
+
+    }
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndLocation(String projectId,
+                                                                                      String location,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+
+
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndLocation(projectId, location, pageNo, pageSize);
+
+
+    }
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndItemMark(String projectId,
+                                                                                      String itemMark,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+
+
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndItemMark(projectId, itemMark, pageNo, pageSize);
+
+
+    }
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndTechnology(String projectId,
+                                                                                      String technology,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+
+
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndTechnology(projectId, technology, pageNo, pageSize);
+
+
+    }
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndInstallation(String projectId,
+                                                                                      String installation,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+
+
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndInstallation(projectId, installation, pageNo, pageSize);
+
+
+    }
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndBrand(String projectId,
+                                                                                      String brand,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+
+
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndBrand(projectId, brand, pageNo, pageSize);
+
+
+    }
 
     /**
      * 总包单位提交了品牌选择、物料使用申请后，经过层层审批，已经获得通过，将这些通过的新品牌增加到项目私有品牌中
@@ -2419,9 +2512,11 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
 
     @Override
     public Page<ProjectReviewUserView> getProjectMaterialUserUserReViewPageByTaskId(String projectReviewId,
+                                                                                    String reviewUser,
+                                                                                    int reviewResult,
                                                                                     Integer pageNo,
                                                                                     Integer pageSize) {
-        return projectReviewBusinessService.getPageViewByProjectReviewId(projectReviewId, pageNo, pageSize);
+        return projectReviewBusinessService.getPageViewByProjectReviewId(projectReviewId, reviewUser, reviewResult, pageNo, pageSize);
     }
     @Override
     public String addFormOfGeneralContractorBuyMaterialSelect(BuyMaterialForm buyMaterialForm){
@@ -2597,10 +2692,18 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
     @Override
     public Page<ProjectMaterialView> getProjectMaterialPageViewByProjectIdAndCompanyId(String projectId,
                                                                                        String companyId,
+                                                                                       String name,
+                                                                                       String location,
+                                                                                       String itemMark,
+                                                                                       String technology,
+                                                                                       String installation,
+                                                                                       String brandPublic,
+                                                                                       String brandPrivate,
                                                                                        Integer pageNo,
                                                                                        Integer pageSize) {
 
         return projectMaterialBusinessService.getProjectMaterialPageViewByProjectIdAndCompanyId(projectId, companyId,
+                                                                                                name, location, itemMark, technology, installation, brandPublic, brandPrivate,
                                                                                                 pageNo, pageSize);
 
     }

@@ -178,6 +178,17 @@ public class ProjectReviewUserServiceImpl implements IProjectReviewUserService {
     public Page<ProjectReviewUser> getPageByProjectReviewId(String projectReviewId, int pageNo, int pageSize) {
         return projectReviewUserRepository.getPageByProjectReviewId(projectReviewId, pageNo, pageSize);
     }
+    /**
+     * 获得指定页面数据
+     *
+     * @param projectReviewId
+     * @param pageNo          页号，从1开始
+     * @param pageSize        每页的记录数
+     */
+    @Override
+    public Page<ProjectReviewUser> getPageByProjectReviewIdAndUserAndResult(String projectReviewId, String reviewUser, int reviewResult, int pageNo, int pageSize) {
+        return projectReviewUserRepository.getPageByProjectReviewIdAndUserAndResult(projectReviewId, reviewUser, reviewResult, pageNo, pageSize);
+    }
 
     @Override
     public int getCountByProjectReviewIdAndResult(String projectReviewId, int nReviewResult) {
