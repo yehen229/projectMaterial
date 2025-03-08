@@ -76,7 +76,7 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
 
 
     private final IBuyMaterialService buyMaterialService;
-    private final IBuyMaterialSelectService buyMaterialSelectService;
+    private final IBuyMaterialBatchService buyMaterialBatchService;
     private final IProjectMaterialVerificationDocumentService projectMaterialVerificationDocumentService;
     private final IProjectMaterialVerificationDocumentFileService projectMaterialVerificationDocumentFileService;
 
@@ -99,6 +99,7 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
     private final IProjectMaterialRetestBusinessService projectMaterialRetestBusinessService;
 
     private final IProjectMaterialHistoryService projectMaterialHistoryService;
+    private final IProjectMaterialRetestBatchService projectMaterialRetestBatchService;
 
     public ProjectBusinessServiceImpl(
             IMaterialService materialService,
@@ -133,7 +134,7 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
             IProjectAppearanceReviewUserFileService projectAppearanceReviewUserFileService,
             IProjectAppearanceBusinessService projectAppearanceBusinessService,
             IBuyMaterialService buyMaterialService,
-            IBuyMaterialSelectService buyMaterialSelectService,
+            IBuyMaterialBatchService buyMaterialBatchService,
             IProjectMaterialVerificationDocumentService projectMaterialVerificationDocumentService,
             IProjectMaterialVerificationDocumentFileService projectMaterialVerificationDocumentFileService,
             IProjectMaterialRetestService projectMaterialRetestService,
@@ -150,7 +151,8 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
             IProjectEndFileService projectEndFileService,
             IProjectDesignCompanyService projectDesignCompanyService,
             IProjectMaterialRetestBusinessService projectMaterialRetestBusinessService,
-            IProjectMaterialHistoryService projectMaterialHistoryService) {
+            IProjectMaterialHistoryService projectMaterialHistoryService,
+            IProjectMaterialRetestBatchService projectMaterialRetestBatchService) {
         this.materialService = materialService;
         this.projectService = projectService;
         this.projectReviewModeService = projectReviewModeService;
@@ -186,7 +188,7 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
         this.projectAppearanceReviewUserFileService = projectAppearanceReviewUserFileService;
         this.projectAppearanceBusinessService = projectAppearanceBusinessService;
         this.buyMaterialService = buyMaterialService;
-        this.buyMaterialSelectService = buyMaterialSelectService;
+        this.buyMaterialBatchService = buyMaterialBatchService;
         this.projectMaterialVerificationDocumentService = projectMaterialVerificationDocumentService;
         this.projectMaterialVerificationDocumentFileService = projectMaterialVerificationDocumentFileService;
         this.projectMaterialRetestService = projectMaterialRetestService;
@@ -205,6 +207,7 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
         this.projectMaterialRetestBusinessService = projectMaterialRetestBusinessService;
 
         this.projectMaterialHistoryService = projectMaterialHistoryService;
+        this.projectMaterialRetestBatchService = projectMaterialRetestBatchService;
     }
 
 
@@ -1041,19 +1044,44 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
     /**
      * 监理公司决定是否需要复检
      *
-     * @param projectMaterialRetestForm
+     * @param projectMaterialRetestList
      * @return
      */
     @Override
-    public String submitSupervisionCompanyDecideWhetherToRecheck(ProjectMaterialRetestForm projectMaterialRetestForm) {
-        if (projectMaterialRetestForm == null)
-            throw new BusinessException("参数为空");
-        ProjectMaterialRetest projectMaterialRetest = projectMaterialRetestForm.getProjectMaterialRetest();
-        if (projectMaterialRetest == null)
+    public String submitSupervisionCompanyDecideWhetherToRecheck(List<ProjectMaterialRetest> projectMaterialRetestList,String tempFileDir) {
+
+        if (projectMaterialRetestList == null || projectMaterialRetestList.isEmpty())
             throw new BusinessException("参数为空");
 
+        ProjectMaterialRetest projectMaterialRetestFirst = projectMaterialRetestList.getFirst();
+        if (projectMaterialRetestFirst==null || projectMaterialRetestFirst.getBuyMaterialId()==null)
+            throw new BusinessException("参数错误，没有找到需要复检的物料");
+        String buyMaterialId=projectMaterialRetestFirst.getBuyMaterialId();
+        BuyMaterial buyMaterial = buyMaterialService.getById(buyMaterialId);
+        if (buyMaterial==null)
+            throw new BusinessException("参数错误，没有找到需要复检的物料");
+        BuyMaterialBatch buyMaterialBatch = buyMaterialBatchService.getById(buyMaterial.getBuyMaterialBatchId());
+        if (buyMaterialBatch==null)
+            throw new BusinessException("参数错误，没有找到需要复检的物料");
 
-        String userId = projectMaterialRetest.getUserId();
+
+
+
+        ProjectMaterialRetestBatch projectMaterialRetestBatch = new ProjectMaterialRetestBatch();
+        projectMaterialRetestBatch.setCreateDatetime(new Date());
+        projectMaterialRetestBatch.setUserId(userService.getCurrentLoginUser().getId());
+        projectMaterialRetestBatch.setDeletedAt(null);
+        projectMaterialRetestBatch.setProjectId(buyMaterialBatch.getProjectId());
+        projectMaterialRetestBatch.setBuyMaterialBatchId(buyMaterialBatch.getId());
+        String projectMaterialRetestBatchId = projectMaterialRetestBatchService.add(projectMaterialRetestBatch);
+
+        if(projectMaterialRetestBatchId==null)
+            throw new BusinessException("添加项目材料复检批次失败");
+
+
+
+
+        String userId = projectMaterialRetestFirst.getUserId();
         if (userId == null)
             throw new BusinessException("用户参数为空");
 
@@ -1061,28 +1089,37 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
         User user = userService.getCurrentLoginUser();
         if (!user.getId().equalsIgnoreCase(userId))
             throw new BusinessException("用户参数错误");
-        projectMaterialRetest.setReviewDatetime(new Date());
-        projectMaterialRetest.setReviewContent(projectMaterialRetest.getReviewContent());
-        projectMaterialRetest.setDeletedAt(null);
 
-        //是否需要复检。0：不需要，1需要
-        if (projectMaterialRetest.getNeedRetest() == 0)
-            projectMaterialRetest.setNeedRetest(0);
-        else projectMaterialRetest.setNeedRetest(1);
 
-        //审核结果，0未审核；1审核通过；2.审核不通过
-        if (projectMaterialRetest.getReviewResult() == 1)
-            projectMaterialRetest.setReviewResult(IProjectReviewService.PROJECT_REVIEW_RESULT_ACCEPTED);
-        else if (projectMaterialRetest.getReviewResult() == 2)
-            projectMaterialRetest.setReviewResult(IProjectReviewService.PROJECT_REVIEW_RESULT_REJECTED);
-        else projectMaterialRetest.setReviewResult(IProjectReviewService.PROJECT_REVIEW_RESULT_UNKNOWN);
+        projectMaterialRetestList.forEach(projectMaterialRetest -> {
+            projectMaterialRetest.setReviewDatetime(new Date());
+            projectMaterialRetest.setReviewContent(projectMaterialRetest.getReviewContent());
+            projectMaterialRetest.setDeletedAt(null);
+            projectMaterialRetest.setProjectMaterialRetestBatchId(projectMaterialRetestBatchId);
 
-        String projectMaterialRetestId = projectMaterialRetestService.add(projectMaterialRetest);
+            //是否需要复检。0：不需要，1需要
+            if (projectMaterialRetest.getNeedRetest() == 0)
+                projectMaterialRetest.setNeedRetest(0);
+            else projectMaterialRetest.setNeedRetest(1);
 
-        if (projectMaterialRetest.getNeedRetest() == 1) {
-            //复检，才需要添加附件
+            //审核结果，0未审核；1审核通过；2.审核不通过
+            if (projectMaterialRetest.getReviewResult() == 1)
+                projectMaterialRetest.setReviewResult(IProjectReviewService.PROJECT_REVIEW_RESULT_ACCEPTED);
+            else if (projectMaterialRetest.getReviewResult() == 2)
+                projectMaterialRetest.setReviewResult(IProjectReviewService.PROJECT_REVIEW_RESULT_REJECTED);
+            else projectMaterialRetest.setReviewResult(IProjectReviewService.PROJECT_REVIEW_RESULT_UNKNOWN);
+
+            String projectMaterialRetestId = projectMaterialRetestService.add(projectMaterialRetest);
+            if (projectMaterialRetestId == null)
+                throw new BusinessException("添加项目材料复检批次失败");
+        });
+
+
+
+
+
             //添加附件
-            String tempFileDir = projectMaterialRetestForm.getReviewTempDir();
+           // String tempFileDir = projectMaterialRetestForm.getReviewTempDir();
             String pathTemp = FileUtils.getFilePath(tempFileDir, true);
             String pathDest = FileUtils.getFilePath("", false);
             List<String> listPath = FileUtils.listFiles(pathTemp);
@@ -1091,17 +1128,17 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
                     String newFileName = GUID.getGUID() + fileName.substring(fileName.lastIndexOf("."));
                     String newFileNamePath = pathDest + newFileName;
                     if (FileUtils.MoveFile(pathTemp + fileName, newFileNamePath)) {
-                        ProjectMaterialRetestFile projectMaterialRetestFile = new ProjectMaterialRetestFile();
-                        projectMaterialRetestFile.setProjectMaterialRetestId(projectMaterialRetestId);
+                        ProjectMaterialRetestBatchFile projectMaterialRetestFile = new ProjectMaterialRetestBatchFile();
+                        projectMaterialRetestFile.setProjectMaterialRetestBatchId(projectMaterialRetestBatchId);
                         projectMaterialRetestFile.setFilePath(newFileName);
                         projectMaterialRetestFileService.add(projectMaterialRetestFile);
                     }
                 }
             }
-        }
 
 
-        return projectMaterialRetestId;
+
+        return projectMaterialRetestBatchId;
 
     }
 
@@ -1142,6 +1179,7 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
                 throw new BusinessException("项目验收材料数据错误");
         }
 
+        //生成一个验收批次
         String projectMaterialAcceptanceBatchId = projectMaterialAcceptanceBatchService.add(
                 projectMaterialAcceptanceBatch);
 
@@ -2313,72 +2351,6 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
 
 
     }
-    @Override
-    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndName(String projectId,
-                                                                                      String name,
-                                                                                      Integer pageNo,
-                                                                                      Integer pageSize) {
-
-
-        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndName(projectId, name, pageNo, pageSize);
-
-
-    }
-    @Override
-    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndLocation(String projectId,
-                                                                                      String location,
-                                                                                      Integer pageNo,
-                                                                                      Integer pageSize) {
-
-
-        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndLocation(projectId, location, pageNo, pageSize);
-
-
-    }
-    @Override
-    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndItemMark(String projectId,
-                                                                                      String itemMark,
-                                                                                      Integer pageNo,
-                                                                                      Integer pageSize) {
-
-
-        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndItemMark(projectId, itemMark, pageNo, pageSize);
-
-
-    }
-    @Override
-    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndTechnology(String projectId,
-                                                                                      String technology,
-                                                                                      Integer pageNo,
-                                                                                      Integer pageSize) {
-
-
-        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndTechnology(projectId, technology, pageNo, pageSize);
-
-
-    }
-    @Override
-    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndInstallation(String projectId,
-                                                                                      String installation,
-                                                                                      Integer pageNo,
-                                                                                      Integer pageSize) {
-
-
-        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndInstallation(projectId, installation, pageNo, pageSize);
-
-
-    }
-    @Override
-    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndBrand(String projectId,
-                                                                                      String brand,
-                                                                                      Integer pageNo,
-                                                                                      Integer pageSize) {
-
-
-        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndBrand(projectId, brand, pageNo, pageSize);
-
-
-    }
 
     /**
      * 总包单位提交了品牌选择、物料使用申请后，经过层层审批，已经获得通过，将这些通过的新品牌增加到项目私有品牌中
@@ -2518,20 +2490,31 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
                                                                                     Integer pageSize) {
         return projectReviewBusinessService.getPageViewByProjectReviewId(projectReviewId, reviewUser, reviewResult, pageNo, pageSize);
     }
+
+    /**
+     * 添加购买的物料
+     * @param buyMaterialForm
+     * @return
+     */
     @Override
     public String addFormOfGeneralContractorBuyMaterialSelect(BuyMaterialForm buyMaterialForm){
         if (buyMaterialForm == null || buyMaterialForm.getBuyMaterials().length == 0)
             throw new BusinessException("参数为空");
+
         User user = userService.getCurrentLoginUser();
         if (user == null)
             throw new BusinessException("用户未登录，添加失败");
-        BuyMaterialSelect buyMaterialSelect = new BuyMaterialSelect();
-        buyMaterialSelect.setUserId(user.getId());
-        buyMaterialSelect.setProjectId(buyMaterialForm.getProjectId());
-        buyMaterialSelect.setCreateDatetime(new Date());
-        String buyMaterialSelectId = buyMaterialSelectService.add(buyMaterialSelect);
-        if (buyMaterialSelectId == null)
+
+        //增加订购批次（一个批次可以包含多个品种的物料）
+        BuyMaterialBatch buyMaterialBatch = new BuyMaterialBatch();
+        buyMaterialBatch.setUserId(user.getId());
+        buyMaterialBatch.setProjectId(buyMaterialForm.getProjectId());
+        buyMaterialBatch.setCreateDatetime(new Date());
+        String buyMaterialBatchId = buyMaterialBatchService.add(buyMaterialBatch);
+
+        if (buyMaterialBatchId == null)
             throw new BusinessException("添加失败");
+
         List<String> buyMaterialIds = new ArrayList<>();
         for (BuyMaterial buyMaterial : buyMaterialForm.getBuyMaterials()) {
             UseMaterial useMaterial = useMaterialService.getById(buyMaterial.getUseMaterialId());
@@ -2562,12 +2545,12 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
                 throw new BusinessException("数量单位为空");
             }
 
-            buyMaterial.setBuyMaterialSelectId(buyMaterialSelectId); // 关联批次 ID
+            buyMaterial.setBuyMaterialBatchId(buyMaterialBatchId); // 关联批次 ID
 
             String buyMaterialId = buyMaterialService.add(buyMaterial);
             buyMaterialIds.add(buyMaterialId);
         }
-        return buyMaterialSelectId;
+        return buyMaterialBatchId;
     }
 
     @Override
@@ -2650,6 +2633,59 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
     public List<ProjectMaterialVerificationDocumentView> getListProjectMaterialVerificationDocumentViewOfReCheckIsRequiredByBuyMaterialId(String buyMaterialId) {
         return getProjectMaterialVerificationDocumentViewByBuyMaterialId(buyMaterialId);
 
+    }
+
+    @Override
+    public List<ProjectMaterialVerificationDocumentView> getListMaterialVerificationDocumentViewByBuyMaterialBatchId(String buyMaterialBatchId) {
+        List<BuyMaterial> buyMaterialList = buyMaterialService.getByBuyMaterialBatchId(buyMaterialBatchId);
+
+        if(buyMaterialList == null || buyMaterialList.isEmpty())
+            return null;
+
+        List<ProjectMaterialVerificationDocumentView> result = new ArrayList<>();
+        for (BuyMaterial buyMaterial : buyMaterialList) {
+            List<ProjectMaterialVerificationDocument> projectMaterialVerificationDocumentList = projectMaterialVerificationDocumentService.getByBuyMaterialId(
+                    buyMaterial.getId());
+
+            if (projectMaterialVerificationDocumentList == null || projectMaterialVerificationDocumentList.isEmpty()) {
+                ProjectMaterialVerificationDocumentView projectMaterialVerificationDocumentView = new ProjectMaterialVerificationDocumentView();
+                BuyMaterialView buyMaterialView = getBuyMaterialViewByBuyMaterialId(buyMaterial.getId());
+                if (buyMaterialView == null) return null;
+
+                projectMaterialVerificationDocumentView.setBuyMaterialView(buyMaterialView);
+                projectMaterialVerificationDocumentView.setUser(userService.getCurrentLoginUser());
+                projectMaterialVerificationDocumentView.setProjectMaterialVerificationDocument(null);
+                projectMaterialVerificationDocumentView.setProjectMaterialVerificationDocumentFileList(null);
+                result.add( projectMaterialVerificationDocumentView);
+            } else {
+
+                projectMaterialVerificationDocumentList.forEach(projectMaterialVerificationDocument -> {
+                    ProjectMaterialVerificationDocumentView projectMaterialVerificationDocumentView = new ProjectMaterialVerificationDocumentView();
+                    projectMaterialVerificationDocumentView.setUser(
+                            userService.getById(projectMaterialVerificationDocument.getUserId()));
+                    projectMaterialVerificationDocumentView.setProjectMaterialVerificationDocument(
+                            projectMaterialVerificationDocument);
+                    projectMaterialVerificationDocumentView.setProjectMaterialVerificationDocumentFileList(
+                            projectMaterialVerificationDocumentFileService.getByProjectMaterialVerificationDocumentId(
+                                    projectMaterialVerificationDocument.getId()));
+                    projectMaterialVerificationDocumentView.setBuyMaterialView(
+                            getBuyMaterialViewByBuyMaterialId(buyMaterial.getId()));
+                    result.add(projectMaterialVerificationDocumentView);
+
+                });
+
+            }
+        }
+
+        return result;
+
+
+
+    }
+
+    @Override
+    public List<ProjectMaterialVerificationDocumentView> getListProjectMaterialVerificationDocumentViewOfReCheckIsRequiredByBuyMaterialBatchId(String buyMaterialBatchId) {
+        return getListMaterialVerificationDocumentViewByBuyMaterialBatchId(buyMaterialBatchId);
     }
 
     @Override
@@ -2800,7 +2836,8 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
         if (projectUserService.isUserSupervisionCompanyEmployee(useMaterialBrandSelect.getProjectId(),projectMaterialRetest.getUserId())){
             return projectMaterialRetestBusinessService.getViewBypProjectMaterialRetestUserId(projectMaterialRetest.getUserId(), projectMaterialRetestId);
         }
-        else {return null;
+        else {
+            return null;
         }
 
     }
@@ -3012,6 +3049,11 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
         return useMaterialList.getFirst().getIsAppearance();
     }
 
+    /**
+     * 检查用户提交的参数是否正确
+     * @param useMaterialFormItems
+     * @return
+     */
     private boolean checkUseMaterialForm(List<UseMaterialFormItem> useMaterialFormItems) {
 
         if (useMaterialFormItems == null || useMaterialFormItems.isEmpty())
@@ -3055,7 +3097,7 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
             if (projectMaterialBrandPublicId == null && projectMaterialBrandPrivateId == null && brandName == null)
                 throw new BusinessException("未选择品牌或未新建品牌");
 
-            if (brandName != null && !brandName.isEmpty()) {
+            if (brandName != null) {
                 String tempFileDir = useMaterialFormItem.getTempFileDir();
                 if (tempFileDir == null || tempFileDir.isEmpty())
                     throw new BusinessException("未上传文件");
@@ -3087,6 +3129,14 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
                 String pathTemp = FileUtils.getFilePath(tempFileDir, true);
                 List<String> stringList = FileUtils.listFiles(pathTemp);
                 if (stringList != null && stringList.isEmpty()) throw new BusinessException("未上传文件");
+            }
+
+            //如果用户没有修改物料，也没有新建品牌，则需要查看用户是否以前申请过同样物料、同样品牌、同样外观。如果申请过，则不需要再次申请。
+            if(!useMaterialFormItem.isMaterialChange() && brandName == null) {
+                boolean found= useMaterialService.isExistByProjectMaterialIdAndBrandPublicIdAndAppearance(
+                        projectMaterialId, projectMaterialBrandPublicId,useMaterialFormItem.getIsAppearance());
+                if(found)
+                    throw new BusinessException("您已经申请过同样物料、同样品牌、同样外观的物料:"+useMaterialFormItem.getMaterial().getName());
             }
         });
         return true;

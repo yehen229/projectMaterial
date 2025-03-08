@@ -25,18 +25,21 @@ public interface IProjectMaterialRetestRepository {
     int getCount();
 
     int getCountByBuyMaterialId(String buyMaterialId);
+    int getCountByRetestBatchId(String resetBatchId);
 
     int getCountByUserId(String userId);
 
     ProjectMaterialRetest getById(String id);
 
     List<ProjectMaterialRetest> getByBuyMaterialId(String buyMaterialId);
+    List<ProjectMaterialRetest> getByRetestBatchId(String resetBatchId);
 
     List<ProjectMaterialRetest> getByUserId(String userId);
 
     Page<ProjectMaterialRetest> getPage(int pageNo, int pageSize);
 
     Page<ProjectMaterialRetest> getPageByBuyMaterialId(String buyMaterialId, int pageNo, int pageSize);
+    Page<ProjectMaterialRetest> getPageByRetestBatchId(String resetBatchId, int pageNo, int pageSize);
 
     Page<ProjectMaterialRetest> getPageByUserId(String userId, int pageNo, int pageSize);
 

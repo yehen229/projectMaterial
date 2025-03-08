@@ -34,7 +34,7 @@ public class ProjectMaterialBrandHistoryRepositoryImpl implements IProjectMateri
 			projectMaterialBrandHistory.setProjectMaterialHistoryId(rs.getString("t_project_material_history_id"));
 			projectMaterialBrandHistory.setProjectMaterialBrandPrivateId(rs.getString("t_project_material_brand_private_id"));
 			projectMaterialBrandHistory.setProjectMaterialBrandPublicId(rs.getString("t_project_material_brand_public_id"));
-			projectMaterialBrandHistory.setDeletedAt(rs.getDate("deleted_at"));
+			projectMaterialBrandHistory.setDeletedAt(rs.getTimestamp("deleted_at"));
 			return projectMaterialBrandHistory;
 		}
 	}

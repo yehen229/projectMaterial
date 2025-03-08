@@ -8,16 +8,7 @@ import java.util.Date;
 @Component
 public class BuyMaterial {
     private String id;//id,主键
-    private String buyMaterialSelectId;
-
-    public String getBuyMaterialSelectId() {
-        return buyMaterialSelectId;
-    }
-
-    public void setBuyMaterialSelectId(String buyMaterialSelectId) {
-        this.buyMaterialSelectId = buyMaterialSelectId;
-    }
-
+    private String buyMaterialBatchId;//t_buy_material_batch_id
     private String userId;//t_user_id,外键,	t_user_id<-表t_user.id,购买用户（总包单位人员）购买用户（总包单位人员）
     private String useMaterialId;//t_use_material_id,外键,	t_use_material_id<-表t_use_material.id,物料使用申请物料使用申请
     private String projectMaterialBrandPrivateId;//t_project_material_brand_private_id,外键,	t_project_material_brand_private_id<-表t_project_material_brand_private.id,私有品牌私有品牌
@@ -116,5 +107,13 @@ public class BuyMaterial {
 
     public void setDeletedAt(Date deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    public String getBuyMaterialBatchId() {
+        return buyMaterialBatchId;
+    }
+
+    public void setBuyMaterialBatchId(String buyMaterialBatchId) {
+        this.buyMaterialBatchId = buyMaterialBatchId;
     }
 }

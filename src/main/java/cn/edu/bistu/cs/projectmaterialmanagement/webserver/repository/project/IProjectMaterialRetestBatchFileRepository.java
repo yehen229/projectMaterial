@@ -1,14 +1,16 @@
-package cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project;
+package cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project;
 
 
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectMaterialRetestBatchFile;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.List;
 
-public interface IProjectMaterialRetestFileService {
+/**
+ * ProjectMaterialRetestFile Service Interface
+ */
+public interface IProjectMaterialRetestBatchFileRepository {
+
     String add(ProjectMaterialRetestBatchFile projectMaterialRetestFile);
 
     int delete(ProjectMaterialRetestBatchFile projectMaterialRetestFile);
@@ -23,10 +25,7 @@ public interface IProjectMaterialRetestFileService {
 
     Page<ProjectMaterialRetestBatchFile> getPage(int pageNo,
                                                  int pageSize);
+    List<ProjectMaterialRetestBatchFile> getByRetestBatchId(String retestBatchId);
 
-    void downloadFileById(String projectMaterialRetestFileId,
-                          HttpServletRequest request,
-                          HttpServletResponse response);
-    List<ProjectMaterialRetestBatchFile> getByRetestBatchId(String retestId);
 
 }

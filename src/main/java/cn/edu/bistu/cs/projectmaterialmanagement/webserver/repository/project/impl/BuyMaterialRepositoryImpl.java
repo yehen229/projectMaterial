@@ -35,18 +35,20 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
                         t_use_material_id,
                         t_project_material_brand_private_id,
                         t_project_material_brand_public_id,
+                        t_buy_material_batch_id,
                         material_count,
                         material_unit,
                         batch,
                         qrcode,
                         create_datetime)
-                        VALUES(?,?,?,?,?,?,?,?,?,?)
+                        VALUES(?,?,?,?,?,?,?,?,?,?,?)
                         """,
                 newId,
                 buyMaterial.getUserId(),
                 buyMaterial.getUseMaterialId(),
                 buyMaterial.getProjectMaterialBrandPrivateId(),
                 buyMaterial.getProjectMaterialBrandPublicId(),
+                buyMaterial.getBuyMaterialBatchId(),
                 buyMaterial.getMaterialCount(),
                 buyMaterial.getMaterialUnit(),
                 buyMaterial.getBatch(),
@@ -81,6 +83,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
                         t_use_material_id=?,
                         t_project_material_brand_private_id=?,
                         t_project_material_brand_public_id=?,
+                        t_buy_material_batch_id=?,
                         material_count=?,
                         material_unit=?,
                         batch=?,
@@ -93,6 +96,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
                 buyMaterial.getUseMaterialId(),
                 buyMaterial.getProjectMaterialBrandPrivateId(),
                 buyMaterial.getProjectMaterialBrandPublicId(),
+                buyMaterial.getBuyMaterialBatchId(),
                 buyMaterial.getMaterialCount(),
                 buyMaterial.getMaterialUnit(),
                 buyMaterial.getBatch(),
@@ -268,7 +272,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
                         WHERE t_project_material_brand_public_id=?
                         """,
                 Integer.class, projectMaterialBrandPublicId);
-        return i == null ? 0 : i;
+        return i;
     }
 
     /**
@@ -281,7 +285,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
                 FROM t_buy_material 
                 WHERE id=?
                 """, Integer.class, id);
-        if (i == null || i != 1)
+        if (i != 1)
             return null;
 
         return jdbcTemplate.queryForObject("""
@@ -299,7 +303,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
                 FROM t_buy_material 
                 WHERE qrcode=?
                 """, Integer.class, id);
-        if (i == null || i != 1)
+        if (i != 1)
             return null;
 
         return jdbcTemplate.queryForObject("""
@@ -338,7 +342,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
                         WHERE t_user_id=?
                         """,
                 Integer.class, userId);
-        if (i == null || i == 0)
+        if (i == 0)
             return null;
 
         return jdbcTemplate.query("""
@@ -360,7 +364,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
                         WHERE t_use_material_id=?
                         """,
                 Integer.class, useMaterialId);
-        if (i == null || i == 0)
+        if (i == 0)
             return null;
 
         return jdbcTemplate.query("""
@@ -382,7 +386,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
                         WHERE t_project_material_brand_private_id=?
                         """,
                 Integer.class, projectMaterialBrandPrivateId);
-        if (i == null || i == 0)
+        if (i == 0)
             return null;
 
         return jdbcTemplate.query("""
@@ -404,7 +408,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
                         WHERE t_project_material_brand_public_id=?
                         """,
                 Integer.class, projectMaterialBrandPublicId);
-        if (i == null || i == 0)
+        if (i == 0)
             return null;
 
         return jdbcTemplate.query("""
@@ -426,7 +430,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
                         WHERE qrcode=?
                         """,
                 Integer.class, qrcode);
-        if (i == null || i == 0)
+        if (i == 0)
             return null;
 
         return jdbcTemplate.query("""
@@ -450,7 +454,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
         if (totalCount < 1) return new Page<>();
         int startIndex = Page.getStartOfPage(pageNo, pageSize);
         List<BuyMaterial> resultData = getPageQuery(pageNo - 1, pageSize);
-        return new Page<>(0, totalCount, (int) totalCount, resultData);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
     }
 
     /**
@@ -468,7 +472,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
         if (totalCount < 1) return new Page<>();
         int startIndex = Page.getStartOfPage(pageNo, pageSize);
         List<BuyMaterial> resultData = getPageQueryByUserId(userId, pageNo - 1, pageSize);
-        return new Page<>(0, totalCount, (int) totalCount, resultData);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
     }
 
     /**
@@ -486,7 +490,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
         if (totalCount < 1) return new Page<>();
         int startIndex = Page.getStartOfPage(pageNo, pageSize);
         List<BuyMaterial> resultData = getPageQueryByUseMaterialId(useMaterialId, pageNo - 1, pageSize);
-        return new Page<>(0, totalCount, (int) totalCount, resultData);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
     }
 
     /**
@@ -505,7 +509,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
         int startIndex = Page.getStartOfPage(pageNo, pageSize);
         List<BuyMaterial> resultData = getPageQueryByProjectMaterialBrandPrivateId(projectMaterialBrandPrivateId,
                 pageNo - 1, pageSize);
-        return new Page<>(0, totalCount, (int) totalCount, resultData);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
     }
 
     /**
@@ -524,7 +528,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
         int startIndex = Page.getStartOfPage(pageNo, pageSize);
         List<BuyMaterial> resultData = getPageQueryByProjectMaterialBrandPublicId(projectMaterialBrandPublicId,
                 pageNo - 1, pageSize);
-        return new Page<>(0, totalCount, (int) totalCount, resultData);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
     }
 
     @Override
@@ -536,7 +540,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
         int startIndex = Page.getStartOfPage(pageNo, pageSize);
         List<BuyMaterial> resultData = getPageQueryByProjectId(projectId,
                 pageNo - 1, pageSize);
-        return new Page<>(0, totalCount, (int) totalCount, resultData);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
     }
 
     @Override
@@ -548,7 +552,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
         int startIndex = Page.getStartOfPage(pageNo, pageSize);
         List<BuyMaterial> resultData = getPageReCheckIsRequiredQueryByProjectId(projectId,
                 pageNo - 1, pageSize);
-        return new Page<>(0, totalCount, (int) totalCount, resultData);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
     }
 
     /**
@@ -568,7 +572,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
         int startIndex = Page.getStartOfPage(pageNo, pageSize);
         List<String> resultData = getPageBoughtMaterialIdPageByProjectId(projectId,
                 pageNo - 1, pageSize);
-        return new Page<>(0, totalCount, (int) totalCount, resultData);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
 
     }
 
@@ -628,6 +632,27 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
                 projectId, materialId);
     }
 
+    @Override
+    public List<BuyMaterial> getByBuyMaterialBatchId(String buyMaterialBatchId) {
+        Integer i = jdbcTemplate.queryForObject("""
+                        SELECT count(*) 
+                        FROM t_buy_material
+                        WHERE t_buy_material_batch_id=?
+                        AND  t_buy_material.deleted_at IS  null                           
+                        """,
+                                                Integer.class, buyMaterialBatchId);
+        if (i == 0)
+            return null;
+
+        return jdbcTemplate.query("""
+                        SELECT * 
+                        FROM t_buy_material 
+                        WHERE t_buy_material_batch_id=?
+                        AND  t_buy_material.deleted_at IS  null
+                        """,
+                                  new BuyMaterialMapper(), buyMaterialBatchId);
+    }
+
     private int getCountBoughtMaterialIdPageByProjectId(String projectId) {
         Integer i = jdbcTemplate.queryForObject("""
                         SELECT count(distinct (t_project_material_id)) 
@@ -644,7 +669,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
                         )
                         """,
                 Integer.class, projectId);
-        return i == null ? 0 : i;
+        return i;
     }
 
     private List<String> getPageBoughtMaterialIdPageByProjectId(String projectId,
@@ -818,6 +843,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
             buyMaterial.setUseMaterialId(rs.getString("t_use_material_id"));
             buyMaterial.setProjectMaterialBrandPrivateId(rs.getString("t_project_material_brand_private_id"));
             buyMaterial.setProjectMaterialBrandPublicId(rs.getString("t_project_material_brand_public_id"));
+            buyMaterial.setBuyMaterialBatchId(rs.getString("t_buy_material_batch_id"));
             buyMaterial.setMaterialCount(rs.getBigDecimal("material_count"));
             buyMaterial.setMaterialUnit(rs.getString("material_unit"));
             buyMaterial.setQrcode(rs.getString("qrcode"));

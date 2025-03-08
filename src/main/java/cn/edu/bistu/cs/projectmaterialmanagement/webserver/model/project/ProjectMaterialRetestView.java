@@ -10,7 +10,7 @@ public class ProjectMaterialRetestView {
     private ProjectMaterialRetest projectMaterialRetest;//t_project_material_retest
     private BuyMaterial buyMaterial;//外键：t_buy_material_id,关联表为：t_buy_material表,
     private User user;//外键：t_user_id,关联表为：t_user表,
-    private List<ProjectMaterialRetestFile> projectMaterialRetestFileList;
+    private ProjectMaterialRetestBatch projectMaterialRetestBatch;//外键：t_project_material_retest_batch_id,关联表为：t_project_material_retest_batch表,
 
     public ProjectMaterialRetest getProjectMaterialRetest() {
         return projectMaterialRetest;
@@ -36,11 +36,13 @@ public class ProjectMaterialRetestView {
         this.user = user;
     }
 
-    public List<ProjectMaterialRetestFile> getProjectMaterialRetestFileList() {
-        return projectMaterialRetestFileList;
+
+
+    public ProjectMaterialRetestBatch getProjectMaterialRetestBatch() {
+        return projectMaterialRetestBatch;
     }
 
-    public void setProjectMaterialRetestFileList(List<ProjectMaterialRetestFile> projectMaterialRetestFileList) {
-        this.projectMaterialRetestFileList = projectMaterialRetestFileList;
+    public void setProjectMaterialRetestBatch(ProjectMaterialRetestBatch projectMaterialRetestBatch) {
+        this.projectMaterialRetestBatch = projectMaterialRetestBatch;
     }
 }

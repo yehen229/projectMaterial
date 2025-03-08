@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class IUseMaterialBusinessServiceImpl implements IUseMaterialBusinessService {
+public class UseMaterialBusinessServiceImpl implements IUseMaterialBusinessService {
     private final IUseMaterialNewBrandFileService useMaterialNewBrandFileService;
     private final IUseMaterialNewBrandService useMaterialNewBrandService;
     private final IUseMaterialBrandSelectService useMaterialBrandSelectService;
@@ -31,20 +31,20 @@ public class IUseMaterialBusinessServiceImpl implements IUseMaterialBusinessServ
     private final IProjectMaterialBusinessService projectMaterialBusinessService;
     private final IMaterialService materialService;
 
-    public IUseMaterialBusinessServiceImpl(IUseMaterialNewBrandFileService useMaterialNewBrandFileService,
-                                           IUseMaterialNewBrandService useMaterialNewBrandService,
-                                           IUseMaterialBrandSelectService useMaterialBrandSelectService,
-                                           IUseMaterialService useMaterialService,
-                                           IUserService userService,
-                                           IProjectMaterialService projectMaterialService,
-                                           IProjectMaterialBrandPublicService projectMaterialBrandPublicService,
-                                           IProjectMaterialBrandPrivateService projectMaterialBrandPrivateService,
-                                           IMaterialClassifyDivisionService materialClassifyDivisionService,
-                                           IMaterialClassifyGroupService materialClassifyGroupService,
-                                           IMaterialClassifySectionService materialClassifySectionService,
-                                           IProjectService projectService,
-                                           IProjectMaterialBusinessService projectMaterialBusinessService,
-                                           IMaterialService materialService) {
+    public UseMaterialBusinessServiceImpl(IUseMaterialNewBrandFileService useMaterialNewBrandFileService,
+                                          IUseMaterialNewBrandService useMaterialNewBrandService,
+                                          IUseMaterialBrandSelectService useMaterialBrandSelectService,
+                                          IUseMaterialService useMaterialService,
+                                          IUserService userService,
+                                          IProjectMaterialService projectMaterialService,
+                                          IProjectMaterialBrandPublicService projectMaterialBrandPublicService,
+                                          IProjectMaterialBrandPrivateService projectMaterialBrandPrivateService,
+                                          IMaterialClassifyDivisionService materialClassifyDivisionService,
+                                          IMaterialClassifyGroupService materialClassifyGroupService,
+                                          IMaterialClassifySectionService materialClassifySectionService,
+                                          IProjectService projectService,
+                                          IProjectMaterialBusinessService projectMaterialBusinessService,
+                                          IMaterialService materialService) {
         this.useMaterialNewBrandFileService = useMaterialNewBrandFileService;
         this.useMaterialNewBrandService = useMaterialNewBrandService;
         this.useMaterialBrandSelectService = useMaterialBrandSelectService;
@@ -212,66 +212,6 @@ public class IUseMaterialBusinessServiceImpl implements IUseMaterialBusinessServ
                                                                            Integer pageNo,
                                                                            Integer pageSize) {
         Page<UseMaterial> useMaterialPage = useMaterialService.getReviewedAndApprovedPageByProjectId(projectId, pageNo,
-                                                                                                     pageSize);
-        return convertReviewedAndApprovedUseMaterialPage2PageView(useMaterialPage, pageNo, pageSize);
-
-    }
-    @Override
-    public Page<UseMaterialView> getReviewedAndApprovedPageViewByProjectIdAndName(String projectId,
-                                                                           String name,
-                                                                           Integer pageNo,
-                                                                           Integer pageSize) {
-        Page<UseMaterial> useMaterialPage = useMaterialService.getReviewedAndApprovedPageByProjectIdAndName(projectId, name, pageNo,
-                                                                                                     pageSize);
-        return convertReviewedAndApprovedUseMaterialPage2PageView(useMaterialPage, pageNo, pageSize);
-
-    }
-    @Override
-    public Page<UseMaterialView> getReviewedAndApprovedPageViewByProjectIdAndLocation(String projectId,
-                                                                           String location,
-                                                                           Integer pageNo,
-                                                                           Integer pageSize) {
-        Page<UseMaterial> useMaterialPage = useMaterialService.getReviewedAndApprovedPageByProjectIdAndLocation(projectId, location, pageNo,
-                                                                                                     pageSize);
-        return convertReviewedAndApprovedUseMaterialPage2PageView(useMaterialPage, pageNo, pageSize);
-
-    }
-    @Override
-    public Page<UseMaterialView> getReviewedAndApprovedPageViewByProjectIdAndItemMark(String projectId,
-                                                                           String itemMark,
-                                                                           Integer pageNo,
-                                                                           Integer pageSize) {
-        Page<UseMaterial> useMaterialPage = useMaterialService.getReviewedAndApprovedPageByProjectIdAndItemMark(projectId, itemMark, pageNo,
-                                                                                                     pageSize);
-        return convertReviewedAndApprovedUseMaterialPage2PageView(useMaterialPage, pageNo, pageSize);
-
-    }
-    @Override
-    public Page<UseMaterialView> getReviewedAndApprovedPageViewByProjectIdAndTechnology(String projectId,
-                                                                           String technology,
-                                                                           Integer pageNo,
-                                                                           Integer pageSize) {
-        Page<UseMaterial> useMaterialPage = useMaterialService.getReviewedAndApprovedPageByProjectIdAndTechnology(projectId, technology, pageNo,
-                                                                                                     pageSize);
-        return convertReviewedAndApprovedUseMaterialPage2PageView(useMaterialPage, pageNo, pageSize);
-
-    }
-    @Override
-    public Page<UseMaterialView> getReviewedAndApprovedPageViewByProjectIdAndInstallation(String projectId,
-                                                                           String installation,
-                                                                           Integer pageNo,
-                                                                           Integer pageSize) {
-        Page<UseMaterial> useMaterialPage = useMaterialService.getReviewedAndApprovedPageByProjectIdAndInstallation(projectId, installation, pageNo,
-                                                                                                     pageSize);
-        return convertReviewedAndApprovedUseMaterialPage2PageView(useMaterialPage, pageNo, pageSize);
-
-    }
-    @Override
-    public Page<UseMaterialView> getReviewedAndApprovedPageViewByProjectIdAndBrand(String projectId,
-                                                                           String brand,
-                                                                           Integer pageNo,
-                                                                           Integer pageSize) {
-        Page<UseMaterial> useMaterialPage = useMaterialService.getReviewedAndApprovedPageByProjectIdAndBrand(projectId, brand, pageNo,
                                                                                                      pageSize);
         return convertReviewedAndApprovedUseMaterialPage2PageView(useMaterialPage, pageNo, pageSize);
 

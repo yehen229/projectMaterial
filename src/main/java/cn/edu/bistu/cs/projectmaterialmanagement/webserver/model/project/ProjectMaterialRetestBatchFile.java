@@ -5,9 +5,9 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 @Component
-public class ProjectMaterialRetestFile {
+public class ProjectMaterialRetestBatchFile {
     private String id;//id,主键
-    private String projectMaterialRetestId;//t_project_material_retest_id
+    private String projectMaterialRetestBatchId;//t_project_material_retest_batch_id
     private String filePath;//file_path
     private Date deletedAt;//deleted_at
 
@@ -20,13 +20,7 @@ public class ProjectMaterialRetestFile {
         this.id = id;
     }
 
-    public String getProjectMaterialRetestId() {
-        return projectMaterialRetestId;
-    }
 
-    public void setProjectMaterialRetestId(String projectMaterialRetestId) {
-        this.projectMaterialRetestId = projectMaterialRetestId;
-    }
 
     public String getFilePath() {
         return filePath;
@@ -42,5 +36,13 @@ public class ProjectMaterialRetestFile {
 
     public void setDeletedAt(Date deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    public String getProjectMaterialRetestBatchId() {
+        return projectMaterialRetestBatchId;
+    }
+
+    public void setProjectMaterialRetestBatchId(String projectMaterialRetestBatchId) {
+        this.projectMaterialRetestBatchId = projectMaterialRetestBatchId;
     }
 }

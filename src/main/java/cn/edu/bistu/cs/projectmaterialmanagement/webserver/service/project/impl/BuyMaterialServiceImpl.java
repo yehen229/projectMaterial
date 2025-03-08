@@ -586,6 +586,11 @@ public class BuyMaterialServiceImpl implements IBuyMaterialService {
                 materialId);
     }
 
+    @Override
+    public List<BuyMaterial> getByBuyMaterialBatchId(String buyMaterialBatchId) {
+        return buyMaterialRepository.getByBuyMaterialBatchId(buyMaterialBatchId);
+    }
+
     /**
      * 根据主键获得视图对象
      *

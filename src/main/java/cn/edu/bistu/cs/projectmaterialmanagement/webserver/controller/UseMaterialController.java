@@ -127,66 +127,6 @@ public class UseMaterialController {
         pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
         return projectBusinessService.getReviewedAndApprovedUseMaterialViewPageByProjectId(projectId, pageNo, pageSize);
     }
-    @GetMapping(value = "page-use-material-view-by-project-id-and-name")
-    public Page<UseMaterialView> getUseMaterialViewPageByProjectIdAndName(
-            @RequestParam(value = "projectId", required = true) String projectId,
-            @RequestParam(value = "name", required = true) String name,
-            @RequestParam(value = "pageNo", required = false) Integer pageNo,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        pageNo = pageNo == null ? 1 : pageNo;
-        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
-        return projectBusinessService.getReviewedAndApprovedUseMaterialViewPageByProjectIdAndName(projectId, name, pageNo, pageSize);
-    }
-    @GetMapping(value = "page-use-material-view-by-project-id-and-location")
-    public Page<UseMaterialView> getUseMaterialViewPageByProjectIdAndLocation(
-            @RequestParam(value = "projectId", required = true) String projectId,
-            @RequestParam(value = "location", required = true) String location,
-            @RequestParam(value = "pageNo", required = false) Integer pageNo,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        pageNo = pageNo == null ? 1 : pageNo;
-        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
-        return projectBusinessService.getReviewedAndApprovedUseMaterialViewPageByProjectIdAndLocation(projectId, location, pageNo, pageSize);
-    }
-    @GetMapping(value = "page-use-material-view-by-project-id-and-item-mark")
-    public Page<UseMaterialView> getUseMaterialViewPageByProjectIdAndItemMark(
-            @RequestParam(value = "projectId", required = true) String projectId,
-            @RequestParam(value = "itemMark", required = true) String itemMark,
-            @RequestParam(value = "pageNo", required = false) Integer pageNo,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        pageNo = pageNo == null ? 1 : pageNo;
-        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
-        return projectBusinessService.getReviewedAndApprovedUseMaterialViewPageByProjectIdAndItemMark(projectId, itemMark, pageNo, pageSize);
-    }
-    @GetMapping(value = "page-use-material-view-by-project-id-and-technology")
-    public Page<UseMaterialView> getUseMaterialViewPageByProjectIdAndTechnology(
-            @RequestParam(value = "projectId", required = true) String projectId,
-            @RequestParam(value = "technology", required = true) String technology,
-            @RequestParam(value = "pageNo", required = false) Integer pageNo,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        pageNo = pageNo == null ? 1 : pageNo;
-        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
-        return projectBusinessService.getReviewedAndApprovedUseMaterialViewPageByProjectIdAndTechnology(projectId, technology, pageNo, pageSize);
-    }
-    @GetMapping(value = "page-use-material-view-by-project-id-and-installation")
-    public Page<UseMaterialView> getUseMaterialViewPageByProjectIdAndInstallation(
-            @RequestParam(value = "projectId", required = true) String projectId,
-            @RequestParam(value = "installation", required = true) String installation,
-            @RequestParam(value = "pageNo", required = false) Integer pageNo,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        pageNo = pageNo == null ? 1 : pageNo;
-        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
-        return projectBusinessService.getReviewedAndApprovedUseMaterialViewPageByProjectIdAndInstallation(projectId, installation, pageNo, pageSize);
-    }
-    @GetMapping(value = "page-use-material-view-by-project-id-and-brand")
-    public Page<UseMaterialView> getUseMaterialViewPageByProjectIdAndBrand(
-            @RequestParam(value = "projectId", required = true) String projectId,
-            @RequestParam(value = "brand", required = true) String brand,
-            @RequestParam(value = "pageNo", required = false) Integer pageNo,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        pageNo = pageNo == null ? 1 : pageNo;
-        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
-        return projectBusinessService.getReviewedAndApprovedUseMaterialViewPageByProjectIdAndBrand(projectId, brand, pageNo, pageSize);
-    }
 
 
 }

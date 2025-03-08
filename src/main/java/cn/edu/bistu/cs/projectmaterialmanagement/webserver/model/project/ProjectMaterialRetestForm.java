@@ -4,18 +4,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ProjectMaterialRetestForm {
-    private ProjectMaterialRetest projectMaterialRetest;
+    private ProjectMaterialRetest[] projectMaterialRetestList;
     private String projectId;
     private String taskId;
     private String reviewTempDir;//review_temp_dir,临时审核附件目录，项目审核附件放在此目录中
 
-    public ProjectMaterialRetest getProjectMaterialRetest() {
-        return projectMaterialRetest;
-    }
 
-    public void setProjectMaterialRetest(ProjectMaterialRetest projectMaterialRetest) {
-        this.projectMaterialRetest = projectMaterialRetest;
-    }
 
     public String getTaskId() {
         return taskId;
@@ -39,5 +33,13 @@ public class ProjectMaterialRetestForm {
 
     public void setReviewTempDir(String reviewTempDir) {
         this.reviewTempDir = reviewTempDir;
+    }
+
+    public ProjectMaterialRetest[] getProjectMaterialRetestList() {
+        return projectMaterialRetestList;
+    }
+
+    public void setProjectMaterialRetestList(ProjectMaterialRetest[] projectMaterialRetestList) {
+        this.projectMaterialRetestList = projectMaterialRetestList;
     }
 }

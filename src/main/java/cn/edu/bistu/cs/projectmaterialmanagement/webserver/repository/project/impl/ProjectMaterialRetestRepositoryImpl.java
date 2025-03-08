@@ -30,17 +30,19 @@ public class ProjectMaterialRetestRepositoryImpl implements IProjectMaterialRete
         String newId = GUID.getGUID();
         if (jdbcTemplate.update("""
                                         INSERT INTO t_project_material_retest(id,
-                                        t_buy_material_id,
                                         t_user_id,
+                                        t_buy_material_id,
+                                        t_project_material_retest_batch_id,
                                         need_retest,
                                         review_result,
                                         review_content,
                                         review_datetime)
-                                        VALUES(?,?,?,?,?,?,?)
+                                        VALUES(?,?,?,?,?,?,?,?)
                                         """,
                                 newId,
-                                projectMaterialRetest.getBuyMaterialId(),
                                 projectMaterialRetest.getUserId(),
+                                projectMaterialRetest.getBuyMaterialId(),
+                                projectMaterialRetest.getProjectMaterialRetestBatchId(),
                                 projectMaterialRetest.getNeedRetest(),
                                 projectMaterialRetest.getReviewResult(),
                                 projectMaterialRetest.getReviewContent(),
@@ -118,6 +120,7 @@ public class ProjectMaterialRetestRepositoryImpl implements IProjectMaterialRete
         return jdbcTemplate.update("""
                                            UPDATE t_project_material_retest
                                            SET t_buy_material_id=?,
+                                               t_project_material_retest_batch_id=?,
                                            t_user_id=?,
                                            need_retest=?,
                                            review_result=?,
@@ -126,6 +129,7 @@ public class ProjectMaterialRetestRepositoryImpl implements IProjectMaterialRete
                                            WHERE id=?
                                            """,
                                    projectMaterialRetest.getBuyMaterialId(),
+                                   projectMaterialRetest.getProjectMaterialRetestBatchId(),
                                    projectMaterialRetest.getUserId(),
                                    projectMaterialRetest.getNeedRetest(),
                                    projectMaterialRetest.getReviewResult(),
@@ -153,13 +157,22 @@ public class ProjectMaterialRetestRepositoryImpl implements IProjectMaterialRete
      */
     @Override
     public int getCountByBuyMaterialId(String buyMaterialId) {
-        Integer i = jdbcTemplate.queryForObject("""
+        return jdbcTemplate.queryForObject("""
                                                         SELECT count(*) 
                                                         FROM t_project_material_retest
                                                         WHERE t_buy_material_id=? AND deleted_at IS NULL
                                                         """,
-                                                Integer.class, buyMaterialId);
-        return i == null ? 0 : i;
+                                           Integer.class, buyMaterialId);
+    }
+
+    @Override
+    public int getCountByRetestBatchId(String resetBatchId) {
+        return jdbcTemplate.queryForObject("""
+                                                        SELECT count(*) 
+                                                        FROM t_project_material_retest
+                                                        WHERE t_project_material_retest_batch_id=? AND deleted_at IS NULL
+                                                        """,
+                                           Integer.class, resetBatchId);
     }
 
     /**
@@ -167,13 +180,12 @@ public class ProjectMaterialRetestRepositoryImpl implements IProjectMaterialRete
      */
     @Override
     public int getCountByUserId(String userId) {
-        Integer i = jdbcTemplate.queryForObject("""
+        return jdbcTemplate.queryForObject("""
                                                         SELECT count(*) 
                                                         FROM t_project_material_retest
                                                         WHERE t_user_id=? AND deleted_at IS NULL
                                                         """,
-                                                Integer.class, userId);
-        return i == null ? 0 : i;
+                                           Integer.class, userId);
     }
 
     /**
@@ -186,7 +198,7 @@ public class ProjectMaterialRetestRepositoryImpl implements IProjectMaterialRete
                                                         FROM t_project_material_retest 
                                                         WHERE id=? AND deleted_at IS NULL
                                                         """, Integer.class, id);
-        if (i == null || i != 1)
+        if (i != 1)
             return null;
 
         return jdbcTemplate.queryForObject("""
@@ -208,7 +220,7 @@ public class ProjectMaterialRetestRepositoryImpl implements IProjectMaterialRete
                                                         WHERE t_buy_material_id=? AND deleted_at IS NULL
                                                         """,
                                                 Integer.class, buyMaterialId);
-        if (i == null || i == 0)
+        if (i == 0)
             return null;
 
         return jdbcTemplate.query("""
@@ -217,6 +229,25 @@ public class ProjectMaterialRetestRepositoryImpl implements IProjectMaterialRete
                                           WHERE t_buy_material_id=? AND deleted_at IS NULL
                                           """,
                                   new ProjectMaterialRetestMapper(), buyMaterialId);
+    }
+
+    @Override
+    public List<ProjectMaterialRetest> getByRetestBatchId(String resetBatchId) {
+        Integer i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*) 
+                                                        FROM t_project_material_retest
+                                                        WHERE t_project_material_retest_batch_id=? AND deleted_at IS NULL
+                                                        """,
+                                                Integer.class, resetBatchId);
+        if (i == 0)
+            return null;
+
+        return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_project_material_retest 
+                                          WHERE t_project_material_retest_batch_id=? AND deleted_at IS NULL
+                                          """,
+                                  new ProjectMaterialRetestMapper(), resetBatchId);
     }
 
     /**
@@ -230,7 +261,7 @@ public class ProjectMaterialRetestRepositoryImpl implements IProjectMaterialRete
                                                         WHERE t_user_id=? AND deleted_at IS NULL
                                                         """,
                                                 Integer.class, userId);
-        if (i == null || i == 0)
+        if (i == 0)
             return null;
 
         return jdbcTemplate.query("""
@@ -254,7 +285,7 @@ public class ProjectMaterialRetestRepositoryImpl implements IProjectMaterialRete
         if (totalCount < 1) return new Page<>();
         int startIndex = Page.getStartOfPage(pageNo, pageSize);
         List<ProjectMaterialRetest> resultData = getPageQuery(pageNo - 1, pageSize);
-        return new Page<>(0, totalCount, (int) totalCount, resultData);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
     }
 
     /**
@@ -272,7 +303,18 @@ public class ProjectMaterialRetestRepositoryImpl implements IProjectMaterialRete
         if (totalCount < 1) return new Page<>();
         int startIndex = Page.getStartOfPage(pageNo, pageSize);
         List<ProjectMaterialRetest> resultData = getPageQueryByBuyMaterialId(buyMaterialId, pageNo - 1, pageSize);
-        return new Page<>(0, totalCount, (int) totalCount, resultData);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
+    }
+
+    @Override
+    public Page<ProjectMaterialRetest> getPageByRetestBatchId(String resetBatchId,
+                                                              int pageNo,
+                                                              int pageSize) {
+        long totalCount = getCountByRetestBatchId(resetBatchId);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<ProjectMaterialRetest> resultData = getPageQueryByRetestBatchId(resetBatchId, pageNo - 1, pageSize);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
     }
 
     /**
@@ -290,7 +332,7 @@ public class ProjectMaterialRetestRepositoryImpl implements IProjectMaterialRete
         if (totalCount < 1) return new Page<>();
         int startIndex = Page.getStartOfPage(pageNo, pageSize);
         List<ProjectMaterialRetest> resultData = getPageQueryByUserId(userId, pageNo - 1, pageSize);
-        return new Page<>(0, totalCount, (int) totalCount, resultData);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
     }
 
     /**
@@ -330,6 +372,18 @@ public class ProjectMaterialRetestRepositoryImpl implements IProjectMaterialRete
                                   new ProjectMaterialRetestMapper(), buyMaterialId, pageNo * pageSize, pageSize);
     }
 
+    private List<ProjectMaterialRetest> getPageQueryByRetestBatchId(String buyMaterialId,
+                                                                    int pageNo,
+                                                                    int pageSize) {
+        return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_project_material_retest
+                                          WHERE t_project_material_retest_batch_id=? AND deleted_at IS NULL
+                                          LIMIT ?,?
+                                          """,
+                                  new ProjectMaterialRetestMapper(), buyMaterialId, pageNo * pageSize, pageSize);
+    }
+
     /**
      * 根据外键（t_user_id）+获得指定页面数据
      *
@@ -360,6 +414,7 @@ public class ProjectMaterialRetestRepositoryImpl implements IProjectMaterialRete
             projectMaterialRetest.setId(rs.getString("id"));
             projectMaterialRetest.setBuyMaterialId(rs.getString("t_buy_material_id"));
             projectMaterialRetest.setUserId(rs.getString("t_user_id"));
+            projectMaterialRetest.setProjectMaterialRetestBatchId(rs.getString("t_project_material_retest_batch_id"));
             projectMaterialRetest.setNeedRetest(rs.getInt("need_retest"));
             projectMaterialRetest.setReviewResult(rs.getInt("review_result"));
             projectMaterialRetest.setReviewContent(rs.getString("review_content"));

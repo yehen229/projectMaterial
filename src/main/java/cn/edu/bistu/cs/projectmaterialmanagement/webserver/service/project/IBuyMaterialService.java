@@ -50,6 +50,8 @@ public interface IBuyMaterialService {
     List<BuyMaterial> getByProjectMaterialBrandPublicId(String projectMaterialBrandPublicId);
 
     List<BuyMaterial> getByQrcodeId(String qrcode);
+    List<BuyMaterial> getByBuyMaterialBatchId(String buyMaterialBatchId);
+
 
     Page<BuyMaterial> getPage(int pageNo,
                               int pageSize);

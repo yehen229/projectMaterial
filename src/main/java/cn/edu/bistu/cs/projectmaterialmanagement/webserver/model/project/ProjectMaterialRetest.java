@@ -8,6 +8,7 @@ import java.util.Date;
 public class ProjectMaterialRetest {
     private String id;//id,主键
     private String buyMaterialId;//t_buy_material_id,外键,	t_buy_material_id<-表t_buy_material.id
+    private String projectMaterialRetestBatchId; //t_project_material_retest_batch_id
     private String userId;//t_user_id,外键,	t_user_id<-表t_user.id
     private int needRetest;//是否需要重测，0为否，1为是
     private int reviewResult;//review_result
@@ -78,5 +79,13 @@ public class ProjectMaterialRetest {
 
     public void setNeedRetest(int needRetest) {
         this.needRetest = needRetest;
+    }
+
+    public String getProjectMaterialRetestBatchId() {
+        return projectMaterialRetestBatchId;
+    }
+
+    public void setProjectMaterialRetestBatchId(String projectMaterialRetestBatchId) {
+        this.projectMaterialRetestBatchId = projectMaterialRetestBatchId;
     }
 }

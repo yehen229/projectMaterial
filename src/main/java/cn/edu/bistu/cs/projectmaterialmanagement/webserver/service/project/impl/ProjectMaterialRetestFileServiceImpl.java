@@ -4,8 +4,8 @@ package cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.impl
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.common.exception.BusinessException;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.config.ConfigConstant;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectMaterialRetestFile;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.IProjectMaterialRetestFileRepository;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectMaterialRetestBatchFile;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.IProjectMaterialRetestBatchFileRepository;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IProjectMaterialRetestFileService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.utility.FileUtils;
 import jakarta.servlet.ServletOutputStream;
@@ -22,9 +22,9 @@ import java.util.List;
 
 @Service
 public class ProjectMaterialRetestFileServiceImpl implements IProjectMaterialRetestFileService {
-    private final IProjectMaterialRetestFileRepository projectMaterialRetestFileRepository;
+    private final IProjectMaterialRetestBatchFileRepository projectMaterialRetestFileRepository;
 
-    public ProjectMaterialRetestFileServiceImpl(IProjectMaterialRetestFileRepository projectMaterialRetestFileRepository) {
+    public ProjectMaterialRetestFileServiceImpl(IProjectMaterialRetestBatchFileRepository projectMaterialRetestFileRepository) {
         this.projectMaterialRetestFileRepository = projectMaterialRetestFileRepository;
     }
 
@@ -32,7 +32,7 @@ public class ProjectMaterialRetestFileServiceImpl implements IProjectMaterialRet
      * 增加
      */
     @Override
-    public String add(ProjectMaterialRetestFile projectMaterialRetestFile) {
+    public String add(ProjectMaterialRetestBatchFile projectMaterialRetestFile) {
         return projectMaterialRetestFileRepository.add(projectMaterialRetestFile);
     }
 
@@ -40,7 +40,7 @@ public class ProjectMaterialRetestFileServiceImpl implements IProjectMaterialRet
      * 删除
      */
     @Override
-    public int delete(ProjectMaterialRetestFile projectMaterialRetestFile) {
+    public int delete(ProjectMaterialRetestBatchFile projectMaterialRetestFile) {
         return projectMaterialRetestFileRepository.delete(projectMaterialRetestFile);
     }
 
@@ -48,7 +48,7 @@ public class ProjectMaterialRetestFileServiceImpl implements IProjectMaterialRet
      * 更新
      */
     @Override
-    public int update(ProjectMaterialRetestFile projectMaterialRetestFile) {
+    public int update(ProjectMaterialRetestBatchFile projectMaterialRetestFile) {
         return projectMaterialRetestFileRepository.update(projectMaterialRetestFile);
     }
 
@@ -76,7 +76,7 @@ public class ProjectMaterialRetestFileServiceImpl implements IProjectMaterialRet
      * @param id
      */
     @Override
-    public ProjectMaterialRetestFile getById(String id) {
+    public ProjectMaterialRetestBatchFile getById(String id) {
         return projectMaterialRetestFileRepository.getById(id);
     }
 
@@ -87,8 +87,8 @@ public class ProjectMaterialRetestFileServiceImpl implements IProjectMaterialRet
      * @param pageSize 每页的记录数
      */
     @Override
-    public Page<ProjectMaterialRetestFile> getPage(int pageNo,
-                                                   int pageSize) {
+    public Page<ProjectMaterialRetestBatchFile> getPage(int pageNo,
+                                                        int pageSize) {
         return projectMaterialRetestFileRepository.getPage(pageNo, pageSize);
     }
 
@@ -97,7 +97,7 @@ public class ProjectMaterialRetestFileServiceImpl implements IProjectMaterialRet
                                  HttpServletRequest request,
                                  HttpServletResponse response) {
 
-        ProjectMaterialRetestFile projectMaterialRetestFile = getById(
+        ProjectMaterialRetestBatchFile projectMaterialRetestFile = getById(
                 projectMaterialRetestFileId);
         if (projectMaterialRetestFile == null) throw new RuntimeException("文件不存在");
 
@@ -140,8 +140,8 @@ public class ProjectMaterialRetestFileServiceImpl implements IProjectMaterialRet
     }
 
     @Override
-    public List<ProjectMaterialRetestFile> getByRetestId(String retestId) {
-        return projectMaterialRetestFileRepository.getByRetestId(retestId);
+    public List<ProjectMaterialRetestBatchFile> getByRetestBatchId(String retestBatchId) {
+        return projectMaterialRetestFileRepository.getByRetestBatchId(retestBatchId);
     }
 
 }

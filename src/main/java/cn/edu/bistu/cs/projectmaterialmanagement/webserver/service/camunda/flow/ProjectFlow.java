@@ -28,9 +28,7 @@ import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 @Service
@@ -2602,37 +2600,16 @@ public class ProjectFlow {
                 throw new BusinessException("总包单位订购失败");
 
             /*
-            如果购买的物品有多个，则需要分裂任务，每个任务处理一个物品
+            每次购买为一个批次，一个批次里面可以包含多个物料
             */
-            String buyMaterialSelectId = projectBusinessService.addFormOfGeneralContractorBuyMaterialSelect(buyMaterialForm);
-
-            String buyMaterialIdFirst = buyMaterialIdList.getFirst();
-            if (buyMaterialIdList.size() > 1) {
-                //在此分裂任务,将订购物品分裂成多个任务
-                String processKey = "Process_Project_Material";
-                for (int i = 1; i < buyMaterialIdList.size(); i++) {
-                    String buyMaterialId = buyMaterialIdList.get(i);
-
-                    //增加审核历史过程
-                    projectHistoryBusiness.addProjectMaterialOrder(businessId, user.getId(),
-                                                                   "总包单位订购物料",
-                                                                   "总包单位订购物料",
-                                                                   buyMaterialId);
-                    Log log = new Log(user.getId(), businessId, "总包单位订购物料", 0 , new Date());
-                    logService.add(log);
-
-                    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processKey, businessId);
-                    runtimeService.createProcessInstanceModification(processInstance.getId())
-                                  .cancelAllForActivity("Activity_Construction_Company_Create_Project")
-                                  .startBeforeActivity("Activity_Generate_QRCode")
-                                  .setVariable("buyMaterialId", buyMaterialId)
-                                  .setVariable("projectId", businessId)
-                                  .execute();
-                }
-            }
+            String buyMaterialBatchId = projectBusinessService.addFormOfGeneralContractorBuyMaterialSelect(buyMaterialForm);
 
 
-            taskService.setVariable(task.getId(), "buyMaterialId", buyMaterialIdFirst);
+
+
+
+
+            taskService.setVariable(task.getId(), "buyMaterialId", buyMaterialBatchId);
 
 
             //完成任务
@@ -2642,7 +2619,9 @@ public class ProjectFlow {
             projectHistoryBusiness.addProjectMaterialOrder(businessId, user.getId(),
                                                            "总包单位订购物料",
                                                            "总包单位订购物料",
-                                                           buyMaterialIdFirst);
+                                                           buyMaterialBatchId);
+
+
             Log log = new Log(user.getId(), businessId, "总包单位订购物料", 0 , new Date());
             logService.add(log);
 
@@ -2785,36 +2764,115 @@ public class ProjectFlow {
              * 3.完成任务
              */
 
-            String buyMaterialId = projectMaterialRetestForm.getProjectMaterialRetest().getBuyMaterialId();
+            /**
+             * 业务逻辑：
+             * 穿过了多个物料，分别判断物料是否需要复检，如果需要复检的话，则重新建立一个新任务
+             */
+            ProjectMaterialRetest[] projectMaterialRetestList= projectMaterialRetestForm.getProjectMaterialRetestList();
+            if (projectMaterialRetestList == null || projectMaterialRetestList.length == 0)
+                throw new BusinessException("参数错误，没有找到需要复检的物料");
 
-            String buyMaterialIdOfTask = (String) taskService.getVariable(task.getId(), "buyMaterialId");
-            if (!buyMaterialIdOfTask.equalsIgnoreCase(buyMaterialId))
-                throw new BusinessException("任务中不存在此物料，请刷新页面后重试");
 
-            String projectMaterialRetestId = projectBusinessService.submitSupervisionCompanyDecideWhetherToRecheck(
-                    projectMaterialRetestForm);
 
-            if (projectMaterialRetestId == null)
+            //材料分为需要复检和不需要复检
+            List<ProjectMaterialRetest> projectMaterialRetestListNeedReCheck = new ArrayList<>();//需要复检
+            List<ProjectMaterialRetest> projectMaterialRetestListNotNeedReCheck = new ArrayList<>();//不需要复检
+            for (ProjectMaterialRetest projectMaterialRetest : projectMaterialRetestList) {
+                if(projectMaterialRetest.getNeedRetest() !=0)
+                    projectMaterialRetestListNeedReCheck.add(projectMaterialRetest);
+                else
+                    projectMaterialRetestListNotNeedReCheck.add(projectMaterialRetest);
+            }
+
+
+            String projectMaterialRetestBatchId =null;
+ /*注释说明：如果需要监理单独判断复检是否通过，则执行下面代码
+            //为需要复检的物料，重新创建任务
+
+            if(!projectMaterialRetestListNeedReCheck.isEmpty()){
+
+
+                     projectMaterialRetestBatchId = projectBusinessService.submitSupervisionCompanyDecideWhetherToRecheck(
+                            projectMaterialRetestListNeedReCheck,projectMaterialRetestForm.getReviewTempDir());
+
+                    //设置复检结果，根据此结果走不同的流程
+
+
+
+                    //前端传过来的值：0不需要复检，1需要复检
+                int nNeedReCheckReviewResult = 1;
+
+                    int nReCheckReviewResult =  0;
+
+
+
+
+
+                    String processKey = "Process_Project_Material";
+                    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processKey, businessId);
+                    runtimeService.createProcessInstanceModification(processInstance.getId())
+                                  .cancelAllForActivity("Activity_Construction_Company_Create_Project")
+                                  .startBeforeActivity("Activity_Supervision_Company_Decide_Pass_ReCheck")
+                                  .setVariable(IProjectVariable.TASK_VARIABLE_PROJECT_ID, businessId)
+                                  .setVariable("nNeedReCheckReviewResult", nNeedReCheckReviewResult)
+                                  .setVariable("nReCheckReviewResult", nReCheckReviewResult)
+                                  .setVariable("projectMaterialRetestBatchId", projectMaterialRetestBatchId)
+                                  .execute();
+
+
+            }
+            if(!projectMaterialRetestListNotNeedReCheck.isEmpty()){
+
+                 projectMaterialRetestBatchId = projectBusinessService.submitSupervisionCompanyDecideWhetherToRecheck(
+                        projectMaterialRetestListNotNeedReCheck,projectMaterialRetestForm.getReviewTempDir());
+
+
+                if (projectMaterialRetestBatchId == null)
+                    throw new BusinessException("监理判断是否需要复试失败");
+
+
+                //设置复检结果，根据此结果走不同的流程
+                //前端传过来的值：0不需要复检，1需要复检
+                int nNeedReCheckReviewResult = 0;
+
+                taskService.setVariable(task.getId(), "nNeedReCheckReviewResult", nNeedReCheckReviewResult);
+
+            }*/
+
+            //begin :监理简单审批，不对物料复检进行再次审批
+            projectMaterialRetestBatchId = projectBusinessService.submitSupervisionCompanyDecideWhetherToRecheck(
+                    Arrays.stream(projectMaterialRetestList).toList(),projectMaterialRetestForm.getReviewTempDir());
+
+
+            if (projectMaterialRetestBatchId == null)
                 throw new BusinessException("监理判断是否需要复试失败");
 
+
             //设置复检结果，根据此结果走不同的流程
-            int nNeedReCheckReviewResult = projectMaterialRetestForm.getProjectMaterialRetest().getNeedRetest();
-
-
             //前端传过来的值：0不需要复检，1需要复检
-            if (nNeedReCheckReviewResult != 0) nNeedReCheckReviewResult = 1;
 
-            int nReCheckReviewResult = projectMaterialRetestForm.getProjectMaterialRetest().getReviewResult();
-            if (nReCheckReviewResult == IProjectReviewService.PROJECT_REVIEW_RESULT_REJECTED) nReCheckReviewResult =0;
-            else nReCheckReviewResult = 1;
-
-            taskService.setVariable(task.getId(), "nNeedReCheckReviewResult", nNeedReCheckReviewResult);
-            taskService.setVariable(task.getId(), "nReCheckReviewResult", nReCheckReviewResult);
-
-
-            if (nReCheckReviewResult == 0){
-                taskService.setVariable(task.getId(),"projectMaterialRetestId",projectMaterialRetestId);
+            if(projectMaterialRetestListNeedReCheck.isEmpty()){
+                //不需要复检
+                taskService.setVariable(task.getId(), "nNeedReCheckReviewResult", 0);
+            }else {
+                //需要复检，但可能不是所有物料都需要复检
+                int nNeedReCheckReviewResult = 1;
+                int nReCheckReviewResult =  1;
+                if(!projectMaterialRetestListNotNeedReCheck.isEmpty())nNeedReCheckReviewResult=0;
+                taskService.setVariable(task.getId(), "nNeedReCheckReviewResult", nNeedReCheckReviewResult);
+                if(projectMaterialRetestListNotNeedReCheck.isEmpty()){
+                    for(ProjectMaterialRetest projectMaterialRetest : projectMaterialRetestListNeedReCheck){
+                        if(projectMaterialRetest.getReviewResult()!=1) {
+                            nReCheckReviewResult = 0;
+                            break;
+                        }
+                    }
+                    taskService.setVariable(task.getId(), "nReCheckReviewResult", nReCheckReviewResult);
+                }
             }
+
+            //end :监理简单审批，不对物料复检进行再次审批
+
             //完成任务
             setTaskComplete(task, "监理判断是否需要复试", user);
 
@@ -2822,7 +2880,7 @@ public class ProjectFlow {
             projectHistoryBusiness.addSupervisionCompanyDecidePassReCheck(businessId, user.getId(),
                                                                           "监理判断是否需要复试",
                                                                           "监理判断是否需要复试",
-                                                                          projectMaterialRetestId);
+                                                                          projectMaterialRetestBatchId);
             Log log = new Log(user.getId(), businessId, "监理判断是否需要复试", 0 , new Date());
             logService.add(log);
 
@@ -2863,7 +2921,7 @@ public class ProjectFlow {
              * 3.完成任务
              */
 
-
+/*分批处理，每一个物料单独审批。
            if (projectMaterialAcceptanceBatchForm.getProjectMaterialAcceptanceList().size() == 1){
                String projectMaterialAcceptanceBatchId = projectBusinessService.addAcceptanceBatchForm(
                        projectMaterialAcceptanceBatchForm);
@@ -2916,10 +2974,35 @@ public class ProjectFlow {
 
            }
            else throw new BusinessException("参数错误");
+*/
+
+            //把所有的当作一个批次进行处理
+
+            String projectMaterialAcceptanceBatchId = projectBusinessService.addAcceptanceBatchForm(projectMaterialAcceptanceBatchForm);
+
+            if (projectMaterialAcceptanceBatchId == null) throw new BusinessException("总包单位申报项目材料批次验收失败");
+            taskService.setVariable(task.getId(), "projectMaterialAcceptanceBatchId",projectMaterialAcceptanceBatchId);
+
+
+            //历史记录
+            projectHistoryBusiness.addAcceptanceReviewGeneralContractorCompany(businessId, user.getId(),
+                                                                               "总包单位申报项目材料批次验",
+                                                                               "总包单位申报项目材料批次验收",
+                                                                               projectMaterialAcceptanceBatchId);
+            Log log = new Log(user.getId(), businessId, "总包单位申报项目材料批次验收", 0 , new Date());
+            logService.add(log);
+
+
+
+
+
             result = "总包单位申报项目材料批次验收";
+
+
+            setTaskComplete(task, "总包单位申报项目材料批次验", user);
+            return result;
         }
-        setTaskComplete(task, "总包单位申报项目材料批次验", user);
-        return result;
+
     }
     /**
      * 总包单位多次验收
@@ -3610,17 +3693,17 @@ public class ProjectFlow {
     public List<ProjectMaterialVerificationDocumentView> getBuyMaterialRecheckIsRequiredByProjectIdAndTaskId(String projectId,
                                                                                                              String taskId) {
 
-        String buyMaterialId = (String) taskService.getVariable(taskId,
+        String buyMaterialBatchId = (String) taskService.getVariable(taskId,
                                                                 "buyMaterialId");
-        return projectBusinessService.getListProjectMaterialVerificationDocumentViewOfReCheckIsRequiredByBuyMaterialId(
-                buyMaterialId);
+        return projectBusinessService.getListProjectMaterialVerificationDocumentViewOfReCheckIsRequiredByBuyMaterialBatchId(
+                buyMaterialBatchId);
     }
 
     public List<ProjectMaterialVerificationDocumentView> getBuyMaterialVerificationDocumentViewByProjectIdAndTaskId(String projectId,
                                                                                                                     String taskId) {
-        String buyMaterialId = (String) taskService.getVariable(taskId,
+        String buyMaterialBatchId = (String) taskService.getVariable(taskId,
                                                                 "buyMaterialId");
-        return projectBusinessService.getListMaterialVerificationDocumentViewByBuyMaterialId(buyMaterialId);
+        return projectBusinessService.getListMaterialVerificationDocumentViewByBuyMaterialBatchId(buyMaterialBatchId);
     }
 
 

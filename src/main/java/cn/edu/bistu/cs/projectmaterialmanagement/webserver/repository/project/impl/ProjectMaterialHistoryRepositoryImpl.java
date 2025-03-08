@@ -36,7 +36,7 @@ public class ProjectMaterialHistoryRepositoryImpl implements IProjectMaterialHis
 			projectMaterialHistory.setProjectId(rs.getString("t_project_id"));
 			projectMaterialHistory.setReviewed(rs.getInt("reviewed"));
 			projectMaterialHistory.setProjectMaterialId(rs.getString("t_project_material_id"));
-			projectMaterialHistory.setDeletedAt(rs.getDate("deleted_at"));
+			projectMaterialHistory.setDeletedAt(rs.getTimestamp("deleted_at"));
 			return projectMaterialHistory;
 		}
 	}

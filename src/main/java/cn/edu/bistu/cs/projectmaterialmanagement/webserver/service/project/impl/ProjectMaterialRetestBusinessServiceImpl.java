@@ -15,36 +15,40 @@ public class ProjectMaterialRetestBusinessServiceImpl implements IProjectMateria
 
     private final IProjectMaterialRetestService projectMaterialRetestService;
     private final IProjectMaterialRetestFileService projectMaterialRetestFileService;
+    private final IProjectMaterialRetestBatchService projectMaterialRetestBatchService;
     private final IBuyMaterialService buyMaterialService;
     private final IUserService userService;
     private final IProjectMaterialAcceptanceReviewUserService projectMaterialAcceptanceReviewUserService;
     public ProjectMaterialRetestBusinessServiceImpl(IProjectMaterialRetestService projectMaterialRetestService,
-                                                   IProjectMaterialRetestFileService projectMaterialRetestFileService,
+                                                    IProjectMaterialRetestFileService projectMaterialRetestFileService,
+                                                    IProjectMaterialRetestBatchService projectMaterialRetestBatchService,
                                                     IProjectMaterialAcceptanceReviewUserService projectMaterialAcceptanceReviewUserService
-                                                    ,IUserService userService,
+                                                    , IUserService userService,
                                                     IBuyMaterialService buyMaterialService
 
 
     ){
         this.projectMaterialRetestService = projectMaterialRetestService;
         this.projectMaterialRetestFileService = projectMaterialRetestFileService;
+        this.projectMaterialRetestBatchService = projectMaterialRetestBatchService;
         this.projectMaterialAcceptanceReviewUserService = projectMaterialAcceptanceReviewUserService;
         this.userService = userService;
         this.buyMaterialService = buyMaterialService;
     }
     @Override
-    public ProjectMaterialRetestView getViewBypProjectMaterialRetestUserId(String projectMaterialRetestUserId,  String projectMaterialRetestId) {
+    public ProjectMaterialRetestView getViewBypProjectMaterialRetestUserId(String userId,  String projectMaterialRetestId) {
         ProjectMaterialRetest projectMaterialRetest = projectMaterialRetestService.getById(projectMaterialRetestId);
-        User user = userService.getById(projectMaterialRetestUserId);
+        User user = userService.getById(userId);
         String buyMaterialId = projectMaterialRetest.getBuyMaterialId();
         BuyMaterial buyMaterial = buyMaterialService.getById(buyMaterialId);
-        if(projectMaterialRetest == null) return null;
         ProjectMaterialRetestView projectMaterialRetestView = new ProjectMaterialRetestView();
         projectMaterialRetestView.setProjectMaterialRetest(projectMaterialRetest);
-        projectMaterialRetestView.setProjectMaterialRetestFileList(projectMaterialRetestFileService.getByRetestId(projectMaterialRetestId));
+        projectMaterialRetestView.setProjectMaterialRetestBatch(projectMaterialRetestBatchService.getById(projectMaterialRetest.getProjectMaterialRetestBatchId()));
         projectMaterialRetestView.setUser(user);
         projectMaterialRetestView.setBuyMaterial(buyMaterial);
         return projectMaterialRetestView;
     }
+
+
 }
 

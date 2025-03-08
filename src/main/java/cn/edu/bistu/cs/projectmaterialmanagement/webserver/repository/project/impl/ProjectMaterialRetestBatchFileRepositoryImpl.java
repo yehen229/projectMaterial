@@ -2,8 +2,8 @@ package cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.i
 
 
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectMaterialRetestFile;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.IProjectMaterialRetestFileRepository;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectMaterialRetestBatchFile;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.IProjectMaterialRetestBatchFileRepository;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.utility.GUID;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -15,10 +15,10 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public class ProjectMaterialRetestFileRepositoryImpl implements IProjectMaterialRetestFileRepository {
+public class ProjectMaterialRetestBatchFileRepositoryImpl implements IProjectMaterialRetestBatchFileRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    public ProjectMaterialRetestFileRepositoryImpl(JdbcTemplate jdbcTemplate) {
+    public ProjectMaterialRetestBatchFileRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -26,18 +26,18 @@ public class ProjectMaterialRetestFileRepositoryImpl implements IProjectMaterial
      * insert
      */
     @Override
-    public String add(ProjectMaterialRetestFile projectMaterialRetestFile) {
+    public String add(ProjectMaterialRetestBatchFile projectMaterialRetestFile) {
 
         String newId = GUID.getGUID();
         if (jdbcTemplate.update("""
-                                        INSERT INTO t_project_material_retest_file(id,
-                                        t_project_material_retest_id,
+                                        INSERT INTO t_project_material_retest_batch_file(id,
+                                        t_project_material_retest_batch_id,
                                         file_path,
                                         deleted_at)
                                         VALUES(?,?,?,?)
                                         """,
                                 newId,
-                                projectMaterialRetestFile.getProjectMaterialRetestId(),
+                                projectMaterialRetestFile.getProjectMaterialRetestBatchId(),
                                 projectMaterialRetestFile.getFilePath(),
                                 projectMaterialRetestFile.getDeletedAt()) > 0)
             return newId;
@@ -48,10 +48,10 @@ public class ProjectMaterialRetestFileRepositoryImpl implements IProjectMaterial
      * delete
      */
     @Override
-    public int delete(ProjectMaterialRetestFile projectMaterialRetestFile) {
+    public int delete(ProjectMaterialRetestBatchFile projectMaterialRetestFile) {
         if (projectMaterialRetestFile == null) return 0;
         return jdbcTemplate.update("""
-                                           UPDATE t_project_material_retest_file
+                                           UPDATE t_project_material_retest_batch_file
                                            SET deleted_at=?
                                            WHERE id=?
                                            """, new Date(),
@@ -62,15 +62,15 @@ public class ProjectMaterialRetestFileRepositoryImpl implements IProjectMaterial
      * update
      */
     @Override
-    public int update(ProjectMaterialRetestFile projectMaterialRetestFile) {
+    public int update(ProjectMaterialRetestBatchFile projectMaterialRetestFile) {
         return jdbcTemplate.update("""
-                                           UPDATE t_project_material_retest_file
-                                           SET t_project_material_retest_id=?,
+                                           UPDATE t_project_material_retest_batch_file
+                                           SET t_project_material_retest_batch_id=?,
                                            file_path=?,
                                            deleted_at=? 
                                            WHERE id=?
                                            """,
-                                   projectMaterialRetestFile.getProjectMaterialRetestId(),
+                                   projectMaterialRetestFile.getProjectMaterialRetestBatchId(),
                                    projectMaterialRetestFile.getFilePath(),
                                    projectMaterialRetestFile.getDeletedAt(),
                                    projectMaterialRetestFile.getId());
@@ -82,7 +82,7 @@ public class ProjectMaterialRetestFileRepositoryImpl implements IProjectMaterial
     @Override
     public int deleteById(String id) {
         return jdbcTemplate.update("""
-                                           UPDATE t_project_material_retest_file
+                                           UPDATE t_project_material_retest_batch_file
                                            SET deleted_at=? 
                                            WHERE id=?
                                            """, new Date(),
@@ -96,7 +96,7 @@ public class ProjectMaterialRetestFileRepositoryImpl implements IProjectMaterial
     public int getCount() {
         Integer i = jdbcTemplate.queryForObject("""
                                                         SELECT count(*) 
-                                                        FROM t_project_material_retest_file
+                                                        FROM t_project_material_retest_batch_file
                                                         WHERE deleted_at IS NULL
                                                         """,
                                                 Integer.class);
@@ -107,10 +107,10 @@ public class ProjectMaterialRetestFileRepositoryImpl implements IProjectMaterial
      * 根据id得到记录
      */
     @Override
-    public ProjectMaterialRetestFile getById(String id) {
+    public ProjectMaterialRetestBatchFile getById(String id) {
         Integer i = jdbcTemplate.queryForObject("""
                                                         SELECT count(*) 
-                                                        FROM t_project_material_retest_file 
+                                                        FROM t_project_material_retest_batch_file 
                                                         WHERE id=? AND deleted_at IS NULL
                                                         """, Integer.class, id);
         if (i == null || i != 1)
@@ -118,7 +118,7 @@ public class ProjectMaterialRetestFileRepositoryImpl implements IProjectMaterial
 
         return jdbcTemplate.queryForObject("""
                                                    SELECT * 
-                                                   FROM t_project_material_retest_file
+                                                   FROM t_project_material_retest_batch_file
                                                    WHERE id=? AND deleted_at IS NULL
                                                    """,
                                            new ProjectMaterialRetestFileMapper(), id);
@@ -131,12 +131,12 @@ public class ProjectMaterialRetestFileRepositoryImpl implements IProjectMaterial
      * @param pageSize 每页的记录数
      */
     @Override
-    public Page<ProjectMaterialRetestFile> getPage(int pageNo,
-                                                   int pageSize) {
+    public Page<ProjectMaterialRetestBatchFile> getPage(int pageNo,
+                                                        int pageSize) {
         long totalCount = getCount();
         if (totalCount < 1) return new Page<>();
         int startIndex = Page.getStartOfPage(pageNo, pageSize);
-        List<ProjectMaterialRetestFile> resultData = getPageQuery(pageNo - 1, pageSize);
+        List<ProjectMaterialRetestBatchFile> resultData = getPageQuery(pageNo - 1, pageSize);
         return new Page<>(0, totalCount, (int) totalCount, resultData);
     }
 
@@ -147,47 +147,47 @@ public class ProjectMaterialRetestFileRepositoryImpl implements IProjectMaterial
      * @param pageSize 每页的记录数
      */
 
-    private List<ProjectMaterialRetestFile> getPageQuery(int pageNo,
-                                                         int pageSize) {
+    private List<ProjectMaterialRetestBatchFile> getPageQuery(int pageNo,
+                                                              int pageSize) {
         return jdbcTemplate.query("""
                                           SELECT * 
-                                          FROM t_project_material_retest_file
+                                          FROM t_project_material_retest_batch_file
                                           WHERE deleted_at IS NULL
                                           LIMIT ?,?
                                           """,
                                   new ProjectMaterialRetestFileMapper(), pageNo * pageSize, pageSize);
     }
     @Override
-    public List<ProjectMaterialRetestFile> getByRetestId(String RetestId) {
+    public List<ProjectMaterialRetestBatchFile> getByRetestBatchId(String retestBatchId) {
         Integer i = jdbcTemplate.queryForObject("""
                                                         SELECT count(*) 
-                                                        FROM t_project_material_retest_file
-                                                        WHERE t_project_material_retest_id=? AND deleted_at IS NULL
+                                                        FROM t_project_material_retest_batch_file
+                                                        WHERE t_project_material_retest_batch_id=? AND deleted_at IS NULL
                                                         """,
-                                                Integer.class, RetestId);
+                                                Integer.class, retestBatchId);
         if (i == null || i == 0)
             return null;
 
         return jdbcTemplate.query("""
                                           SELECT * 
-                                          FROM t_project_material_retest_file 
-                                          WHERE t_project_material_retest_id=? AND deleted_at IS NULL
+                                          FROM t_project_material_retest_batch_file 
+                                          WHERE t_project_material_retest_batch_id=? AND deleted_at IS NULL
                                           """,
-                                  new ProjectMaterialRetestFileMapper(), RetestId);
+                                  new ProjectMaterialRetestFileMapper(), retestBatchId);
     }
 
     /**
      * RowMapper
      */
-    private static final class ProjectMaterialRetestFileMapper implements RowMapper<ProjectMaterialRetestFile> {
+    private static final class ProjectMaterialRetestFileMapper implements RowMapper<ProjectMaterialRetestBatchFile> {
         @Override
-        public ProjectMaterialRetestFile mapRow(ResultSet rs,
-                                                int rowNum) throws SQLException {
-            ProjectMaterialRetestFile projectMaterialRetestFile = new ProjectMaterialRetestFile();
+        public ProjectMaterialRetestBatchFile mapRow(ResultSet rs,
+                                                     int rowNum) throws SQLException {
+            ProjectMaterialRetestBatchFile projectMaterialRetestFile = new ProjectMaterialRetestBatchFile();
             projectMaterialRetestFile.setId(rs.getString("id"));
-            projectMaterialRetestFile.setProjectMaterialRetestId(rs.getString("t_project_material_retest_id"));
+            projectMaterialRetestFile.setProjectMaterialRetestBatchId(rs.getString("t_project_material_retest_batch_id"));
             projectMaterialRetestFile.setFilePath(rs.getString("file_path"));
-            projectMaterialRetestFile.setDeletedAt(rs.getDate("deleted_at"));
+            projectMaterialRetestFile.setDeletedAt(rs.getTimestamp("deleted_at"));
             return projectMaterialRetestFile;
         }
     }

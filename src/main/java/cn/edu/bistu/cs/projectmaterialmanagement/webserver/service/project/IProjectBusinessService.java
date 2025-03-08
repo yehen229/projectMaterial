@@ -77,7 +77,8 @@ public interface IProjectBusinessService {
 
 
     //监理单位决定是否重新检测
-    String submitSupervisionCompanyDecideWhetherToRecheck(ProjectMaterialRetestForm projectMaterialRetestForm);
+    String submitSupervisionCompanyDecideWhetherToRecheck(List<ProjectMaterialRetest> projectMaterialRetestList,String tempFileDir);
+
 
     //项目材料验收：总包单位提交项目材料批次验收申请
     String addAcceptanceBatchForm(ProjectMaterialAcceptanceBatchForm projectMaterialAcceptanceBatchForm);
@@ -207,36 +208,6 @@ public interface IProjectBusinessService {
                                                                                Integer pageNo,
                                                                                Integer pageSize);
 
-    Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndName(String projectId,
-                                                                               String name,
-                                                                               Integer pageNo,
-                                                                               Integer pageSize);
-
-    Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndLocation(String projectId,
-                                                                               String location,
-                                                                               Integer pageNo,
-                                                                               Integer pageSize);
-
-    Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndItemMark(String projectId,
-                                                                               String itemMark,
-                                                                               Integer pageNo,
-                                                                               Integer pageSize);
-
-    Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndTechnology(String projectId,
-                                                                               String technology,
-                                                                               Integer pageNo,
-                                                                               Integer pageSize);
-
-    Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndInstallation(String projectId,
-                                                                               String installation,
-                                                                               Integer pageNo,
-                                                                               Integer pageSize);
-
-    Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndBrand(String projectId,
-                                                                               String brand,
-                                                                               Integer pageNo,
-                                                                               Integer pageSize);
-
     void setProjectReviewedNewBrandByProjectId(String projectId);
 
     Page<ProjectReviewUserView> getProjectMaterialUserUserReViewPageByTaskId(String projectReviewId,
@@ -267,6 +238,10 @@ public interface IProjectBusinessService {
     List<ProjectMaterialVerificationDocumentView> getListMaterialVerificationDocumentViewByBuyMaterialId(String buyMaterialId);
 
     List<ProjectMaterialVerificationDocumentView> getListProjectMaterialVerificationDocumentViewOfReCheckIsRequiredByBuyMaterialId(String buyMaterialId);
+
+    List<ProjectMaterialVerificationDocumentView> getListMaterialVerificationDocumentViewByBuyMaterialBatchId(String buyMaterialBatchId);
+    List<ProjectMaterialVerificationDocumentView> getListProjectMaterialVerificationDocumentViewOfReCheckIsRequiredByBuyMaterialBatchId(String buyMaterialBatchId);
+
 
     /**
      * 从服务器获得已经购买的、并且没有被禁止使用的物料
@@ -307,4 +282,5 @@ public interface IProjectBusinessService {
     ProjectAppearanceReviewUserView getFeedbackOfAffectAppearanceReviewedByReviewId(String projectAffectAppearanceReviewModeId);
     ProjectMaterialRetestView getFeedbackOfProjectMaterialAcceptanceReviewedByRetestId(String projectMaterialRetestId);
     ProjectMaterialAcceptanceReviewUserView getFeedbackOfProjectMaterialAcceptanceReviewedByReviewId(String projectMaterialAcceptanceReviewModeId);
+
 }

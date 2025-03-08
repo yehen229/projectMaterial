@@ -95,4 +95,6 @@ public interface IBuyMaterialRepository {
 
     List<String> getBoughtProjectMaterialBrandPublicIdListPageByProjectIdAndMaterialId(String projectId,
                                                                                        String materialId);
+
+    List<BuyMaterial> getByBuyMaterialBatchId(String buyMaterialBatchId);
 }
