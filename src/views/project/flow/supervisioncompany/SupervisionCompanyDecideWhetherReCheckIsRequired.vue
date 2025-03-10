@@ -341,7 +341,7 @@ const submitToServerNotNeedRecheck = async (userId: string) => {
     var projectMaterialRetest: IServerProjectMaterialRetest = {
       id: "", //id,主键
       buyMaterialId:
-        buyMaterialViewList.value[0].buyMaterialView.buyMaterial.id, //t_project_id,外键,	t_project_id<-表t_project.id
+        buyMaterialViewList.value[i].buyMaterialView.buyMaterial.id, //t_project_id,外键,	t_project_id<-表t_project.id
       projectMaterialRetestBatchId: "",
       userId: userId, //t_user_id,外键,	t_user_id<-表t_user.id,项目经理ID项目经理ID
       needRetest: 0, //是否需要复检，0不需要复检，1需要复检
@@ -396,7 +396,7 @@ const submitToServerManagerDirect = async (userId: string) => {
     var projectMaterialRetest: IServerProjectMaterialRetest = {
       id: "", //id,主键
       buyMaterialId:
-        buyMaterialViewList.value[0].buyMaterialView.buyMaterial.id, //t_project_id,外键,	t_project_id<-表t_project.id
+        buyMaterialViewList.value[i].buyMaterialView.buyMaterial.id, //t_project_id,外键,	t_project_id<-表t_project.id
       projectMaterialRetestBatchId: "",
       userId: userId, //t_user_id,外键,	t_user_id<-表t_user.id,项目经理ID项目经理ID
       needRetest: 1, //是否需要复检，0不需要复检，1需要复检
@@ -535,6 +535,7 @@ const httpRequest = async (options: UploadRequestOptions) => {
   } else ElMessage.error(`上传失败`);
 };
 const textElipsisValue = ref(false);
+console.log(buyMaterialViewList)
 </script>
 
 <template>
@@ -676,25 +677,22 @@ const textElipsisValue = ref(false);
               <span
                 v-if="
                   projectMaterialVerificationDocumentViewItem.buyMaterialView
-                    .projectMaterialBrandPublic != null
+                    .projectMaterialBrandPublicView != null
                 "
                 >{{
-                  projectMaterialVerificationDocumentViewItem.buyMaterialView
-                    .projectMaterialBrandPublic.brandPublicView.brandView.brand
-                    .name
+                  projectMaterialVerificationDocumentViewItem.buyMaterialView.projectMaterialBrandPublicView
+                    .brandPublicView.brandView.brand.name
                 }}</span
               >
 
               <!--项目私有品牌-->
               <span
                 v-else-if="
-                  projectMaterialVerificationDocumentViewItem.buyMaterialView
-                    .projectMaterialBrandPrivate != null
+                  projectMaterialVerificationDocumentViewItem.buyMaterialView.projectMaterialBrandPrivateView != null
                 "
                 >{{
-                  projectMaterialVerificationDocumentViewItem.buyMaterialView
-                    .projectMaterialBrandPrivate.projectBrandView.brandView
-                    .brand.name
+                  projectMaterialVerificationDocumentViewItem.buyMaterialView.projectMaterialBrandPrivateView
+                    .projectBrandView.brandView.brand.name
                 }}</span
               >
             </div>
