@@ -1090,29 +1090,41 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
         if (!user.getId().equalsIgnoreCase(userId))
             throw new BusinessException("用户参数错误");
 
+         for (int i = 0; i < projectMaterialRetestList.size(); i++) {
+            ProjectMaterialRetest projectMaterialRetest = projectMaterialRetestList.get(i);
 
-        projectMaterialRetestList.forEach(projectMaterialRetest -> {
             projectMaterialRetest.setReviewDatetime(new Date());
             projectMaterialRetest.setReviewContent(projectMaterialRetest.getReviewContent());
+
+            // 这里确保每个 projectMaterialRetest 使用自己的 buyMaterialId
+            if (projectMaterialRetest.getBuyMaterialId() == null)
+                throw new BusinessException("项目材料复检的物料ID为空");
+            projectMaterialRetest.setBuyMaterialId(projectMaterialRetest.getBuyMaterialId());
+
             projectMaterialRetest.setDeletedAt(null);
             projectMaterialRetest.setProjectMaterialRetestBatchId(projectMaterialRetestBatchId);
 
-            //是否需要复检。0：不需要，1需要
-            if (projectMaterialRetest.getNeedRetest() == 0)
+            // 是否需要复检。0：不需要，1：需要
+            if (projectMaterialRetest.getNeedRetest() == 0) {
                 projectMaterialRetest.setNeedRetest(0);
-            else projectMaterialRetest.setNeedRetest(1);
+            } else {
+                projectMaterialRetest.setNeedRetest(1);
+            }
 
-            //审核结果，0未审核；1审核通过；2.审核不通过
-            if (projectMaterialRetest.getReviewResult() == 1)
+            // 审核结果，0未审核；1审核通过；2审核不通过
+            if (projectMaterialRetest.getReviewResult() == 1) {
                 projectMaterialRetest.setReviewResult(IProjectReviewService.PROJECT_REVIEW_RESULT_ACCEPTED);
-            else if (projectMaterialRetest.getReviewResult() == 2)
+            } else if (projectMaterialRetest.getReviewResult() == 2) {
                 projectMaterialRetest.setReviewResult(IProjectReviewService.PROJECT_REVIEW_RESULT_REJECTED);
-            else projectMaterialRetest.setReviewResult(IProjectReviewService.PROJECT_REVIEW_RESULT_UNKNOWN);
+            } else {
+                projectMaterialRetest.setReviewResult(IProjectReviewService.PROJECT_REVIEW_RESULT_UNKNOWN);
+            }
 
             String projectMaterialRetestId = projectMaterialRetestService.add(projectMaterialRetest);
-            if (projectMaterialRetestId == null)
-                throw new BusinessException("添加项目材料复检批次失败");
-        });
+            if (projectMaterialRetestId == null) {
+                throw new BusinessException("添加项目材料复检失败");
+            }
+        }
 
 
 

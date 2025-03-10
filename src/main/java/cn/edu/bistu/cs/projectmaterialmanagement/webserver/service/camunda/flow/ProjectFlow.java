@@ -2594,10 +2594,10 @@ public class ProjectFlow {
 
 
 
-            List<String> buyMaterialIdList = projectBusinessService.addFormOfGeneralContractorBuyProjectMaterial(
-                    buyMaterialForm.getBuyMaterials());
-            if (buyMaterialIdList == null)
-                throw new BusinessException("总包单位订购失败");
+//            List<String> buyMaterialIdList = projectBusinessService.addFormOfGeneralContractorBuyProjectMaterial(
+//                    buyMaterialForm.getBuyMaterials());
+//            if (buyMaterialIdList == null)
+//                throw new BusinessException("总包单位订购失败");
 
             /*
             每次购买为一个批次，一个批次里面可以包含多个物料
