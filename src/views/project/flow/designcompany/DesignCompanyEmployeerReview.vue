@@ -168,7 +168,6 @@ const handleRadioReviewChange = async () => {};
  */
 const submitProcess = async () => {
   console.log(fileList.value);
-
   const userId = getUserID();
   console.log(userId);
   if (!userId) {

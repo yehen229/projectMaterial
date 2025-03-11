@@ -312,11 +312,19 @@ const pageSize = ref(getUserPageSize()); //每页多少数据
 const companyId = ref(null);
 const projectMaterialViewPageData =
     ref<IServerPage<IServerProjectMaterialView> | null>(null);// 获取公司id
+
 const getcompanyId = async () => {
   const ret = await serverGetProjectMaterialPageViewByTaskIdAndProjectId(
       projectId.value,
       taskId.value,
       designCompanyIndex.value,
+     "",
+      "",
+      "",
+      "",
+     "",
+      "",
+     "",
       pageNo.value,
       pageSize.value
   );
