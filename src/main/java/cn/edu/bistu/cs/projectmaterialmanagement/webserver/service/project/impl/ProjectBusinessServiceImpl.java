@@ -2524,7 +2524,8 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
         buyMaterialBatch.setProjectId(buyMaterialForm.getProjectId());
         buyMaterialBatch.setCreateDatetime(new Date());
         String buyMaterialBatchId = buyMaterialBatchService.add(buyMaterialBatch);
-
+        Integer currentMaxBatch = buyMaterialService.getMaxBatchByBatchId(buyMaterialBatchId);
+        int newBatch = currentMaxBatch + 1;
         if (buyMaterialBatchId == null)
             throw new BusinessException("添加失败");
 
@@ -2559,7 +2560,7 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
             }
 
             buyMaterial.setBuyMaterialBatchId(buyMaterialBatchId); // 关联批次 ID
-
+            buyMaterial.setBatch(newBatch);
             String buyMaterialId = buyMaterialService.add(buyMaterial);
             buyMaterialIds.add(buyMaterialId);
         }
