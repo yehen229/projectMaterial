@@ -2859,13 +2859,13 @@ public class ProjectFlow {
             }else {
                 //需要复检，但可能不是所有物料都需要复检
                 int nNeedReCheckReviewResult = 1;
-                int nReCheckReviewResult =  1;
+                int nReCheckReviewResult =  0;
                 if(!projectMaterialRetestListNotNeedReCheck.isEmpty())nNeedReCheckReviewResult=0;
                 taskService.setVariable(task.getId(), "nNeedReCheckReviewResult", nNeedReCheckReviewResult);
                 if(projectMaterialRetestListNotNeedReCheck.isEmpty()){
                     for(ProjectMaterialRetest projectMaterialRetest : projectMaterialRetestListNeedReCheck){
-                        if(projectMaterialRetest.getReviewResult()!=1) {
-                            nReCheckReviewResult = 0;
+                        if(projectMaterialRetest.getReviewResult() == 1) {
+                            nReCheckReviewResult = 1;
                             break;
                         }
                     }

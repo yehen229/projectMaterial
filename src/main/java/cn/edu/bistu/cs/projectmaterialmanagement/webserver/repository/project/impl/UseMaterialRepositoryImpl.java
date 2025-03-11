@@ -574,27 +574,31 @@ public class UseMaterialRepositoryImpl implements IUseMaterialRepository {
                                                                                int pageNo,
                                                                                int pageSize) {
         return jdbcTemplate.query("""
-            SELECT DISTINCT (u.id)
-            FROM t_use_material u
-            WHERE u.t_use_material_brand_select_id IN (
-                SELECT DISTINCT (s.id)
-                FROM t_use_material_brand_select  s
-                LEFT JOIN t_project_appearance_review_mode  m ON m.t_use_material_brand_select_id=s.id
-                LEFT JOIN t_project_appearance_review  r ON r.t_project_appearance_review_mode_id=m.id
-                WHERE s.t_project_id=?
-                    AND s.id  in (
-    	                SELECT DISTINCT (st.id)
-    	                FROM t_use_material_brand_select  st
-    	                LEFT JOIN t_project_appearance_review_mode  mt ON mt.t_use_material_brand_select_id=st.id
-    	                LEFT JOIN t_project_appearance_review  rt ON rt.t_project_appearance_review_mode_id=mt.id
-    	                WHERE rt.review_result =1
-    		                AND st.t_project_id=?
-                            AND rt.deleted_at IS NULL
-                            AND st.deleted_at IS NULL
-                            AND mt.deleted_at IS NULL
-                    )
-                    AND s.deleted_at IS NULL
-            )
+            
+                SELECT DISTINCT (u.id)
+                       FROM t_use_material u
+                       WHERE u.t_use_material_brand_select_id IN (
+                           SELECT DISTINCT (s.id)
+                           FROM t_use_material_brand_select  s
+                           LEFT JOIN t_project_appearance_review_mode  m ON m.t_use_material_brand_select_id=s.id
+                           LEFT JOIN t_project_appearance_review  r ON r.t_project_appearance_review_mode_id=m.id
+                           WHERE s.t_project_id=?
+                               AND s.id  in (
+               	                SELECT DISTINCT (st.id)
+               	                FROM t_use_material_brand_select  st
+               	                LEFT JOIN t_project_appearance_review_mode  mt ON mt.t_use_material_brand_select_id=st.id
+               	                LEFT JOIN t_project_appearance_review  rt ON rt.t_project_appearance_review_mode_id=mt.id
+           											LEFT JOIN t_company_user tu ON tu.t_user_id = mt.t_user_id
+           											LEFT JOIN t_company tc ON tu.t_company_id = tc.id
+               	                WHERE rt.review_result =1
+           											  AND ((mt.affect_appearance = 0 AND tc.name = '工程部') OR (mt.affect_appearance = 1 AND tc.name = '设计部')) \s
+               		                AND st.t_project_id=?
+                                       AND rt.deleted_at IS NULL
+                                       AND st.deleted_at IS NULL
+                                       AND mt.deleted_at IS NULL
+                               )
+                               AND s.deleted_at IS NULL
+                       )
             limit ?,?
             """, new RowMapper<String>() {
             @Override

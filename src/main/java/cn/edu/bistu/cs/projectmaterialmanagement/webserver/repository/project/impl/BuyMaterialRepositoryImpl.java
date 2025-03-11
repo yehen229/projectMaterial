@@ -665,7 +665,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
                         AND  t_project_material.deleted_at IS  null  AND t_buy_material.id IN(
                         SELECT t_buy_material_id
                         FROM t_project_material_retest       
-                        WHERE need_retest=0 OR review_result=1
+                        WHERE need_retest=0 OR (review_result=1 AND need_retest = 1 )
                         )
                         """,
                 Integer.class, projectId);
@@ -686,7 +686,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
                                       AND  t_project_material.deleted_at IS  null  AND t_buy_material.id IN(
                                       SELECT t_buy_material_id
                                       FROM t_project_material_retest       
-                                      WHERE need_retest=0 OR review_result=1
+                                      WHERE need_retest=0 OR (review_result=1 AND need_retest = 1)
                                       )
                         LIMIT ?,?
                         """, new RowMapper<String>() {
