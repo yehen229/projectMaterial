@@ -124,8 +124,6 @@ const searchSelect = ref("1");
 
 const pageNo = ref(1); //第几页
 const pageSize = ref(getUserPageSize()); //每页多少数据
-
-const projectReviewUserViewData = ref<IServerProjectMaterialRetestView>();
 const updateProjectMaterialView = ref<IServerProjectMaterialView>();
 const projectViewData = ref<IServerProjectView>();
 const radioUserType = ref(0);
@@ -143,6 +141,8 @@ onMounted(async () => {
   await getProjectReviewUserViewPageFromServer();
 });
 
+const projectReviewUserViewData = ref<IServerProjectMaterialRetestView[]>([]);
+
 const getProjectReviewUserViewPageFromServer = async () => {
   console.log(projectUserTask);
   if (
@@ -159,12 +159,16 @@ const getProjectReviewUserViewPageFromServer = async () => {
       );
     console.log(ret);
     if (ret && ret.code == 200) {
-      projectReviewUserViewData.value = ret.data;
-            console.log("projectReviewUserViewData.value",projectReviewUserViewData.value)
-
+      projectReviewUserViewData.value = ret.data; // 赋值为数组
+      console.log("projectReviewUserViewData.value", projectReviewUserViewData.value);
     }
   }
 };
+
+watchEffect(async () => {
+  await getProjectReviewUserViewPageFromServer();
+});
+
 
 watchEffect(async () => {
   // 在 3.5 之前只运行一次
@@ -266,107 +270,69 @@ const collapsed = ref(false);
 </script>
 
 <template>
-  <div
-    class="project-material-list-container container"
-    v-if="
-      projectReviewUserViewData &&
-      projectReviewUserViewData.projectMaterialRetest
-    "
-  >
-    <div style="font: 1.2em sans-serif; margin: 10px">
-      审核内容
-      <el-icon
-        style="float: right; cursor: pointer"
-        v-if="collapsed"
-        @click="collapsed = !collapsed"
-      >
-        <ArrowDown />
-      </el-icon>
-      <el-icon
-        style="float: right; cursor: pointer"
-        v-else
-        @click="collapsed = !collapsed"
-      >
-        <ArrowUp />
-      </el-icon>
-    </div>
-    <div class="project-container" v-show="!collapsed">
-      <div style="display: flex; margin: 10px; align-items: baseline">
-        <div>审核结果：</div>
-        <div
-          v-if="
-         projectReviewUserViewData?.projectMaterialRetest.reviewResult == 2
-          "
-          style="color: red"
-        >
-          不通过
-        </div>
-        <div
-          v-else-if="
-            projectReviewUserViewData?.projectMaterialRetest.reviewResult == 2
-          "
-          style="color: green"
-        >
-          通过
-        </div>
+  <div v-if="projectReviewUserViewData.length > 0">
+    <div
+      v-for="(review, index) in projectReviewUserViewData"
+      :key="index"
+      class="project-material-list-container container"
+    >
+      <div style="font: 1.2em sans-serif; margin: 10px">
+        审核内容 {{ index + 1 }}
+        <el-icon style="float: right; cursor: pointer" v-if="collapsed[index]" @click="collapsed[index] = !collapsed[index]">
+          <ArrowDown />
+        </el-icon>
+        <el-icon style="float: right; cursor: pointer" v-else @click="collapsed[index] = !collapsed[index]">
+          <ArrowUp />
+        </el-icon>
       </div>
-      <div style="display: flex; margin: 10px; align-items: baseline">
-        <div>审核意见：</div>
-        <div>
-          {{
-            projectReviewUserViewData?.projectMaterialRetest.reviewContent
-          }}
+      <div class="project-container" v-show="!collapsed[index]">
+        <div style="display: flex; margin: 10px; align-items: baseline">
+          <div>审核结果：</div>
+          <div v-if="review.projectMaterialRetest.reviewResult == 2" style="color: red">不通过</div>
+          <div v-else-if="review.projectMaterialRetest.reviewResult == 1" style="color: green">通过</div>
         </div>
-      </div>
 
-      <div style="display: flex; margin: 10px; align-items: baseline">
-        <div>审核时间：</div>
-        <div>
-          {{
-            formatDate(
-              projectReviewUserViewData?.projectMaterialRetest
-                .reviewDatetime
-            )
-          }}
+        <div style="display: flex; margin: 10px; align-items: baseline">
+          <div>审核意见：</div>
+          <div>{{ review.projectMaterialRetest.reviewContent }}</div>
         </div>
-      </div>
 
-      <div style="display: flex; margin: 10px; align-items: baseline">
-        <div>审核附件：</div>
-        <div>
-          <div
-            v-for="(
-              item, index
-            ) in projectReviewUserViewData?.projectMaterialRetestFileList"
-            :key="index"
-            style="padding-right: 10px"
-          >
+        <div style="display: flex; margin: 10px; align-items: baseline">
+          <div>审核时间：</div>
+          <div>{{ formatDate(review.projectMaterialRetest.reviewDatetime) }}</div>
+        </div>
+
+        <div style="display: flex; margin: 10px; align-items: baseline">
+          <div>审核附件：</div>
+          <div>
             <div
-              class="download-file"
-              @click="
-                downloadProjectMaterialAcceptanceFileById(
-                  projectUserTask.projectView.project.id,
-                  item.id,
-                  projectReviewUserViewData?.user.realName +
-                    '_' +
-                    projectReviewUserViewData?.user.userName,
-                  index + 1,
-                  item.filePath
-                )
-              "
+              v-for="(item, idx) in review.projectMaterialRetestFileList"
+              :key="idx"
+              style="padding-right: 10px"
             >
-              {{
-                getFullFilename(
-                  projectUserTask.projectView.project.id,
-                  item.id,
-                  projectReviewUserViewData?.user.realName +
-                    "_" +
-                    projectReviewUserViewData?.user.userName,
-                  index + 1,
-                  item.filePath
-                )
-              }}
-              <el-icon><Download /></el-icon>
+              <div
+                class="download-file"
+                @click="
+                  downloadProjectMaterialAcceptanceFileById(
+                    projectUserTask.projectView.project.id,
+                    item.id,
+                    review.user.realName + '_' + review.user.userName,
+                    idx + 1,
+                    item.filePath
+                  )
+                "
+              >
+                {{
+                  getFullFilename(
+                    projectUserTask.projectView.project.id,
+                    item.id,
+                    review.user.realName + '_' + review.user.userName,
+                    idx + 1,
+                    item.filePath
+                  )
+                }}
+                <el-icon><Download /></el-icon>
+              </div>
             </div>
           </div>
         </div>
@@ -374,6 +340,8 @@ const collapsed = ref(false);
     </div>
   </div>
 </template>
+
+
 
 <style scoped>
 .project-material-list-container {
