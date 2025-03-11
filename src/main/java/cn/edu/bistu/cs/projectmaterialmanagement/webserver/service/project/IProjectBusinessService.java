@@ -208,6 +208,36 @@ public interface IProjectBusinessService {
                                                                                Integer pageNo,
                                                                                Integer pageSize);
 
+    Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndName(String projectId,
+                                                                               String name,
+                                                                               Integer pageNo,
+                                                                               Integer pageSize);
+
+    Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndLocation(String projectId,
+                                                                               String location,
+                                                                               Integer pageNo,
+                                                                               Integer pageSize);
+
+    Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndItemMark(String projectId,
+                                                                               String itemMark,
+                                                                               Integer pageNo,
+                                                                               Integer pageSize);
+
+    Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndTechnology(String projectId,
+                                                                               String technology,
+                                                                               Integer pageNo,
+                                                                               Integer pageSize);
+
+    Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndInstallation(String projectId,
+                                                                               String installation,
+                                                                               Integer pageNo,
+                                                                               Integer pageSize);
+
+    Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndBrand(String projectId,
+                                                                               String brand,
+                                                                               Integer pageNo,
+                                                                               Integer pageSize);
+
     void setProjectReviewedNewBrandByProjectId(String projectId);
 
     Page<ProjectReviewUserView> getProjectMaterialUserUserReViewPageByTaskId(String projectReviewId,
@@ -280,7 +310,7 @@ public interface IProjectBusinessService {
     UseMaterialBrandSelectView getNotPassedBrandOfSelectBrandReviewedOfSupervisionCompanyByProjectIdAndTaskId(String projectAppearanceReviewModeId);
 
     ProjectAppearanceReviewUserView getFeedbackOfAffectAppearanceReviewedByReviewId(String projectAffectAppearanceReviewModeId);
-    ProjectMaterialRetestView getFeedbackOfProjectMaterialAcceptanceReviewedByRetestId(String projectMaterialRetestId);
+    List<ProjectMaterialRetestView> getFeedbackOfProjectMaterialAcceptanceReviewedByRetestId(String projectMaterialRetestId);
     ProjectMaterialAcceptanceReviewUserView getFeedbackOfProjectMaterialAcceptanceReviewedByReviewId(String projectMaterialAcceptanceReviewModeId);
 
 }

@@ -2358,11 +2358,55 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
     public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectId(String projectId,
                                                                                       Integer pageNo,
                                                                                       Integer pageSize) {
-
-
         return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectId(projectId, pageNo, pageSize);
+    }
 
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndName(String projectId,
+                                                                                      String name,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndName(projectId, name, pageNo, pageSize);
+    }
 
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndLocation(String projectId,
+                                                                                      String location,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndLocation(projectId, location, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndItemMark(String projectId,
+                                                                                      String itemMark,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndItemMark(projectId, itemMark, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndTechnology(String projectId,
+                                                                                      String technology,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndTechnology(projectId, technology, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndInstallation(String projectId,
+                                                                                      String installation,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndInstallation(projectId, installation, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndBrand(String projectId,
+                                                                                      String brand,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndBrand(projectId, brand, pageNo, pageSize);
     }
 
     /**
@@ -2524,7 +2568,8 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
         buyMaterialBatch.setProjectId(buyMaterialForm.getProjectId());
         buyMaterialBatch.setCreateDatetime(new Date());
         String buyMaterialBatchId = buyMaterialBatchService.add(buyMaterialBatch);
-
+        Integer currentMaxBatch = buyMaterialService.getMaxBatchByBatchId(buyMaterialBatchId);
+        int newBatch = currentMaxBatch + 1;
         if (buyMaterialBatchId == null)
             throw new BusinessException("添加失败");
 
@@ -2559,7 +2604,7 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
             }
 
             buyMaterial.setBuyMaterialBatchId(buyMaterialBatchId); // 关联批次 ID
-
+            buyMaterial.setBatch(newBatch);
             String buyMaterialId = buyMaterialService.add(buyMaterial);
             buyMaterialIds.add(buyMaterialId);
         }
@@ -2835,25 +2880,30 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
         }
     }
     @Override
-    public ProjectMaterialRetestView getFeedbackOfProjectMaterialAcceptanceReviewedByRetestId(String projectMaterialRetestId){
-        ProjectMaterialRetest projectMaterialRetest = projectMaterialRetestService.getById(projectMaterialRetestId);
-        if(projectMaterialRetest == null) return null;
-        BuyMaterial buyMaterial = buyMaterialService.getById(projectMaterialRetest.getBuyMaterialId());
-        if(buyMaterial == null) return null;
-        UseMaterial useMaterial = useMaterialService.getById(buyMaterial.getUseMaterialId());
-        if(useMaterial == null) return null;
-        UseMaterialBrandSelect useMaterialBrandSelect = useMaterialBrandSelectService.getById(useMaterial.getUseMaterialBrandSelectId());
+    public List<ProjectMaterialRetestView> getFeedbackOfProjectMaterialAcceptanceReviewedByRetestId(String projectMaterialRetestBatchId) {
+        List<ProjectMaterialRetest> projectMaterialRetestList = projectMaterialRetestService.getbyProjectMaterialRetestBatchId(projectMaterialRetestBatchId);
 
-        List<ProjectUser> supervisioncompanyUser = projectUserService.getSupervisionCompanyEmployees(useMaterialBrandSelect.getProjectId());
-        if(supervisioncompanyUser == null || supervisioncompanyUser.isEmpty()) return null;
-        if (projectUserService.isUserSupervisionCompanyEmployee(useMaterialBrandSelect.getProjectId(),projectMaterialRetest.getUserId())){
-            return projectMaterialRetestBusinessService.getViewBypProjectMaterialRetestUserId(projectMaterialRetest.getUserId(), projectMaterialRetestId);
-        }
-        else {
-            return null;
+        if (projectMaterialRetestList == null || projectMaterialRetestList.isEmpty()) {
+            return Collections.emptyList(); // 返回空列表而不是 null
         }
 
+        List<ProjectMaterialRetestView> resultList = new ArrayList<>();
+
+        for (ProjectMaterialRetest projectMaterialRetest : projectMaterialRetestList) {
+            BuyMaterial buyMaterial = buyMaterialService.getById(projectMaterialRetest.getBuyMaterialId());
+            UseMaterial useMaterial = useMaterialService.getById(buyMaterial.getUseMaterialId());
+            UseMaterialBrandSelect useMaterialBrandSelect = useMaterialBrandSelectService.getById(useMaterial.getUseMaterialBrandSelectId());
+
+            // 如果是监理单位的员工，则添加到列表
+            if (projectUserService.isUserSupervisionCompanyEmployee(useMaterialBrandSelect.getProjectId(), projectMaterialRetest.getUserId())) {
+                resultList.add(projectMaterialRetestBusinessService.getViewBypProjectMaterialRetestUserId(
+                        projectMaterialRetest.getUserId(), projectMaterialRetest.getId()));
+            }
+        }
+
+        return resultList; // 返回所有符合条件的 ProjectMaterialRetestView
     }
+
     @Override
     public ProjectMaterialAcceptanceReviewUserView getFeedbackOfProjectMaterialAcceptanceReviewedByReviewId(String projectMaterialAcceptanceReviewModeId) {
               ProjectMaterialAcceptanceReviewMode projectMaterialAcceptanceReviewMode =projectMaterialAcceptanceReviewModeService.getById(

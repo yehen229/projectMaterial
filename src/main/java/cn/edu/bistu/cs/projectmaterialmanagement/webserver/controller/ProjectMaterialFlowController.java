@@ -1103,7 +1103,7 @@ public class ProjectMaterialFlowController {
     @PreAuthorize("""
     hasAnyRole('Admin')
     or @ProjectPermission.isInProject(#projectId)""")
-    public ProjectMaterialRetestView getFeedbackOfNeedReCheckNotPassedOfSupervisionCompanyByProjectIdAndTaskId(
+    public List<ProjectMaterialRetestView> getFeedbackOfNeedReCheckNotPassedOfSupervisionCompanyByProjectIdAndTaskId(
             @RequestParam("projectId") String projectId,
             @RequestParam(value = "taskId") String taskId){
 

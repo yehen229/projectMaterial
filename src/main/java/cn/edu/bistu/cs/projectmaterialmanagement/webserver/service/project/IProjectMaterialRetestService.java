@@ -21,6 +21,7 @@ public interface IProjectMaterialRetestService {
 	ProjectMaterialRetest getById(String id);
 	List<ProjectMaterialRetest> getByBuyMaterialId(String buyMaterialId);
 	List<ProjectMaterialRetest> getByUserId(String userId);
+	List<ProjectMaterialRetest> getbyProjectMaterialRetestBatchId(String projectMaterialRetestBatchId);
 	Page<ProjectMaterialRetest> getPage(int pageNo, int pageSize);
 	Page<ProjectMaterialRetest> getPageByBuyMaterialId(String buyMaterialId,int pageNo, int pageSize);
 	Page<ProjectMaterialRetest> getPageByUserId(String userId,int pageNo, int pageSize);

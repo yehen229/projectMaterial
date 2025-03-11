@@ -274,6 +274,19 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
                 Integer.class, projectMaterialBrandPublicId);
         return i;
     }
+    @Override
+    public int findMaxBatchByBatchId(String buyMaterialBatchId){
+        Integer maxBatch = jdbcTemplate.queryForObject(
+                """
+                SELECT COALESCE(MAX(batch), 0) 
+                FROM t_buy_material 
+                WHERE t_buy_material_batch_id = ?
+                """,
+                Integer.class,
+                buyMaterialBatchId
+        );
+        return maxBatch;
+    }
 
     /**
      * 根据id得到记录
@@ -665,7 +678,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
                         AND  t_project_material.deleted_at IS  null  AND t_buy_material.id IN(
                         SELECT t_buy_material_id
                         FROM t_project_material_retest       
-                        WHERE need_retest=0 OR review_result=1
+                        WHERE need_retest=0 OR (review_result=1 AND need_retest = 1 )
                         )
                         """,
                 Integer.class, projectId);
@@ -686,7 +699,7 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
                                       AND  t_project_material.deleted_at IS  null  AND t_buy_material.id IN(
                                       SELECT t_buy_material_id
                                       FROM t_project_material_retest       
-                                      WHERE need_retest=0 OR review_result=1
+                                      WHERE need_retest=0 OR (review_result=1 AND need_retest = 1)
                                       )
                         LIMIT ?,?
                         """, new RowMapper<String>() {

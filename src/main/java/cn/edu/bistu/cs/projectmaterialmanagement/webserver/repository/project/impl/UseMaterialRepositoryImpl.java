@@ -261,6 +261,177 @@ public class UseMaterialRepositoryImpl implements IUseMaterialRepository {
 """, Integer.class, projectId, projectId);
     }
 
+    @Override
+    public int getCountOfReviewedAndApprovedPageByProjectIdAndName(String projectId, String name) {
+        name = "%" + name + "%";
+        return jdbcTemplate.queryForObject("""
+    SELECT COUNT(DISTINCT u.id)
+    FROM t_use_material u
+    LEFT JOIN t_project_material ON u.t_project_material_id = t_project_material.id
+    LEFT JOIN t_material ON t_project_material.t_material_id = t_material.id
+    WHERE u.t_use_material_brand_select_id IN (
+        SELECT DISTINCT s.id
+        FROM t_use_material_brand_select s
+        LEFT JOIN t_project_appearance_review_mode m ON m.t_use_material_brand_select_id = s.id
+        LEFT JOIN t_project_appearance_review r ON r.t_project_appearance_review_mode_id = m.id
+        WHERE s.t_project_id =?
+        AND s.id NOT IN (
+            SELECT st.id
+            FROM t_use_material_brand_select st
+            LEFT JOIN t_project_appearance_review_mode mt ON mt.t_use_material_brand_select_id = st.id
+            LEFT JOIN t_project_appearance_review rt ON rt.t_project_appearance_review_mode_id = mt.id
+            WHERE rt.review_result != 1
+            AND rt.t_project_appearance_review_mode_id = mt.id
+            AND mt.t_use_material_brand_select_id = st.id
+            AND st.t_project_id =?
+        )
+    ) AND t_material.name LIKE ?
+""", Integer.class, projectId, projectId, name);
+    }
+
+    @Override
+    public int getCountOfReviewedAndApprovedPageByProjectIdAndLocation(String projectId, String location) {
+        location = "%" + location + "%";
+        return jdbcTemplate.queryForObject("""
+    SELECT COUNT(DISTINCT u.id)
+    FROM t_use_material u
+    LEFT JOIN t_project_material ON u.t_project_material_id = t_project_material.id
+    LEFT JOIN t_material ON t_project_material.t_material_id = t_material.id
+    WHERE u.t_use_material_brand_select_id IN (
+        SELECT DISTINCT s.id
+        FROM t_use_material_brand_select s
+        LEFT JOIN t_project_appearance_review_mode m ON m.t_use_material_brand_select_id = s.id
+        LEFT JOIN t_project_appearance_review r ON r.t_project_appearance_review_mode_id = m.id
+        WHERE s.t_project_id =?
+        AND s.id NOT IN (
+            SELECT st.id
+            FROM t_use_material_brand_select st
+            LEFT JOIN t_project_appearance_review_mode mt ON mt.t_use_material_brand_select_id = st.id
+            LEFT JOIN t_project_appearance_review rt ON rt.t_project_appearance_review_mode_id = mt.id
+            WHERE rt.review_result != 1
+            AND rt.t_project_appearance_review_mode_id = mt.id
+            AND mt.t_use_material_brand_select_id = st.id
+            AND st.t_project_id =?
+        )
+    ) AND t_material.location LIKE ?
+""", Integer.class, projectId, projectId, location);
+    }
+
+    @Override
+    public int getCountOfReviewedAndApprovedPageByProjectIdAndItemMark(String projectId, String itemMark) {
+        itemMark = "%" + itemMark + "%";
+        return jdbcTemplate.queryForObject("""
+    SELECT COUNT(DISTINCT u.id)
+    FROM t_use_material u
+    LEFT JOIN t_project_material ON u.t_project_material_id = t_project_material.id
+    LEFT JOIN t_material ON t_project_material.t_material_id = t_material.id
+    WHERE u.t_use_material_brand_select_id IN (
+        SELECT DISTINCT s.id
+        FROM t_use_material_brand_select s
+        LEFT JOIN t_project_appearance_review_mode m ON m.t_use_material_brand_select_id = s.id
+        LEFT JOIN t_project_appearance_review r ON r.t_project_appearance_review_mode_id = m.id
+        WHERE s.t_project_id =?
+        AND s.id NOT IN (
+            SELECT st.id
+            FROM t_use_material_brand_select st
+            LEFT JOIN t_project_appearance_review_mode mt ON mt.t_use_material_brand_select_id = st.id
+            LEFT JOIN t_project_appearance_review rt ON rt.t_project_appearance_review_mode_id = mt.id
+            WHERE rt.review_result != 1
+            AND rt.t_project_appearance_review_mode_id = mt.id
+            AND mt.t_use_material_brand_select_id = st.id
+            AND st.t_project_id =?
+        )
+    )  AND t_material.item_mark LIKE ?
+""", Integer.class, projectId, projectId, itemMark);
+    }
+
+    @Override
+    public int getCountOfReviewedAndApprovedPageByProjectIdAndTechnology(String projectId, String technology) {
+        technology = "%" + technology + "%";
+        return jdbcTemplate.queryForObject("""
+    SELECT COUNT(DISTINCT u.id)
+    FROM t_use_material u
+    LEFT JOIN t_project_material ON u.t_project_material_id = t_project_material.id
+    LEFT JOIN t_material ON t_project_material.t_material_id = t_material.id
+    WHERE u.t_use_material_brand_select_id IN (
+        SELECT DISTINCT s.id
+        FROM t_use_material_brand_select s
+        LEFT JOIN t_project_appearance_review_mode m ON m.t_use_material_brand_select_id = s.id
+        LEFT JOIN t_project_appearance_review r ON r.t_project_appearance_review_mode_id = m.id
+        WHERE s.t_project_id =?
+        AND s.id NOT IN (
+            SELECT st.id
+            FROM t_use_material_brand_select st
+            LEFT JOIN t_project_appearance_review_mode mt ON mt.t_use_material_brand_select_id = st.id
+            LEFT JOIN t_project_appearance_review rt ON rt.t_project_appearance_review_mode_id = mt.id
+            WHERE rt.review_result != 1
+            AND rt.t_project_appearance_review_mode_id = mt.id
+            AND mt.t_use_material_brand_select_id = st.id
+            AND st.t_project_id =?
+        )
+    ) AND t_material.technology LIKE ?
+""", Integer.class, projectId, projectId, technology);
+    }
+
+    @Override
+    public int getCountOfReviewedAndApprovedPageByProjectIdAndInstallation(String projectId, String installation) {
+        installation = "%" + installation + "%";
+        return jdbcTemplate.queryForObject("""
+    SELECT COUNT(DISTINCT u.id)
+    FROM t_use_material u
+    LEFT JOIN t_project_material ON u.t_project_material_id = t_project_material.id
+    LEFT JOIN t_material ON t_project_material.t_material_id = t_material.id
+    WHERE u.t_use_material_brand_select_id IN (
+        SELECT DISTINCT s.id
+        FROM t_use_material_brand_select s
+        LEFT JOIN t_project_appearance_review_mode m ON m.t_use_material_brand_select_id = s.id
+        LEFT JOIN t_project_appearance_review r ON r.t_project_appearance_review_mode_id = m.id
+        WHERE s.t_project_id =?
+        AND s.id NOT IN (
+            SELECT st.id
+            FROM t_use_material_brand_select st
+            LEFT JOIN t_project_appearance_review_mode mt ON mt.t_use_material_brand_select_id = st.id
+            LEFT JOIN t_project_appearance_review rt ON rt.t_project_appearance_review_mode_id = mt.id
+            WHERE rt.review_result != 1
+            AND rt.t_project_appearance_review_mode_id = mt.id
+            AND mt.t_use_material_brand_select_id = st.id
+            AND st.t_project_id =?
+        )
+    ) AND t_material.installation LIKE ?
+""", Integer.class, projectId, projectId, installation);
+    }
+
+    @Override
+    public int getCountOfReviewedAndApprovedPageByProjectIdAndBrand(String projectId, String brand) {
+        brand = "%" + brand + "%";
+        return jdbcTemplate.queryForObject("""
+    SELECT COUNT(DISTINCT u.id)
+    FROM t_use_material u
+    LEFT JOIN t_project_material_brand_public ON u.t_project_material_brand_public_id = t_project_material_brand_public.id
+    LEFT JOIN t_project_material_brand_private ON u.t_project_material_brand_private_id = t_project_material_brand_private.id
+    LEFT JOIN t_brand_public ON t_project_material_brand_public.t_brand_public_id = t_brand_public.id
+    LEFT JOIN t_project_brand ON t_project_material_brand_private.t_project_brand_id = t_project_brand.id
+    LEFT JOIN t_brand ON t_project_brand.t_brand_id = t_brand.id OR t_brand_public.t_brand_id = t_brand.id
+    WHERE u.t_use_material_brand_select_id IN (
+        SELECT DISTINCT s.id
+        FROM t_use_material_brand_select s
+        LEFT JOIN t_project_appearance_review_mode m ON m.t_use_material_brand_select_id = s.id
+        LEFT JOIN t_project_appearance_review r ON r.t_project_appearance_review_mode_id = m.id
+        WHERE s.t_project_id =?
+        AND s.id NOT IN (
+            SELECT st.id
+            FROM t_use_material_brand_select st
+            LEFT JOIN t_project_appearance_review_mode mt ON mt.t_use_material_brand_select_id = st.id
+            LEFT JOIN t_project_appearance_review rt ON rt.t_project_appearance_review_mode_id = mt.id
+            WHERE rt.review_result != 1
+            AND rt.t_project_appearance_review_mode_id = mt.id
+            AND mt.t_use_material_brand_select_id = st.id
+            AND st.t_project_id =?
+        )
+    ) AND t_brand.name LIKE ?
+""", Integer.class, projectId, projectId, brand);
+    }
+
     /**
      * 根据外键ProjectMaterialBrandPrivateId得到总数量
      */
@@ -570,31 +741,113 @@ public class UseMaterialRepositoryImpl implements IUseMaterialRepository {
         return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
     }
 
+    @Override
+    public Page<UseMaterial> getReviewedAndApprovedPageByProjectIdAndName(String projectId,
+                                                                   String name,
+                                                                   Integer pageNo,
+                                                                   Integer pageSize) {
+        long totalCount = getCountOfReviewedAndApprovedPageByProjectIdAndName(projectId, name);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<UseMaterial> resultData = getPageQueryOfReviewedAndApprovedPageByProjectIdAndName(projectId, name, pageNo - 1,
+                                                                                        pageSize);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
+    }
+
+    @Override
+    public Page<UseMaterial> getReviewedAndApprovedPageByProjectIdAndLocation(String projectId,
+                                                                   String location,
+                                                                   Integer pageNo,
+                                                                   Integer pageSize) {
+        long totalCount = getCountOfReviewedAndApprovedPageByProjectIdAndLocation(projectId, location);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<UseMaterial> resultData = getPageQueryOfReviewedAndApprovedPageByProjectIdAndLocation(projectId, location, pageNo - 1,
+                                                                                        pageSize);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
+    }
+
+    @Override
+    public Page<UseMaterial> getReviewedAndApprovedPageByProjectIdAndItemMark(String projectId,
+                                                                   String itemMark,
+                                                                   Integer pageNo,
+                                                                   Integer pageSize) {
+        long totalCount = getCountOfReviewedAndApprovedPageByProjectIdAndItemMark(projectId, itemMark);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<UseMaterial> resultData = getPageQueryOfReviewedAndApprovedPageByProjectIdAndItemMark(projectId, itemMark, pageNo - 1,
+                                                                                        pageSize);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
+    }
+
+    @Override
+    public Page<UseMaterial> getReviewedAndApprovedPageByProjectIdAndTechnology(String projectId,
+                                                                   String technology,
+                                                                   Integer pageNo,
+                                                                   Integer pageSize) {
+        long totalCount = getCountOfReviewedAndApprovedPageByProjectIdAndTechnology(projectId, technology);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<UseMaterial> resultData = getPageQueryOfReviewedAndApprovedPageByProjectIdAndTechnology(projectId, technology, pageNo - 1,
+                                                                                        pageSize);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
+    }
+
+    @Override
+    public Page<UseMaterial> getReviewedAndApprovedPageByProjectIdAndInstallation(String projectId,
+                                                                   String installation,
+                                                                   Integer pageNo,
+                                                                   Integer pageSize) {
+        long totalCount = getCountOfReviewedAndApprovedPageByProjectIdAndInstallation(projectId, installation);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<UseMaterial> resultData = getPageQueryOfReviewedAndApprovedPageByProjectIdAndInstallation(projectId, installation, pageNo - 1,
+                                                                                        pageSize);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
+    }
+
+    @Override
+    public Page<UseMaterial> getReviewedAndApprovedPageByProjectIdAndBrand(String projectId,
+                                                                   String brand,
+                                                                   Integer pageNo,
+                                                                   Integer pageSize) {
+        long totalCount = getCountOfReviewedAndApprovedPageByProjectIdAndBrand(projectId, brand);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<UseMaterial> resultData = getPageQueryOfReviewedAndApprovedPageByProjectIdAndBrand(projectId, brand, pageNo - 1,
+                                                                                        pageSize);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
+    }
+
     private List<String> getPageQueryOfReviewedAndApprovedPageByProjectIdHelper(String projectId,
                                                                                int pageNo,
                                                                                int pageSize) {
         return jdbcTemplate.query("""
-            SELECT DISTINCT (u.id)
-            FROM t_use_material u
-            WHERE u.t_use_material_brand_select_id IN (
-                SELECT DISTINCT (s.id)
-                FROM t_use_material_brand_select  s
-                LEFT JOIN t_project_appearance_review_mode  m ON m.t_use_material_brand_select_id=s.id
-                LEFT JOIN t_project_appearance_review  r ON r.t_project_appearance_review_mode_id=m.id
-                WHERE s.t_project_id=?
-                    AND s.id  in (
-    	                SELECT DISTINCT (st.id)
-    	                FROM t_use_material_brand_select  st
-    	                LEFT JOIN t_project_appearance_review_mode  mt ON mt.t_use_material_brand_select_id=st.id
-    	                LEFT JOIN t_project_appearance_review  rt ON rt.t_project_appearance_review_mode_id=mt.id
-    	                WHERE rt.review_result =1
-    		                AND st.t_project_id=?
-                            AND rt.deleted_at IS NULL
-                            AND st.deleted_at IS NULL
-                            AND mt.deleted_at IS NULL
-                    )
-                    AND s.deleted_at IS NULL
-            )
+            
+                SELECT DISTINCT (u.id)
+                       FROM t_use_material u
+                       WHERE u.t_use_material_brand_select_id IN (
+                           SELECT DISTINCT (s.id)
+                           FROM t_use_material_brand_select  s
+                           LEFT JOIN t_project_appearance_review_mode  m ON m.t_use_material_brand_select_id=s.id
+                           LEFT JOIN t_project_appearance_review  r ON r.t_project_appearance_review_mode_id=m.id
+                           WHERE s.t_project_id=?
+                               AND s.id  in (
+               	                SELECT DISTINCT (st.id)
+               	                FROM t_use_material_brand_select  st
+               	                LEFT JOIN t_project_appearance_review_mode  mt ON mt.t_use_material_brand_select_id=st.id
+               	                LEFT JOIN t_project_appearance_review  rt ON rt.t_project_appearance_review_mode_id=mt.id
+           											LEFT JOIN t_company_user tu ON tu.t_user_id = mt.t_user_id
+           											LEFT JOIN t_company tc ON tu.t_company_id = tc.id
+               	                WHERE rt.review_result =1
+           											  AND ((mt.affect_appearance = 0 AND tc.name = '工程部') OR (mt.affect_appearance = 1 AND tc.name = '设计部')) \s
+               		                AND st.t_project_id=?
+                                       AND rt.deleted_at IS NULL
+                                       AND st.deleted_at IS NULL
+                                       AND mt.deleted_at IS NULL
+                               )
+                               AND s.deleted_at IS NULL
+                       )
             limit ?,?
             """, new RowMapper<String>() {
             @Override
@@ -604,10 +857,500 @@ public class UseMaterialRepositoryImpl implements IUseMaterialRepository {
             }
         }, projectId, projectId , pageNo * pageSize, pageSize);
     }
+
+    private List<String> getPageQueryOfReviewedAndApprovedPageByProjectIdAndNameHelper(String projectId,
+                                                                               String name,
+                                                                               int pageNo,
+                                                                               int pageSize) {
+        name = "%" + name + "%";
+        return jdbcTemplate.query("""
+            
+                SELECT DISTINCT (u.id)
+                       FROM t_use_material u
+                        LEFT JOIN t_project_material ON u.t_project_material_id = t_project_material.id
+                        LEFT JOIN t_material ON t_project_material.t_material_id = t_material.id
+                       WHERE u.t_use_material_brand_select_id IN (
+                           SELECT DISTINCT (s.id)
+                           FROM t_use_material_brand_select  s
+                           LEFT JOIN t_project_appearance_review_mode  m ON m.t_use_material_brand_select_id=s.id
+                           LEFT JOIN t_project_appearance_review  r ON r.t_project_appearance_review_mode_id=m.id
+                           WHERE s.t_project_id=?
+                               AND s.id  in (
+               	                SELECT DISTINCT (st.id)
+               	                FROM t_use_material_brand_select  st
+               	                LEFT JOIN t_project_appearance_review_mode  mt ON mt.t_use_material_brand_select_id=st.id
+               	                LEFT JOIN t_project_appearance_review  rt ON rt.t_project_appearance_review_mode_id=mt.id
+           											LEFT JOIN t_company_user tu ON tu.t_user_id = mt.t_user_id
+           											LEFT JOIN t_company tc ON tu.t_company_id = tc.id
+               	                WHERE rt.review_result =1
+           											  AND ((mt.affect_appearance = 0 AND tc.name = '工程部') OR (mt.affect_appearance = 1 AND tc.name = '设计部')) \s
+               		                AND st.t_project_id=?
+                                       AND rt.deleted_at IS NULL
+                                       AND st.deleted_at IS NULL
+                                       AND mt.deleted_at IS NULL
+                               )
+                               AND s.deleted_at IS NULL
+                       ) AND t_material.name LIKE ?
+            limit ?,?
+            """, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs,
+                                 int rowNum) throws SQLException {
+                return rs.getString(1);
+            }
+        }, projectId, projectId, name, pageNo * pageSize, pageSize);
+    }
+
+    private List<String> getPageQueryOfReviewedAndApprovedPageByProjectIdAndLocationHelper(String projectId,
+                                                                               String location,
+                                                                               int pageNo,
+                                                                               int pageSize) {
+        location = "%" + location + "%";
+        return jdbcTemplate.query("""
+            
+                SELECT DISTINCT (u.id)
+                       FROM t_use_material u
+                        LEFT JOIN t_project_material ON u.t_project_material_id = t_project_material.id
+                        LEFT JOIN t_material ON t_project_material.t_material_id = t_material.id
+                       WHERE u.t_use_material_brand_select_id IN (
+                           SELECT DISTINCT (s.id)
+                           FROM t_use_material_brand_select  s
+                           LEFT JOIN t_project_appearance_review_mode  m ON m.t_use_material_brand_select_id=s.id
+                           LEFT JOIN t_project_appearance_review  r ON r.t_project_appearance_review_mode_id=m.id
+                           WHERE s.t_project_id=?
+                               AND s.id  in (
+               	                SELECT DISTINCT (st.id)
+               	                FROM t_use_material_brand_select  st
+               	                LEFT JOIN t_project_appearance_review_mode  mt ON mt.t_use_material_brand_select_id=st.id
+               	                LEFT JOIN t_project_appearance_review  rt ON rt.t_project_appearance_review_mode_id=mt.id
+           											LEFT JOIN t_company_user tu ON tu.t_user_id = mt.t_user_id
+           											LEFT JOIN t_company tc ON tu.t_company_id = tc.id
+               	                WHERE rt.review_result =1
+           											  AND ((mt.affect_appearance = 0 AND tc.name = '工程部') OR (mt.affect_appearance = 1 AND tc.name = '设计部')) \s
+               		                AND st.t_project_id=?
+                                       AND rt.deleted_at IS NULL
+                                       AND st.deleted_at IS NULL
+                                       AND mt.deleted_at IS NULL
+                               )
+                               AND s.deleted_at IS NULL
+                       ) AND t_material.location LIKE ?
+            limit ?,?
+            """, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs,
+                                 int rowNum) throws SQLException {
+                return rs.getString(1);
+            }
+        }, projectId, projectId, location, pageNo * pageSize, pageSize);
+    }
+
+    private List<String> getPageQueryOfReviewedAndApprovedPageByProjectIdAndItemMarkHelper(String projectId,
+                                                                               String itemMark,
+                                                                               int pageNo,
+                                                                               int pageSize) {
+        itemMark = "%" + itemMark + "%";
+        return jdbcTemplate.query("""
+            
+                SELECT DISTINCT (u.id)
+                       FROM t_use_material u
+                        LEFT JOIN t_project_material ON u.t_project_material_id = t_project_material.id
+                        LEFT JOIN t_material ON t_project_material.t_material_id = t_material.id
+                       WHERE u.t_use_material_brand_select_id IN (
+                           SELECT DISTINCT (s.id)
+                           FROM t_use_material_brand_select  s
+                           LEFT JOIN t_project_appearance_review_mode  m ON m.t_use_material_brand_select_id=s.id
+                           LEFT JOIN t_project_appearance_review  r ON r.t_project_appearance_review_mode_id=m.id
+                           WHERE s.t_project_id=?
+                               AND s.id  in (
+               	                SELECT DISTINCT (st.id)
+               	                FROM t_use_material_brand_select  st
+               	                LEFT JOIN t_project_appearance_review_mode  mt ON mt.t_use_material_brand_select_id=st.id
+               	                LEFT JOIN t_project_appearance_review  rt ON rt.t_project_appearance_review_mode_id=mt.id
+           											LEFT JOIN t_company_user tu ON tu.t_user_id = mt.t_user_id
+           											LEFT JOIN t_company tc ON tu.t_company_id = tc.id
+               	                WHERE rt.review_result =1
+           											  AND ((mt.affect_appearance = 0 AND tc.name = '工程部') OR (mt.affect_appearance = 1 AND tc.name = '设计部')) \s
+               		                AND st.t_project_id=?
+                                       AND rt.deleted_at IS NULL
+                                       AND st.deleted_at IS NULL
+                                       AND mt.deleted_at IS NULL
+                               )
+                               AND s.deleted_at IS NULL
+                       ) AND t_material.item_mark LIKE ?
+            limit ?,?
+            """, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs,
+                                 int rowNum) throws SQLException {
+                return rs.getString(1);
+            }
+        }, projectId, projectId, itemMark, pageNo * pageSize, pageSize);
+    }
+
+    private List<String> getPageQueryOfReviewedAndApprovedPageByProjectIdAndTechnologyHelper(String projectId,
+                                                                               String technology,
+                                                                               int pageNo,
+                                                                               int pageSize) {
+        technology = "%" + technology + "%";
+        return jdbcTemplate.query("""
+            
+                SELECT DISTINCT (u.id)
+                       FROM t_use_material u
+                        LEFT JOIN t_project_material ON u.t_project_material_id = t_project_material.id
+                        LEFT JOIN t_material ON t_project_material.t_material_id = t_material.id
+                       WHERE u.t_use_material_brand_select_id IN (
+                           SELECT DISTINCT (s.id)
+                           FROM t_use_material_brand_select  s
+                           LEFT JOIN t_project_appearance_review_mode  m ON m.t_use_material_brand_select_id=s.id
+                           LEFT JOIN t_project_appearance_review  r ON r.t_project_appearance_review_mode_id=m.id
+                           WHERE s.t_project_id=?
+                               AND s.id  in (
+               	                SELECT DISTINCT (st.id)
+               	                FROM t_use_material_brand_select  st
+               	                LEFT JOIN t_project_appearance_review_mode  mt ON mt.t_use_material_brand_select_id=st.id
+               	                LEFT JOIN t_project_appearance_review  rt ON rt.t_project_appearance_review_mode_id=mt.id
+           											LEFT JOIN t_company_user tu ON tu.t_user_id = mt.t_user_id
+           											LEFT JOIN t_company tc ON tu.t_company_id = tc.id
+               	                WHERE rt.review_result =1
+           											  AND ((mt.affect_appearance = 0 AND tc.name = '工程部') OR (mt.affect_appearance = 1 AND tc.name = '设计部')) \s
+               		                AND st.t_project_id=?
+                                       AND rt.deleted_at IS NULL
+                                       AND st.deleted_at IS NULL
+                                       AND mt.deleted_at IS NULL
+                               )
+                               AND s.deleted_at IS NULL
+                       ) AND t_material.technology LIKE ?
+            limit ?,?
+            """, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs,
+                                 int rowNum) throws SQLException {
+                return rs.getString(1);
+            }
+        }, projectId, projectId, technology, pageNo * pageSize, pageSize);
+    }
+
+    private List<String> getPageQueryOfReviewedAndApprovedPageByProjectIdAndInstallationHelper(String projectId,
+                                                                               String installation,
+                                                                               int pageNo,
+                                                                               int pageSize) {
+        installation = "%" + installation + "%";
+        return jdbcTemplate.query("""
+            
+                SELECT DISTINCT (u.id)
+                       FROM t_use_material u
+                        LEFT JOIN t_project_material ON u.t_project_material_id = t_project_material.id
+                        LEFT JOIN t_material ON t_project_material.t_material_id = t_material.id
+                       WHERE u.t_use_material_brand_select_id IN (
+                           SELECT DISTINCT (s.id)
+                           FROM t_use_material_brand_select  s
+                           LEFT JOIN t_project_appearance_review_mode  m ON m.t_use_material_brand_select_id=s.id
+                           LEFT JOIN t_project_appearance_review  r ON r.t_project_appearance_review_mode_id=m.id
+                           WHERE s.t_project_id=?
+                               AND s.id  in (
+               	                SELECT DISTINCT (st.id)
+               	                FROM t_use_material_brand_select  st
+               	                LEFT JOIN t_project_appearance_review_mode  mt ON mt.t_use_material_brand_select_id=st.id
+               	                LEFT JOIN t_project_appearance_review  rt ON rt.t_project_appearance_review_mode_id=mt.id
+           											LEFT JOIN t_company_user tu ON tu.t_user_id = mt.t_user_id
+           											LEFT JOIN t_company tc ON tu.t_company_id = tc.id
+               	                WHERE rt.review_result =1
+           											  AND ((mt.affect_appearance = 0 AND tc.name = '工程部') OR (mt.affect_appearance = 1 AND tc.name = '设计部')) \s
+               		                AND st.t_project_id=?
+                                       AND rt.deleted_at IS NULL
+                                       AND st.deleted_at IS NULL
+                                       AND mt.deleted_at IS NULL
+                               )
+                               AND s.deleted_at IS NULL
+                       ) AND t_material.installation LIKE ?
+            limit ?,?
+            """, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs,
+                                 int rowNum) throws SQLException {
+                return rs.getString(1);
+            }
+        }, projectId, projectId, installation, pageNo * pageSize, pageSize);
+    }
+
+    private List<String> getPageQueryOfReviewedAndApprovedPageByProjectIdAndBrandHelper(String projectId,
+                                                                               String brand,
+                                                                               int pageNo,
+                                                                               int pageSize) {
+        brand = "%" + brand + "%";
+        return jdbcTemplate.query("""
+            
+                SELECT DISTINCT (u.id)
+                       FROM t_use_material u
+                        LEFT JOIN t_project_material_brand_public ON u.t_project_material_brand_public_id = t_project_material_brand_public.id
+                        LEFT JOIN t_project_material_brand_private ON u.t_project_material_brand_private_id = t_project_material_brand_private.id
+                        LEFT JOIN t_brand_public ON t_project_material_brand_public.t_brand_public_id = t_brand_public.id
+                        LEFT JOIN t_project_brand ON t_project_material_brand_private.t_project_brand_id = t_project_brand.id
+                        LEFT JOIN t_brand ON t_project_brand.t_brand_id = t_brand.id OR t_brand_public.t_brand_id = t_brand.id
+                       WHERE u.t_use_material_brand_select_id IN (
+                           SELECT DISTINCT (s.id)
+                           FROM t_use_material_brand_select  s
+                           LEFT JOIN t_project_appearance_review_mode  m ON m.t_use_material_brand_select_id=s.id
+                           LEFT JOIN t_project_appearance_review  r ON r.t_project_appearance_review_mode_id=m.id
+                           WHERE s.t_project_id=?
+                               AND s.id  in (
+               	                SELECT DISTINCT (st.id)
+               	                FROM t_use_material_brand_select  st
+               	                LEFT JOIN t_project_appearance_review_mode  mt ON mt.t_use_material_brand_select_id=st.id
+               	                LEFT JOIN t_project_appearance_review  rt ON rt.t_project_appearance_review_mode_id=mt.id
+           											LEFT JOIN t_company_user tu ON tu.t_user_id = mt.t_user_id
+           											LEFT JOIN t_company tc ON tu.t_company_id = tc.id
+               	                WHERE rt.review_result =1
+           											  AND ((mt.affect_appearance = 0 AND tc.name = '工程部') OR (mt.affect_appearance = 1 AND tc.name = '设计部')) \s
+               		                AND st.t_project_id=?
+                                       AND rt.deleted_at IS NULL
+                                       AND st.deleted_at IS NULL
+                                       AND mt.deleted_at IS NULL
+                               )
+                               AND s.deleted_at IS NULL
+                       ) AND t_brand.name Like ?
+            limit ?,?
+            """, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs,
+                                 int rowNum) throws SQLException {
+                return rs.getString(1);
+            }
+        }, projectId, projectId, brand, pageNo * pageSize, pageSize);
+    }
+
     private List<UseMaterial> getPageQueryOfReviewedAndApprovedPageByProjectId(String projectId,
                                                                                int pageNo,
                                                                                int pageSize) {
         List<String> ids = getPageQueryOfReviewedAndApprovedPageByProjectIdHelper(projectId, pageNo, pageSize);
+
+        if(ids.isEmpty()){
+            return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_use_material
+                                          WHERE deleted_at IS NULL                                       
+                                          """,
+                                      new UseMaterialMapper());
+        }
+
+
+        StringBuilder idsStr = new StringBuilder();
+
+
+            for (String id : ids) {
+                if(idsStr.isEmpty())
+                    idsStr.append("'").append(id).append("'");
+                else
+                    idsStr.append(",").append("'").append(id).append("'");
+            }
+
+
+        return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_use_material
+                                          WHERE deleted_at IS NULL   
+                                          AND id IN (
+                                          """+idsStr+")",
+                                  new UseMaterialMapper());
+
+
+    }
+
+    private List<UseMaterial> getPageQueryOfReviewedAndApprovedPageByProjectIdAndName(String projectId,
+                                                                               String name,
+                                                                               int pageNo,
+                                                                               int pageSize) {
+        List<String> ids = getPageQueryOfReviewedAndApprovedPageByProjectIdAndNameHelper(projectId, name, pageNo, pageSize);
+
+        if(ids.isEmpty()){
+            return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_use_material
+                                          WHERE deleted_at IS NULL                                       
+                                          """,
+                                      new UseMaterialMapper());
+        }
+
+
+        StringBuilder idsStr = new StringBuilder();
+
+
+            for (String id : ids) {
+                if(idsStr.isEmpty())
+                    idsStr.append("'").append(id).append("'");
+                else
+                    idsStr.append(",").append("'").append(id).append("'");
+            }
+
+
+        return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_use_material
+                                          WHERE deleted_at IS NULL   
+                                          AND id IN (
+                                          """+idsStr+")",
+                                  new UseMaterialMapper());
+
+
+    }
+
+    private List<UseMaterial> getPageQueryOfReviewedAndApprovedPageByProjectIdAndLocation(String projectId,
+                                                                               String location,
+                                                                               int pageNo,
+                                                                               int pageSize) {
+        List<String> ids = getPageQueryOfReviewedAndApprovedPageByProjectIdAndLocationHelper(projectId, location, pageNo, pageSize);
+
+        if(ids.isEmpty()){
+            return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_use_material
+                                          WHERE deleted_at IS NULL                                       
+                                          """,
+                                      new UseMaterialMapper());
+        }
+
+
+        StringBuilder idsStr = new StringBuilder();
+
+
+            for (String id : ids) {
+                if(idsStr.isEmpty())
+                    idsStr.append("'").append(id).append("'");
+                else
+                    idsStr.append(",").append("'").append(id).append("'");
+            }
+
+
+        return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_use_material
+                                          WHERE deleted_at IS NULL   
+                                          AND id IN (
+                                          """+idsStr+")",
+                                  new UseMaterialMapper());
+
+
+    }
+
+    private List<UseMaterial> getPageQueryOfReviewedAndApprovedPageByProjectIdAndItemMark(String projectId,
+                                                                               String itemMark,
+                                                                               int pageNo,
+                                                                               int pageSize) {
+        List<String> ids = getPageQueryOfReviewedAndApprovedPageByProjectIdAndItemMarkHelper(projectId, itemMark, pageNo, pageSize);
+
+        if(ids.isEmpty()){
+            return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_use_material
+                                          WHERE deleted_at IS NULL                                       
+                                          """,
+                                      new UseMaterialMapper());
+        }
+
+
+        StringBuilder idsStr = new StringBuilder();
+
+
+            for (String id : ids) {
+                if(idsStr.isEmpty())
+                    idsStr.append("'").append(id).append("'");
+                else
+                    idsStr.append(",").append("'").append(id).append("'");
+            }
+
+
+        return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_use_material
+                                          WHERE deleted_at IS NULL   
+                                          AND id IN (
+                                          """+idsStr+")",
+                                  new UseMaterialMapper());
+
+
+    }
+
+    private List<UseMaterial> getPageQueryOfReviewedAndApprovedPageByProjectIdAndTechnology(String projectId,
+                                                                               String technology,
+                                                                               int pageNo,
+                                                                               int pageSize) {
+        List<String> ids = getPageQueryOfReviewedAndApprovedPageByProjectIdAndTechnologyHelper(projectId, technology, pageNo, pageSize);
+
+        if(ids.isEmpty()){
+            return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_use_material
+                                          WHERE deleted_at IS NULL                                       
+                                          """,
+                                      new UseMaterialMapper());
+        }
+
+
+        StringBuilder idsStr = new StringBuilder();
+
+
+            for (String id : ids) {
+                if(idsStr.isEmpty())
+                    idsStr.append("'").append(id).append("'");
+                else
+                    idsStr.append(",").append("'").append(id).append("'");
+            }
+
+
+        return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_use_material
+                                          WHERE deleted_at IS NULL   
+                                          AND id IN (
+                                          """+idsStr+")",
+                                  new UseMaterialMapper());
+
+
+    }
+
+    private List<UseMaterial> getPageQueryOfReviewedAndApprovedPageByProjectIdAndInstallation(String projectId,
+                                                                               String installation,
+                                                                               int pageNo,
+                                                                               int pageSize) {
+        List<String> ids = getPageQueryOfReviewedAndApprovedPageByProjectIdAndInstallationHelper(projectId, installation, pageNo, pageSize);
+
+        if(ids.isEmpty()){
+            return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_use_material
+                                          WHERE deleted_at IS NULL                                       
+                                          """,
+                                      new UseMaterialMapper());
+        }
+
+
+        StringBuilder idsStr = new StringBuilder();
+
+
+            for (String id : ids) {
+                if(idsStr.isEmpty())
+                    idsStr.append("'").append(id).append("'");
+                else
+                    idsStr.append(",").append("'").append(id).append("'");
+            }
+
+
+        return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_use_material
+                                          WHERE deleted_at IS NULL   
+                                          AND id IN (
+                                          """+idsStr+")",
+                                  new UseMaterialMapper());
+
+
+    }
+
+    private List<UseMaterial> getPageQueryOfReviewedAndApprovedPageByProjectIdAndBrand(String projectId,
+                                                                               String brand,
+                                                                               int pageNo,
+                                                                               int pageSize) {
+        List<String> ids = getPageQueryOfReviewedAndApprovedPageByProjectIdAndBrandHelper(projectId, brand, pageNo, pageSize);
 
         if(ids.isEmpty()){
             return jdbcTemplate.query("""

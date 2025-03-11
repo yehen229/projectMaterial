@@ -301,5 +301,53 @@ public class UseMaterialServiceImpl implements IUseMaterialService {
         return useMaterialRepository.getReviewedAndApprovedPageByProjectId(projectId, pageNo, pageSize);
     }
 
+    @Override
+    public Page<UseMaterial> getReviewedAndApprovedPageByProjectIdAndName(String projectId,
+                                                                   String name,
+                                                                   Integer pageNo,
+                                                                   Integer pageSize) {
+        return useMaterialRepository.getReviewedAndApprovedPageByProjectIdAndName(projectId, name, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<UseMaterial> getReviewedAndApprovedPageByProjectIdAndLocation(String projectId,
+                                                                   String location,
+                                                                   Integer pageNo,
+                                                                   Integer pageSize) {
+        return useMaterialRepository.getReviewedAndApprovedPageByProjectIdAndLocation(projectId, location, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<UseMaterial> getReviewedAndApprovedPageByProjectIdAndItemMark(String projectId,
+                                                                   String itemMark,
+                                                                   Integer pageNo,
+                                                                   Integer pageSize) {
+        return useMaterialRepository.getReviewedAndApprovedPageByProjectIdAndItemMark(projectId, itemMark, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<UseMaterial> getReviewedAndApprovedPageByProjectIdAndTechnology(String projectId,
+                                                                   String technology,
+                                                                   Integer pageNo,
+                                                                   Integer pageSize) {
+        return useMaterialRepository.getReviewedAndApprovedPageByProjectIdAndTechnology(projectId, technology, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<UseMaterial> getReviewedAndApprovedPageByProjectIdAndInstallation(String projectId,
+                                                                   String installation,
+                                                                   Integer pageNo,
+                                                                   Integer pageSize) {
+        return useMaterialRepository.getReviewedAndApprovedPageByProjectIdAndInstallation(projectId, installation, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<UseMaterial> getReviewedAndApprovedPageByProjectIdAndBrand(String projectId,
+                                                                   String brand,
+                                                                   Integer pageNo,
+                                                                   Integer pageSize) {
+        return useMaterialRepository.getReviewedAndApprovedPageByProjectIdAndBrand(projectId, brand, pageNo, pageSize);
+    }
+
 
 }
