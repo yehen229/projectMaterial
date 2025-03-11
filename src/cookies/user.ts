@@ -1,4 +1,4 @@
-import { IServerUserLoginResult } from "@/server/types/User";
+import {IServerUserLoginResult} from "@/server/types/User";
 
 export function clearCookies() {
   localStorage.removeItem("ACCESS_TOKEN");

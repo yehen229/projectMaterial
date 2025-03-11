@@ -7,6 +7,54 @@ import {IServerProjectMaterialVerificationDocumentView} from "@/server/types/pro
 import {exportFileWithFullFilenameWithExt} from "@/server/exportfile";
 
 
+
+
+export async function servergetunpassreviewbyprojectidmaterialid_companyid(
+    projectid: string,
+    companyid: string
+) {
+    try {
+        let res = await axios.get<
+            any,
+            IServerResponseData<IServerPage<IServerProjectView>>
+        >(BASEURL.statisticalanalysis + "get_unpass_review_by_projectid_materialid_companyid", {
+            params: {
+                projectid: projectid,
+                companyid: companyid,
+            },
+        });
+        return res;
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+}
+
+
+
+export async function servergetdesignUnpassData(
+    pageNo: number,
+    pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
+    try {
+        let res = await axios.get<
+            any,
+            IServerResponseData<IServerPage<IServerProjectView>>
+        >(BASEURL.statisticalanalysis + "get_unpass_material_message", {
+            params: {
+                pageNo: pageNo,
+                pageSize: pageSize,
+            },
+        });
+        return res;
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+}
+
+
+
 export async function serverGetProjectListPageView(
     pageNo: number,
     pageSize: number

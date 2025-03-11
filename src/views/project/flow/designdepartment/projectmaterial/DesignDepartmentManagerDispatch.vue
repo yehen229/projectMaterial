@@ -9,15 +9,15 @@
  *
  */
 
-import { computed, onMounted, reactive, ref, Ref } from "vue";
+import {computed, onMounted, reactive, ref, Ref} from "vue";
 
-import { useRouter, useRoute, onBeforeRouteUpdate } from "vue-router";
+import {useRouter, useRoute, onBeforeRouteUpdate} from "vue-router";
 
-import type { FormInstance, FormRules } from "element-plus";
-import { View, Hide, Search, Plus } from "@element-plus/icons-vue";
+import type {FormInstance, FormRules} from "element-plus";
+import {View, Hide, Search, Plus} from "@element-plus/icons-vue";
 
-import { ElMessage, ElMessageBox } from "element-plus";
-import type { Action } from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
+import type {Action} from "element-plus";
 
 import type {
   UploadInstance,
@@ -31,7 +31,7 @@ import {
   IServerProject,
   IServerProjectView,
   IServerProjectUser,
-  IServerProjectUserView,
+  IServerProjectUserView, IServerProjectMaterialView,
 } from "@/server/types/project/project";
 import {
   serverGetProjectPageView,
@@ -51,10 +51,10 @@ import {
   serverSubmitProjectMaterialReviewOfManagerSummary,
 } from "@/server/project/projectmaterialflow";
 
-import { IServerProjectUserTask } from "@/server/types/project/flow";
+import {IServerProjectUserTask} from "@/server/types/project/flow";
 
-import { serverGetEmployeeUserOfDesignDepartment } from "@/server/project/projectuser";
-import { IServerUser } from "@/server/types/account/user";
+import {serverGetEmployeeUserOfDesignDepartment} from "@/server/project/projectuser";
+import {IServerUser} from "@/server/types/account/user";
 
 import {
   serverAddProjectMaterialReviewTempFiles,
@@ -78,8 +78,8 @@ import {
 import ProjectUserTaskList from "@/components/project/flow/ProjectUserTaskList.vue";
 import ProjectMaterialList from "@/components/project/material/ProjectMaterialList.vue";
 import ProjectMaterialWaitingForReviewList from "@/components/project/material/ProjectMaterialWaitingForReviewList.vue";
-import { genUUID } from "@/utils/utils";
-import { getUserID, getUserPageSize } from "@/cookies/user";
+import {genUUID} from "@/utils/utils";
+import {getUserID, getUserPageSize} from "@/cookies/user";
 import ProjectUserTaskInfo from "@/components/project/flow/ProjectUserTaskInfo.vue";
 
 import ProjectReviewHistoryList from "@/components/project/flow/ProjectReviewHistoryList.vue";
@@ -90,6 +90,9 @@ import {
   getTaskProjectName,
   getTaskTitle,
 } from "@/components/project/flow/index";
+import {serverGetProjectMaterialPageViewByTaskIdAndProjectId} from "@/server/project/projectmaterial";
+import {IServerPage} from "@/server/types/System";
+
 const router = useRouter();
 const route = useRoute();
 
@@ -128,10 +131,10 @@ onBeforeRouteUpdate(async (to) => {
   await handleRadioChange();
 
   if (
-    !projectUserTask.value ||
-    projectUserTask.value?.taskDefinitionKey?.indexOf(
-      "Activity_Project_Material_Design_Department_Distribution_Review"
-    ) < 0
+      !projectUserTask.value ||
+      projectUserTask.value?.taskDefinitionKey?.indexOf(
+          "Activity_Project_Material_Design_Department_Distribution_Review"
+      ) < 0
   ) {
     router.push("/project-user-task-list");
   }
@@ -150,22 +153,22 @@ onMounted(async () => {
   await handleRadioChange();
 
   if (
-    !projectUserTask.value ||
-    projectUserTask.value?.taskDefinitionKey?.indexOf(
-      "Activity_Project_Material_Design_Department_Distribution_Review"
-    ) < 0
+      !projectUserTask.value ||
+      projectUserTask.value?.taskDefinitionKey?.indexOf(
+          "Activity_Project_Material_Design_Department_Distribution_Review"
+      ) < 0
   ) {
     router.push("/project-user-task-list");
   }
 });
 
 const getUserTaskFromServerByProjectId = async (
-  projectId: string,
-  taskId: string
+    projectId: string,
+    taskId: string
 ) => {
   const ret = await serverGetTaskByCurrentLoginUserAndProjectIdAndTaskId(
-    projectId,
-    taskId
+      projectId,
+      taskId
   );
 
   if (ret && ret.code == 200) {
@@ -185,6 +188,7 @@ const goBack = () => {
  * 监听radio的change事件
  */
 const handleRadioChange = async () => {
+
   if (!projectId.value) {
     ElMessage({
       message: "当前项目为空",
@@ -203,12 +207,14 @@ const handleRadioChange = async () => {
   }
 };
 
-const handleRadioReviewChange = async () => {};
+const handleRadioReviewChange = async () => {
+};
 
 /**
  * 项目经理分发审核，确定是分发给项目员工审核还是直接审核
  */
 const submitProcess = async () => {
+
   console.log(fileList.value);
 
   const userId = getUserID();
@@ -219,6 +225,19 @@ const submitProcess = async () => {
     });
     return;
   }
+  // companyid
+//   const ret = await serverGetProjectMaterialPageViewByTaskIdAndProjectId(
+//       projectId.value,
+//       taskId.value,
+//       designCompanyIndex.value,
+//       pageNo.value,
+//       pageSize.value
+//   );
+// //   console.log(ret);
+//   if (ret && ret.code == 200) {
+//     projectMaterialViewPageData.value = ret.data;
+//   }
+  await getcompanyId()
 
   if (radio.value === 0) {
     //分发审核，项目经理将项目材料交给项目员工进行初审，当项目员工审核完毕后，由项目经理汇总审核结果
@@ -244,13 +263,13 @@ const submitProcess = async () => {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
       })
-        .then(async () => {
-          //继续提交
-          await submitToServerManagerDirect(userId);
-        })
-        .catch((action: Action) => {
-          return;
-        });
+          .then(async () => {
+            //继续提交
+            await submitToServerManagerDirect(userId);
+          })
+          .catch((action: Action) => {
+            return;
+          });
     } else await submitToServerManagerDirect(userId);
   }
 };
@@ -274,9 +293,9 @@ const submitToServerManagerDistributeToEmployees = async (userId: string) => {
 
   // 调用API
   const response =
-    await serverSubmitProjectMaterialReviewManagerDistributeToEmployees(
-      projectReviewDispatchForm
-    );
+      await serverSubmitProjectMaterialReviewManagerDistributeToEmployees(
+          projectReviewDispatchForm
+      );
   console.log(response);
   if (response && response.code === 200) {
     // Debug: 查看创建结果
@@ -288,10 +307,34 @@ const submitToServerManagerDistributeToEmployees = async (userId: string) => {
 
   router.push("/project-user-task-list");
 };
+const pageNo = ref(1); //第几页
+const pageSize = ref(getUserPageSize()); //每页多少数据
+const companyId = ref(null);
+const projectMaterialViewPageData =
+    ref<IServerPage<IServerProjectMaterialView> | null>(null);// 获取公司id
+const getcompanyId = async () => {
+  const ret = await serverGetProjectMaterialPageViewByTaskIdAndProjectId(
+      projectId.value,
+      taskId.value,
+      designCompanyIndex.value,
+      pageNo.value,
+      pageSize.value
+  );
+//   console.log(ret);
+  if (ret && ret.code == 200) {
+    projectMaterialViewPageData.value = ret.data;
+    // 从接口返回获取copanyid
+    if (projectMaterialViewPageData.value.result.length  > 0) {
+      companyId.value  = projectMaterialViewPageData.value.result[0].projectMaterial.companyId;
+      console.log(' 获取到的companyId:', companyId.value);
+    }
+  }
+}
 
 const submitToServerManagerDirect = async (userId: string) => {
   //直接审核
   const projectReviewForm: IServerProjectReviewForm = {
+    companyId:companyId.value,
     projectId: projectId.value,
     taskId: taskId.value,
     designCompanyIndex: designCompanyIndex.value,
@@ -323,10 +366,11 @@ const submitToServerManagerDirect = async (userId: string) => {
     },
     reviewTempDir: uploadReviewFilesDir.value,
   };
-
+console.log("projectReviewForm",projectReviewForm)
+console.log("projectReviewForm.companyId",projectReviewForm.companyId)
   // 调用API
   const response = await serverSubmitProjectMaterialReviewOfManagerDirect(
-    projectReviewForm
+      projectReviewForm
   );
   console.log(response);
   if (response && response.code === 200) {
@@ -336,18 +380,20 @@ const submitToServerManagerDirect = async (userId: string) => {
   } else {
     console.error("审核失败");
   }
-
   router.push("/project-user-task-list");
 };
-const cancelProcess = async () => {};
+
+
+const cancelProcess = async () => {
+};
 
 const handleUploadError = (err, file) => {
   console.error("上传发生错误:", err);
 };
 
 const handleRemove: UploadProps["onRemove"] = async (
-  uploadFile,
-  uploadFiles
+    uploadFile,
+    uploadFiles
 ) => {
   console.log(uploadFile, uploadFiles);
 
@@ -383,8 +429,8 @@ const handleExceed: UploadProps["onExceed"] = (files, uploadFiles) => {
  * @param uploadFiles
  */
 const handleUploadImageChange: UploadProps["onChange"] = (
-  uploadFile,
-  uploadFiles
+    uploadFile,
+    uploadFiles
 ) => {
   console.log(uploadFile, uploadFiles);
 
@@ -407,10 +453,10 @@ const beforeUpload = (rawFile: UploadRawFile) => {
  */
 const beforeRemove: UploadProps["beforeRemove"] = (uploadFile, uploadFiles) => {
   return ElMessageBox.confirm(
-    `Cancel the transfert of ${uploadFile.name} ?`
+      `Cancel the transfert of ${uploadFile.name} ?`
   ).then(
-    () => true,
-    () => false
+      () => true,
+      () => false
   );
 };
 
@@ -476,7 +522,7 @@ const selectReverse = () => {
   <!--显示项目列表、当前能够执行的操作（例如审核等）-->
   <div class="tab-container">
     <ProjectUserTaskInfo
-      :projectUserTask="projectUserTask"
+        :projectUserTask="projectUserTask"
     ></ProjectUserTaskInfo>
 
     <div v-if="projectUserTask">
@@ -494,8 +540,8 @@ const selectReverse = () => {
           <div v-for="(item, index) in employeeList">
             <el-checkbox-group v-model="checkList">
               <el-checkbox
-                :label="item.realName + '  (' + item.userName + ')'"
-                :value="item.id"
+                  :label="item.realName + '  (' + item.userName + ')'"
+                  :value="item.id"
               />
             </el-checkbox-group>
           </div>
@@ -504,8 +550,8 @@ const selectReverse = () => {
           <el-form :model="form" label-width="auto" style="width: 100%">
             <el-form-item label="审核结果">
               <el-radio-group
-                v-model="form.radioReviewResult"
-                @change="handleRadioReviewChange"
+                  v-model="form.radioReviewResult"
+                  @change="handleRadioReviewChange"
               >
                 <el-radio :value="1">审核通过</el-radio>
                 <el-radio :value="2">审核不通过</el-radio>
@@ -513,27 +559,27 @@ const selectReverse = () => {
             </el-form-item>
             <el-form-item label="审核意见">
               <el-input
-                v-model="form.textareaReviewResult"
-                style="width: 100%"
-                :rows="2"
-                type="textarea"
-                placeholder="请填写审核意见"
+                  v-model="form.textareaReviewResult"
+                  style="width: 100%"
+                  :rows="2"
+                  type="textarea"
+                  placeholder="请填写审核意见"
               />
             </el-form-item>
 
             <el-form-item label="审核附件">
               <el-upload
-                ref="upload"
-                class="upload-demo"
-                action=""
-                :limit="10"
-                accept=".doc,.docx,.pdf,.txt,.zip,.rar,.7z,.xls,.xlsx,.ppt,.pptx"
-                :file-list="fileList"
-                :on-exceed="handleExceed"
-                :on-change="handleUploadImageChange"
-                :on-remove="handleRemove"
-                :before-upload="beforeUpload"
-                :http-request="httpRequest"
+                  ref="upload"
+                  class="upload-demo"
+                  action=""
+                  :limit="10"
+                  accept=".doc,.docx,.pdf,.txt,.zip,.rar,.7z,.xls,.xlsx,.ppt,.pptx"
+                  :file-list="fileList"
+                  :on-exceed="handleExceed"
+                  :on-change="handleUploadImageChange"
+                  :on-remove="handleRemove"
+                  :before-upload="beforeUpload"
+                  :http-request="httpRequest"
               >
                 <template #trigger>
                   <el-button type="primary">选择文件</el-button>
@@ -557,16 +603,16 @@ const selectReverse = () => {
 
       <!--等待审核的项目物料列表-->
       <ProjectMaterialWaitingForReviewList
-        :projectId="projectId"
-        :taskId="taskId"
-        :designCompanyIndex="designCompanyIndex"
+          :projectId="projectId"
+          :taskId="taskId"
+          :designCompanyIndex="designCompanyIndex"
       />
 
       <!--项目物料列表-->
-      <ProjectMaterialList :projectId="projectId" />
+      <ProjectMaterialList :projectId="projectId"/>
 
       <!-- 审核记录-->
-      <ProjectReviewHistoryList :projectId="projectId" />
+      <ProjectReviewHistoryList :projectId="projectId"/>
     </div>
     <div v-else>当前项目没有任务</div>
   </div>
@@ -574,6 +620,7 @@ const selectReverse = () => {
 
 <style scoped>
 @import url("@/assets/css/basic.css");
+
 .page-class {
   padding: 10px;
 }

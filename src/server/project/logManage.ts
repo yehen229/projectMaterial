@@ -33,7 +33,7 @@ export async function byprojectname_Search(
     projectName:string,
     pageNo: number,
     pageSize: number
-): Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
+) {
     try {
         let res = await axios.get<
             any,

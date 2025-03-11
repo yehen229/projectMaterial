@@ -10,9 +10,9 @@ import {IServerProjectView} from "@/server/types/project/project";
 import router from "@/router";
 import * as echarts from 'echarts';
 import 'echarts/core';
-import { BarChart } from 'echarts/charts';
-import { TitleComponent, TooltipComponent, GridComponent } from 'echarts/components';
-import { CanvasRenderer } from 'echarts/renderers';
+import {BarChart} from 'echarts/charts';
+import {TitleComponent, TooltipComponent, GridComponent} from 'echarts/components';
+import {CanvasRenderer} from 'echarts/renderers';
 import {
   byprojectname_getList, getAllList_agree, getAllList_disagree, getchart_projectname_totalReviewResulDisagree,
   serverGetProjectListPageView
@@ -27,29 +27,23 @@ const qrCodeDarkColor = ref('#000')
 const qrCodeLightColor = ref('#FFF')
 onMounted(async () => {
   await fetchTableData();
-  await getagreecount();
-  await getdisagreecount();
-  await getchart();
-  await  getchart_bar();
 });
-const getBar_Chart_data=ref()
-const transformDataForChart= (data)=>{
+const getBar_Chart_data = ref()
+const transformDataForChart = (data) => {
   return data.map(item => ([
     item.totalReviewResulDisagree,
     item.projectName
   ]));
 }
-const chartOptions = ref({
-
-});
-const agreecount=ref()
+const chartOptions = ref({});
+const agreecount = ref()
 const getagreecount = async () => {
   try {
     // 调用 API 获取项目列表
     const ret = await getAllList_agree();
 
     if (ret && ret.code == 200) {
-      agreecount.value=ret.data
+      agreecount.value = ret.data
       // console.log(agreecount.value)
     }
   } catch (error) {
@@ -58,14 +52,14 @@ const getagreecount = async () => {
   }
 };
 
-const disagreecount=ref()
+const disagreecount = ref()
 const getdisagreecount = async () => {
   try {
     // 调用 API 获取项目列表
     const ret = await getAllList_disagree();
 
     if (ret && ret.code == 200) {
-      disagreecount.value=ret.data
+      disagreecount.value = ret.data
       console.log(disagreecount.value)
     }
   } catch (error) {
@@ -89,7 +83,7 @@ const fetchTableData = async () => {
 
 const projectViewPage = ref();
 
-const tableData = computed(   () => {
+const tableData = computed(() => {
   return projectViewPage.value?.result;
 });
 const totalCount = computed(() => {
@@ -133,14 +127,15 @@ const inputbatch = ref(-1)
 // 0是没点击 1是点击
 const ifclickserarch = ref(0)
 const inputSearch = async () => {
+  // await inputReset()
   try {
     let projectname = inputProjectName.value.trim();
-    let materialname = inputMaterialName.value.trim();
     // 调用 API 获取项目列表
-    const ret = await byprojectname_Search(inputProjectName.value,pageNo.value, pageSize.value);
-
+    const ret = await byprojectname_Search(projectname, pageNo.value, pageSize.value);
+    console.log(ret);
     if (ret && ret.code == 200) {
       projectViewPage.value = ret.data;
+      console.log("projectViewPage", projectViewPage.value);
       ifclickserarch.value = 1
     }
   } catch (error) {
@@ -157,97 +152,10 @@ const inputReset = async () => {
   pageSize.value = 10;
 
   ifclickserarch.value = 0
-  await inputSearch();
+  await fetchTableData();
 }
 
-const chartRef = ref(null);
-const getchart=()=>{
-  // 基于准备好的dom，初始化echarts实例
-  const chartDom = chartRef.value;
-  const myChart = echarts.init(chartDom);
-  const option = {
-    tooltip: {
-      trigger: 'item'
-    },
-    legend: {
-      top: '5%',
-      left: 'center'
-    },
-    series: [
-      {
 
-        type: 'pie',
-        radius: ['40%', '70%'],
-        center: ['50%', '70%'],
-        startAngle: 180,
-        endAngle: 360,
-        data: [
-          { value: agreecount.value, name: '已完成项目' },
-          { value: disagreecount.value, name: '正在进行中项目' },
-        ]
-      }
-    ]
-  };
-  // 使用刚指定的配置项和数据显示图表。
-  myChart.setOption(option);
-}
-
-const chartRef_bar = ref(null);
-const getchart_bar= async ()=>{
-  try {
-    // 调用 API 获取项目列表
-    const ret = await getchart_projectname_totalReviewResulDisagree();
-
-    if (ret && ret.code == 200) {
-      getBar_Chart_data.value=transformDataForChart(ret.data)
-      console.log(getBar_Chart_data.value)
-    }
-  } catch (error) {
-    ElMessage.error("获取信息失败");
-    console.error("获取信息失败", error);
-  }
-  // 基于准备好的dom，初始化echarts实例
-  const chartDom = chartRef_bar.value;
-  const myChart = echarts.init(chartDom);
-  const option = {
-    title: {
-      text: '审核不通过次数最多的项目' ,
-    },
-    dataset: [
-      {
-        dimensions: [ 'score', 'name'],
-        source: getBar_Chart_data.value
-      },
-      {
-        transform: {
-          type: 'sort',
-          config: { dimension: 'score', order: 'desc' }
-        }
-      }
-    ],
-    xAxis: {
-      type: 'category',
-      axisLabel: { interval: 0, rotate: 30 },
-      name:"项目名称"
-    },
-    yAxis: {
-      name:"审核不通过的次数"
-    },
-    series: {
-      type: 'bar',
-      encode: { x: 'name', y: 'score' },
-      datasetIndex: 1,
-      showBackground: true,
-      backgroundStyle: {
-        color: 'rgba(180, 180, 180, 0.2)'
-      }
-
-    },
-
-  };
-  // 使用刚指定的配置项和数据显示图表。
-  myChart.setOption(option);
-}
 </script>
 
 <template>
@@ -283,6 +191,7 @@ const getchart_bar= async ()=>{
               <div
                   style="display: flex; align-items: center"
                   class="project-title"
+
               >
                 {{ scope.row.user.realName }}
               </div>
@@ -290,37 +199,40 @@ const getchart_bar= async ()=>{
 
           </el-table-column>
 
-          <el-table-column label="单位">
-            <template #default="scope">
-              <div
-                  style="display: flex; align-items: center"
-                  class="project-title"
-              >
-                {{ scope.row.company.name }}
-              </div>
-            </template>
-          </el-table-column>
 
           <el-table-column label="单位">
             <template #default="scope">
               <div
                   style="display: flex; align-items: center"
                   class="project-title"
+                  v-if="scope.row.company!==null"
               >
                 {{ scope.row.company.name }}
               </div>
+<!--              <div-->
+<!--                  style="display: flex; align-items: center"-->
+<!--                  class="project-title"-->
+<!--                  v-else="scope.row.company"-->
+<!--              >-->
+<!--                {{ scope.row.company.name }}-->
+<!--              </div>-->
+
             </template>
+
           </el-table-column>
+
           <el-table-column label="项目">
             <template #default="scope">
               <div
                   style="display: flex; align-items: center"
                   class="project-title"
+                  v-if="scope.row.project!==null"
               >
                 {{ scope.row.project.name }}
               </div>
             </template>
           </el-table-column>
+
           <el-table-column label="操作">
             <template #default="scope">
               <div
@@ -338,44 +250,43 @@ const getchart_bar= async ()=>{
                   style="display: flex; align-items: center"
                   class="project-title"
               >
-                {{formatDate(scope.row.log.op_datetime)
-                   }}
+                {{
+                  formatDate(scope.row.log.op_datetime)
+                }}
               </div>
             </template>
           </el-table-column>
-<!--          <el-table-column label="项目">-->
-<!--            <template #default="scope">-->
-<!--              <div-->
-<!--                  style="display: flex; align-items: center"-->
-<!--                  class="project-title"-->
-<!--              >-->
-<!--                {{ getporit(scope.row.totalReviewResultAgree,scope.row.totalReviewResult) }}-->
-<!--              </div>-->
-<!--            </template>-->
-<!--          </el-table-column>          <el-table-column label="操作">-->
-<!--            <template #default="scope">-->
-<!--              <div-->
-<!--                  style="display: flex; align-items: center"-->
-<!--                  class="project-title"-->
-<!--              >-->
-<!--                {{ getporit(scope.row.totalReviewResultAgree,scope.row.totalReviewResult) }}-->
-<!--              </div>-->
-<!--            </template>-->
-<!--          </el-table-column>-->
+          <!--          <el-table-column label="项目">-->
+          <!--            <template #default="scope">-->
+          <!--              <div-->
+          <!--                  style="display: flex; align-items: center"-->
+          <!--                  class="project-title"-->
+          <!--              >-->
+          <!--                {{ getporit(scope.row.totalReviewResultAgree,scope.row.totalReviewResult) }}-->
+          <!--              </div>-->
+          <!--            </template>-->
+          <!--          </el-table-column>          <el-table-column label="操作">-->
+          <!--            <template #default="scope">-->
+          <!--              <div-->
+          <!--                  style="display: flex; align-items: center"-->
+          <!--                  class="project-title"-->
+          <!--              >-->
+          <!--                {{ getporit(scope.row.totalReviewResultAgree,scope.row.totalReviewResult) }}-->
+          <!--              </div>-->
+          <!--            </template>-->
+          <!--          </el-table-column>-->
 
 
-<!--          <el-table-column label="时间">-->
-<!--            <template #default="scope">-->
-<!--              <div-->
-<!--                  style="display: flex; align-items: center"-->
-<!--                  class="project-title"-->
-<!--              >-->
-<!--                {{ scope.row.totalReviewResulDisagree+"项" }}-->
-<!--              </div>-->
-<!--            </template>-->
-<!--          </el-table-column>-->
-
-
+          <!--          <el-table-column label="时间">-->
+          <!--            <template #default="scope">-->
+          <!--              <div-->
+          <!--                  style="display: flex; align-items: center"-->
+          <!--                  class="project-title"-->
+          <!--              >-->
+          <!--                {{ scope.row.totalReviewResulDisagree+"项" }}-->
+          <!--              </div>-->
+          <!--            </template>-->
+          <!--          </el-table-column>-->
 
 
         </el-table>

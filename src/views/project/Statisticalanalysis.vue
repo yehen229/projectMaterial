@@ -14,9 +14,14 @@ import { BarChart } from 'echarts/charts';
 import { TitleComponent, TooltipComponent, GridComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 import {
-  byprojectname_getList, getAllList_agree, getAllList_disagree, getchart_projectname_totalReviewResulDisagree,
+  byprojectname_getList,
+  getAllList_agree,
+  getAllList_disagree,
+  getchart_projectname_totalReviewResulDisagree,
+  servergetdesignUnpassData,
   serverGetProjectListPageView
 } from "@/server/project/statisticalanalysis";
+import DesignUnpaaTable from "@/views/project/statisticalCompont/designUnpaaTable.vue";
 
 // 二维码生成器 qr-code
 const qrCodeValue = ref("123")
@@ -265,15 +270,23 @@ const getchart_bar= async ()=>{
   // 使用刚指定的配置项和数据显示图表。
   myChart.setOption(option);
 }
+
+
 </script>
 
 <template>
 
   <div>
-    <!--    <div>{{qrCodeValue}}</div>-->
-    <!--    <vue-qrcode :value="qrCodeValue" :width="qrCodeWidth" :color="{ dark: qrCodeDarkColor, light: qrCodeLightColor }" id="qrCodeDom"></vue-qrcode>-->
-    <!--    <button @click="handleDownload">下载二维码</button>-->
+
+
     <el-card>
+      <DesignUnpaaTable/>
+
+
+
+
+
+
 
       <el-row :gutter="20">
         <el-col :span="12">

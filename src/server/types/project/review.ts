@@ -95,6 +95,7 @@ export interface IServerProjectReviewUserView {
 }
 
 export interface IServerProjectReviewForm {
+  companyId:string,
   projectId: string;
   taskId: string;
   designCompanyIndex: number;
