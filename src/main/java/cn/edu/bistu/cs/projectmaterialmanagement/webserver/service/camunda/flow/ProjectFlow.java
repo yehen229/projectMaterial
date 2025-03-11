@@ -2872,6 +2872,7 @@ public class ProjectFlow {
             }
 
             //end :监理简单审批，不对物料复检进行再次审批
+            taskService.setVariable(task.getId(), "projectMaterialRetestBatchId", projectMaterialRetestBatchId);
 
             //完成任务
             setTaskComplete(task, "监理判断是否需要复试", user);
@@ -3796,11 +3797,12 @@ public class ProjectFlow {
             return null;
         return projectBusinessService.getFeedbackOfAffectAppearanceReviewedByReviewId(projectAffectAppearanceReviewModeId);
     }
-    public ProjectMaterialRetestView getFeedbackOfNeedReCheckNotPassedOfSupervisionCompanyByProjectIdAndTaskId(String projectId,
+    public List<ProjectMaterialRetestView> getFeedbackOfNeedReCheckNotPassedOfSupervisionCompanyByProjectIdAndTaskId(String projectId,
                                                                                                                      String taskId) {
         String projectMaterialRetestId = (String) taskService.getVariable(taskId, "projectMaterialRetestId");
+        String projectMaterialRetestBatchId = (String) taskService.getVariable(taskId, "projectMaterialRetestBatchId");
         return projectBusinessService.getFeedbackOfProjectMaterialAcceptanceReviewedByRetestId(
-                projectMaterialRetestId);
+                projectMaterialRetestBatchId);
 
     }
 

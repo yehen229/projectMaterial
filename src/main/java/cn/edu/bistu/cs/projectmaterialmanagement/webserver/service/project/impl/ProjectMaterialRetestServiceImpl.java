@@ -131,6 +131,10 @@ public class ProjectMaterialRetestServiceImpl implements IProjectMaterialRetestS
 	public List<ProjectMaterialRetest> getByUserId(String userId){
 		return projectMaterialRetestRepository.getByUserId(userId);
 	}
+	@Override
+	public List<ProjectMaterialRetest> getbyProjectMaterialRetestBatchId(String projectMaterialRetestBatchId){
+		return projectMaterialRetestRepository.getByRetestBatchId(projectMaterialRetestBatchId);
+	}
 
 	/**
 	 * 获得指定页面数据

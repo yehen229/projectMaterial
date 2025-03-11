@@ -2834,25 +2834,30 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
         }
     }
     @Override
-    public ProjectMaterialRetestView getFeedbackOfProjectMaterialAcceptanceReviewedByRetestId(String projectMaterialRetestId){
-        ProjectMaterialRetest projectMaterialRetest = projectMaterialRetestService.getById(projectMaterialRetestId);
-        if(projectMaterialRetest == null) return null;
-        BuyMaterial buyMaterial = buyMaterialService.getById(projectMaterialRetest.getBuyMaterialId());
-        if(buyMaterial == null) return null;
-        UseMaterial useMaterial = useMaterialService.getById(buyMaterial.getUseMaterialId());
-        if(useMaterial == null) return null;
-        UseMaterialBrandSelect useMaterialBrandSelect = useMaterialBrandSelectService.getById(useMaterial.getUseMaterialBrandSelectId());
+    public List<ProjectMaterialRetestView> getFeedbackOfProjectMaterialAcceptanceReviewedByRetestId(String projectMaterialRetestBatchId) {
+        List<ProjectMaterialRetest> projectMaterialRetestList = projectMaterialRetestService.getbyProjectMaterialRetestBatchId(projectMaterialRetestBatchId);
 
-        List<ProjectUser> supervisioncompanyUser = projectUserService.getSupervisionCompanyEmployees(useMaterialBrandSelect.getProjectId());
-        if(supervisioncompanyUser == null || supervisioncompanyUser.isEmpty()) return null;
-        if (projectUserService.isUserSupervisionCompanyEmployee(useMaterialBrandSelect.getProjectId(),projectMaterialRetest.getUserId())){
-            return projectMaterialRetestBusinessService.getViewBypProjectMaterialRetestUserId(projectMaterialRetest.getUserId(), projectMaterialRetestId);
-        }
-        else {
-            return null;
+        if (projectMaterialRetestList == null || projectMaterialRetestList.isEmpty()) {
+            return Collections.emptyList(); // 返回空列表而不是 null
         }
 
+        List<ProjectMaterialRetestView> resultList = new ArrayList<>();
+
+        for (ProjectMaterialRetest projectMaterialRetest : projectMaterialRetestList) {
+            BuyMaterial buyMaterial = buyMaterialService.getById(projectMaterialRetest.getBuyMaterialId());
+            UseMaterial useMaterial = useMaterialService.getById(buyMaterial.getUseMaterialId());
+            UseMaterialBrandSelect useMaterialBrandSelect = useMaterialBrandSelectService.getById(useMaterial.getUseMaterialBrandSelectId());
+
+            // 如果是监理单位的员工，则添加到列表
+            if (projectUserService.isUserSupervisionCompanyEmployee(useMaterialBrandSelect.getProjectId(), projectMaterialRetest.getUserId())) {
+                resultList.add(projectMaterialRetestBusinessService.getViewBypProjectMaterialRetestUserId(
+                        projectMaterialRetest.getUserId(), projectMaterialRetest.getId()));
+            }
+        }
+
+        return resultList; // 返回所有符合条件的 ProjectMaterialRetestView
     }
+
     @Override
     public ProjectMaterialAcceptanceReviewUserView getFeedbackOfProjectMaterialAcceptanceReviewedByReviewId(String projectMaterialAcceptanceReviewModeId) {
               ProjectMaterialAcceptanceReviewMode projectMaterialAcceptanceReviewMode =projectMaterialAcceptanceReviewModeService.getById(

@@ -280,7 +280,7 @@ public interface IProjectBusinessService {
     UseMaterialBrandSelectView getNotPassedBrandOfSelectBrandReviewedOfSupervisionCompanyByProjectIdAndTaskId(String projectAppearanceReviewModeId);
 
     ProjectAppearanceReviewUserView getFeedbackOfAffectAppearanceReviewedByReviewId(String projectAffectAppearanceReviewModeId);
-    ProjectMaterialRetestView getFeedbackOfProjectMaterialAcceptanceReviewedByRetestId(String projectMaterialRetestId);
+    List<ProjectMaterialRetestView> getFeedbackOfProjectMaterialAcceptanceReviewedByRetestId(String projectMaterialRetestId);
     ProjectMaterialAcceptanceReviewUserView getFeedbackOfProjectMaterialAcceptanceReviewedByReviewId(String projectMaterialAcceptanceReviewModeId);
 
 }
