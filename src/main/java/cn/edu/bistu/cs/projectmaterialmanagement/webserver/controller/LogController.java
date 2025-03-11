@@ -76,9 +76,9 @@ public class LogController {
     public Page<ProjectLogView> getSearchPage(@RequestParam(value = "projectName", required = true) String projectName,
                                               @RequestParam(value = "pageNo", required = false) Integer pageNo,
                                               @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        pageNo = pageNo == null ? 1 : pageNo;
-//        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
-        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 1 ? pageSize : 2);
+//        pageNo = pageNo == null ? 1 : pageNo;
+////        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+//        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 1 ? pageSize : 2);
         return logService.getbynamePage(projectName, pageNo, pageSize);
     }
 }

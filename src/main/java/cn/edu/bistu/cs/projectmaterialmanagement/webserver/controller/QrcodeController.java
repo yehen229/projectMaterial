@@ -256,7 +256,6 @@ public class QrcodeController {
 //        获取批次
         int batch = buyMaterial.getBatch();
 
-
 //        2. 通过t_buy_material中的t_use_material_id到t_use_material表，
         String useMaterialId = buyMaterial.getUseMaterialId();
         UseMaterial useMaterialinfo = useMaterialService.getById(useMaterialId);
