@@ -2358,11 +2358,55 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
     public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectId(String projectId,
                                                                                       Integer pageNo,
                                                                                       Integer pageSize) {
-
-
         return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectId(projectId, pageNo, pageSize);
+    }
 
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndName(String projectId,
+                                                                                      String name,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndName(projectId, name, pageNo, pageSize);
+    }
 
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndLocation(String projectId,
+                                                                                      String location,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndLocation(projectId, location, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndItemMark(String projectId,
+                                                                                      String itemMark,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndItemMark(projectId, itemMark, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndTechnology(String projectId,
+                                                                                      String technology,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndTechnology(projectId, technology, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndInstallation(String projectId,
+                                                                                      String installation,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndInstallation(projectId, installation, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<UseMaterialView> getReviewedAndApprovedUseMaterialViewPageByProjectIdAndBrand(String projectId,
+                                                                                      String brand,
+                                                                                      Integer pageNo,
+                                                                                      Integer pageSize) {
+        return useMaterialBusinessService.getReviewedAndApprovedPageViewByProjectIdAndBrand(projectId, brand, pageNo, pageSize);
     }
 
     /**

@@ -82,6 +82,34 @@ public interface IUseMaterialService {
                                                             Integer pageNo,
                                                             Integer pageSize);
 
+    Page<UseMaterial> getReviewedAndApprovedPageByProjectIdAndName(String projectId,
+                                                            String name,
+                                                            Integer pageNo,
+                                                            Integer pageSize);
 
+    Page<UseMaterial> getReviewedAndApprovedPageByProjectIdAndLocation(String projectId,
+                                                            String location,
+                                                            Integer pageNo,
+                                                            Integer pageSize);
+
+    Page<UseMaterial> getReviewedAndApprovedPageByProjectIdAndItemMark(String projectId,
+                                                            String itemMark,
+                                                            Integer pageNo,
+                                                            Integer pageSize);
+
+    Page<UseMaterial> getReviewedAndApprovedPageByProjectIdAndTechnology(String projectId,
+                                                            String technology,
+                                                            Integer pageNo,
+                                                            Integer pageSize);
+
+    Page<UseMaterial> getReviewedAndApprovedPageByProjectIdAndInstallation(String projectId,
+                                                            String installation,
+                                                            Integer pageNo,
+                                                            Integer pageSize);
+
+    Page<UseMaterial> getReviewedAndApprovedPageByProjectIdAndBrand(String projectId,
+                                                            String brand,
+                                                            Integer pageNo,
+                                                            Integer pageSize);
 
 }
