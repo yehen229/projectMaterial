@@ -160,11 +160,11 @@ const onProjectMaterialButtonClick = (
 // };
 
 // 点击搜索按钮
-const onSearchClick = async () => {
+const onSearchClick = async (pageSearchNo: number) => {
   let search = searchText.value.trim();
   let projectName = "";
   let projectLocation = "";
-  if (search) {
+  if (search && pageSearchNo == null) {
     pageNo.value = 1;
   }
   if (searchText.value == "") {
@@ -236,8 +236,8 @@ onMounted(async () => {
  * @param value
  */
 const onPagePrevClick = (value: number) => {
-    pageNo.value = pageNo.value - 1;
-    onSearchClick();
+    // pageNo.value = pageNo.value - 1;
+    // onSearchClick();
 };
 
 /**
@@ -245,13 +245,13 @@ const onPagePrevClick = (value: number) => {
  * @param value
  */
 const onPageNextClick = (value: number) => {
-    pageNo.value = pageNo.value + 1;
-    onSearchClick();
+    // pageNo.value = pageNo.value + 1;
+    // onSearchClick();
 };
 
 const onPageCurrentChange = async (value: number) => {
-  pageNo.value = value;
-  await fetchTableData();
+  // await fetchTableData();
+  await onSearchClick(value);
 };
 
 /**
@@ -555,7 +555,7 @@ const goBack = () => {
       :total="totalCount"
       @prev-click="onPagePrevClick"
       @next-click="onPageNextClick"
-      @current-change="onPageCurrentChange"
+      @current-change="onPageCurrentChange(pageNo)"
     />
   </div>
 </template>
