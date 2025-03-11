@@ -236,20 +236,8 @@ const onShowProjectMaterialDialogOk = async (
 };
 
 const onPagePrevClick = async (value: number) => {
-  if (value == 1) {
-    pageNo.value = 1;
-  } else {
-    pageNo.value = value - 1;
-  }
-  await getProjectMaterialViewFromSever();
 };
 const onPageNextClick = async (value: number) => {
-  if (value == totalCount.value / pageSize.value) {
-    pageNo.value = value;
-  } else {
-    pageNo.value = value + 1;
-  }
-  await getProjectMaterialViewFromSever();
 };
 const onPageCurrentChange = async (value: number) => {
   pageNo.value = value;
