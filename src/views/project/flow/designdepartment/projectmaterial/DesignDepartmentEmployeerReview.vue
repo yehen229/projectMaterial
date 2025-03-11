@@ -31,7 +31,7 @@ import {
   IServerProject,
   IServerProjectView,
   IServerProjectUser,
-  IServerProjectUserView,
+  IServerProjectUserView, IServerProjectMaterialView,
 } from "@/server/types/project/project";
 import {
   serverGetProjectPageView,
@@ -90,6 +90,8 @@ import {
   getTaskProjectName,
   getTaskTitle,
 } from "@/components/project/flow/index";
+import {serverGetProjectMaterialPageViewByTaskIdAndProjectId} from "@/server/project/projectmaterial";
+import {IServerPage} from "@/server/types/System";
 
 const router = useRouter();
 const route = useRoute();
@@ -139,6 +141,9 @@ onMounted(async () => {
   await getUserTaskFromServerByProjectId(projectId.value, taskId.value);
 });
 
+
+
+
 const getUserTaskFromServerByProjectId = async (
   projectId: string,
   taskId: string
@@ -169,6 +174,8 @@ const submitProcess = async () => {
   console.log(fileList.value);
 
   const userId = getUserID();
+  // 获取公司id
+  await getcompanyId()
   console.log(userId);
   if (!userId) {
     ElMessageBox.alert("用户信息异常，请重新登录", "提示", {
@@ -337,6 +344,39 @@ const httpRequest = async (options: UploadRequestOptions) => {
     });
   } else ElMessage.error(`上传失败`);
 };
+// 获取companyid
+const projectMaterialViewPageData =
+    ref<IServerPage<IServerProjectMaterialView> | null>(null);// 获取公司id
+
+const companyId = ref(null);
+const pageNo = ref(1); //第几页
+const pageSize = ref(getUserPageSize()); //每页多少数据
+const getcompanyId = async () => {
+  const ret = await serverGetProjectMaterialPageViewByTaskIdAndProjectId(
+      projectId.value,
+      taskId.value,
+      designCompanyIndex.value,
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      pageNo.value,
+      pageSize.value
+  );
+//   console.log(ret);
+  if (ret && ret.code == 200) {
+    projectMaterialViewPageData.value = ret.data;
+    // 从接口返回获取copanyid
+    if (projectMaterialViewPageData.value.result.length  > 0) {
+      companyId.value  = projectMaterialViewPageData.value.result[0].projectMaterial.companyId;
+      console.log(' 获取到的companyId:', companyId.value);
+    }
+  }
+}
+
 </script>
 
 <template>

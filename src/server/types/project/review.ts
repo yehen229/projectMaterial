@@ -26,6 +26,7 @@ export interface IServerProjectReviewMode {
   mode: number; //mode,分发审核或直接审核分发审核或直接审核
   deletedAt: Date; //deleted_at,null表示未删，否则 表示删除时间null表示未删，否则 表示删除时间
   createDatetime: Date;
+  companyId:string
 }
 
 export interface IServerProjectReviewModeView {
@@ -106,6 +107,7 @@ export interface IServerProjectReviewForm {
 }
 
 export interface IServerProjectReviewDispatchForm {
+  companyId:string,
   projectId: string;
   taskId: string;
   designCompanyIndex: number;

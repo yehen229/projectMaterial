@@ -277,6 +277,7 @@ const submitProcess = async () => {
 const submitToServerManagerDistributeToEmployees = async (userId: string) => {
   //分发审核
   const projectReviewDispatchForm: IServerProjectReviewDispatchForm = {
+    companyId:companyId.value,
     projectId: projectId.value,
     taskId: taskId.value,
     designCompanyIndex: designCompanyIndex.value,
@@ -287,6 +288,7 @@ const submitToServerManagerDistributeToEmployees = async (userId: string) => {
       mode: 1, //mode,分发审核或直接审核分发审核或直接审核
       deletedAt: new Date(),
       createDatetime: new Date(),
+      companyId:companyId.value
     },
     employeeIds: checkList.value,
   };
