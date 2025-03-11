@@ -13,6 +13,8 @@ public class ProjectReviewMode {
     private Date deletedAt;//deleted_at,null表示未删，否则 表示删除时间null表示未删，否则 表示删除时间
     private Date createDatetime;//create_datetime,创建时间
 
+    private String companyId;
+
     public String getId() {
         return id;
     }
@@ -59,5 +61,13 @@ public class ProjectReviewMode {
 
     public void setCreateDatetime(Date createDatetime) {
         this.createDatetime = createDatetime;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
     }
 }

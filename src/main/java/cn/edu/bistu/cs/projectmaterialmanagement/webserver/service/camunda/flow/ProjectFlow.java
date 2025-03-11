@@ -463,6 +463,8 @@ public class ProjectFlow {
             logService.add(log);
             result = "项目经理对项目材料分发给项目经理进行直接审核成功";
 
+//            将companyid 加入 t_project_review_mode表中
+
 
         }
 

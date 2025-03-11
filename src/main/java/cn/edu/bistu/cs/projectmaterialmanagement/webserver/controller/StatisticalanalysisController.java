@@ -1,11 +1,18 @@
 package cn.edu.bistu.cs.projectmaterialmanagement.webserver.controller;
 
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.account.User;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.BuyMaterialQrcodeShowView;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectStatisticalAnalysis;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.*;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.project.Project;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Company;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Material;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.IStatisticalanalysisRepository;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.account.IUserService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.camunda.flow.ProjectFlow;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IProjectService;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.materialreview.IProjectReviewUserService;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.ICompanyService;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IMaterialService;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,8 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.controller.ProjectMaterialFlowController;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("statisticalanalysis/v1")
@@ -22,10 +28,23 @@ import java.util.List;
 public class StatisticalanalysisController {
     private final IProjectService projectService;
     private final ProjectFlow projectMaterialFlow;
+    private final IMaterialService materialService;
+    private final ICompanyService companyService;
+    private final IUserService userService;
+    private final IProjectReviewUserService projectReviewUserService;
 
-    public StatisticalanalysisController(IProjectService projectService, ProjectFlow projectMaterialFlow) {
+    private IStatisticalanalysisRepository statisticalanalysisRepository;
+
+    public StatisticalanalysisController(IProjectService projectService, ProjectFlow projectMaterialFlow, IStatisticalanalysisRepository statisticalanalysisRepository,
+                                         IMaterialService materialService, ICompanyService companyService, IUserService userService,
+                                         IProjectReviewUserService projectReviewUserService) {
+        this.companyService = companyService;
+        this.materialService = materialService;
         this.projectService = projectService;
         this.projectMaterialFlow = projectMaterialFlow;
+        this.statisticalanalysisRepository = statisticalanalysisRepository;
+        this.userService = userService;
+        this.projectReviewUserService = projectReviewUserService;
     }
 
 
@@ -131,4 +150,98 @@ public class StatisticalanalysisController {
         List<ProjectStatisticalAnalysis> topTen = projectStatisticalAnalysisList.subList(0, Math.min(10, projectStatisticalAnalysisList.size()));
         return topTen;
     }
+
+    @GetMapping("get_solomaterial_unpass_message")
+    public List<List<UnpassmaterialmessageList>>  getSolomaterialUnpassMessage() {
+        /*根据projectid origin_id company_id 可以确定一个该项目的材料信息
+         * */
+//       1.从t_project_material表中获取每一条数据中的projectid  company_id
+
+//        2.根据projectid  company_id 到t_project_review_model表获取相应的数据 获取t_project_review_model表的id
+
+//        3.根据id到t_project_review表中获取相应的数据(满足review_result参数为2) t_project_review的id
+
+//        4.根据id到t_project_review_user表中获取相应的 评论数据
+
+        List<Unpassmaterialmessage> unpassmaterialmessage = statisticalanalysisRepository.getUnpassmaterialmessage();
+
+        Set<String> uniqueSet = new LinkedHashSet<>(); // 保持插入顺序
+
+        for (Unpassmaterialmessage message : unpassmaterialmessage) {
+            uniqueSet.add(message.getMaterialId());
+        }
+        List<String> uniqueMaterialIds = new ArrayList<>(uniqueSet);
+
+        Map<String, List<Unpassmaterialmessage>> groupedMessages = new HashMap<>();
+        for (Unpassmaterialmessage message : unpassmaterialmessage) {
+            String materialId = message.getMaterialId();
+            groupedMessages.computeIfAbsent(materialId, k -> new ArrayList<>()).add(message);
+        }
+
+//        1.根据uniqueMaterialIds中的id找到groupedMessages中的数据
+        List<List<UnpassmaterialmessageList>> finallist = new ArrayList<>();
+        for (String uniqueMaterialId : uniqueMaterialIds) {
+            List<Unpassmaterialmessage> unpassmaterialmessages = groupedMessages.get(uniqueMaterialId);
+            List<UnpassmaterialmessageList> unpassmaterialmessageLists = new ArrayList<>();
+
+            for (Unpassmaterialmessage unpassmaterialmessage1 : unpassmaterialmessages) {
+                UnpassmaterialmessageList unpassmaterialmessageList = new UnpassmaterialmessageList();
+//                获取材料信息
+                Material materialServiceById = materialService.getById(unpassmaterialmessage1.getMaterialId());
+                unpassmaterialmessageList.setMaterial(materialServiceById);
+//                获取项目信息
+                Company companyServiceById = companyService.getById(unpassmaterialmessage1.getCompanyId());
+                unpassmaterialmessageList.setCompany(companyServiceById);
+//                获取项目信息
+                Project projectServiceById = projectService.getById(unpassmaterialmessage1.getProjectId());
+                unpassmaterialmessageList.setProject(projectServiceById);
+//                获取评论信息
+                unpassmaterialmessageList.setReviewContent(unpassmaterialmessage1.getReviewConternt());
+//                获取用户信息
+                User userServiceById = userService.getById(unpassmaterialmessage1.getUserId());
+                unpassmaterialmessageList.setUser(userServiceById);
+//
+                unpassmaterialmessageLists.add(unpassmaterialmessageList);
+            }
+            finallist.add(unpassmaterialmessageLists);
+        }
+
+        return finallist;
+
+    }
+
+    @GetMapping("get_unpass_material_message")
+    public Page<Unpassonlymaterial> getUnpassMaterialMessage(@RequestParam(value = "pageNo", required = false) Integer pageNo,
+                                                             @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+//        pageNo = pageNo == null ? 1 : pageNo;
+//        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+        Page<Unpassonlymaterial> page = statisticalanalysisRepository.getPage(pageNo, pageSize);
+//        List<Unpassonlymaterial> unpassOnlymaterial = page.getResult();
+
+//        List<Unpassonlymaterial> unpassOnlymaterial = statisticalanalysisRepository.getUnpassOnlymaterial();
+
+
+        for (Unpassonlymaterial unpassonlymaterial : page.getResult()) {
+            Material materialServiceById = materialService.getById(unpassonlymaterial.getMaterialId());
+            unpassonlymaterial.setMaterial(materialServiceById);
+            Project projectServiceById = projectService.getById(unpassonlymaterial.getProjectId());
+            unpassonlymaterial.setProject(projectServiceById);
+            Company companyServiceById = companyService.getById(unpassonlymaterial.getCompanyId());
+            unpassonlymaterial.setCompany(companyServiceById);
+        }
+        return page;
+    }
+    @GetMapping("get_unpass_review_by_projectid_materialid_companyid")
+    public List<OnematerialUnpass> getunpassreviewbyprojectidmaterialid_companyid(@RequestParam(value = "projectid") String projectid,
+                                                               @RequestParam(value = "companyid") String companyid) {
+        List<OnematerialUnpass> unpassmaterialmessage = statisticalanalysisRepository.getunpassreviewbyprojectidmaterialid_companyid(projectid, companyid);
+
+        for (OnematerialUnpass onematerialUnpass : unpassmaterialmessage) {
+            onematerialUnpass.setUser(userService.getById(onematerialUnpass.getUserid()));
+            onematerialUnpass.setProjectReviewUser(projectReviewUserService.getById(onematerialUnpass.getId()));
+        }
+
+        return unpassmaterialmessage;
+    }
+
 }

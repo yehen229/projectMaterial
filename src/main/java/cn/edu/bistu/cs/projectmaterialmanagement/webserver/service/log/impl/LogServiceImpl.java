@@ -163,34 +163,24 @@ public class LogServiceImpl implements ILogService {
 //      3.通过projectName过滤
         List<ProjectLogView> projectLogViewListByName = new ArrayList<>();
         for (ProjectLogView projectLogView : projectLogViewList) {
-            if (projectLogView.getUser().getRealName().contains(projectName)) {
+            if (projectLogView.getUser().getRealName().contains(projectName )) {
                 projectLogViewListByName.add(projectLogView);
             }
         }
 
 //       对过滤完的进行分页
         long totalCount = projectLogViewListByName.size();
-        int start = Page.getStartOfPage(pageNo,  pageSize);
+//        int start = Page.getStartOfPage(pageNo,  pageSize);
 
         // 计算分页后的结果
         List<ProjectLogView> pageData = new ArrayList<>();
-        int end = start + pageSize;
-        for (int i = start; i < end && i < totalCount; i++) {
+//        int end = start + pageSize;
+        for (int i = (pageNo-1)*pageSize;  i < totalCount&&i<=pageNo*pageSize; i++) {
             pageData.add(projectLogViewListByName.get(i));
         }
 
-        return new Page<>(start, totalCount, pageSize, pageData);
-//        long totalCount = getCountByKeyword(keyword);
-//        if (totalCount < 1) return new Page<>();
-//        int startIndex = Page.getStartOfPage(pageNo, pageSize);
-//        List<Project> resultData = getPageQueryByKeyword(keyword, pageNo - 1, pageSize);
-//        return new Page<>(0, totalCount, (int) totalCount, resultData);
-//
-//        long totalCount = projectLogViewListByName.size();
-//        if (totalCount < 1) return new Page<>();
-//        int startIndex = Page.getStartOfPage(pageNo, pageSize);
-//        projectLogViewListByName = projectLogViewListByName.subList((pageNo-1)*pageSize,  projectLogViewListByName.size());
-//        return new Page<>(0, totalCount, (int) totalCount, projectLogViewListByName);
+        return new Page<>(0, totalCount, pageSize, pageData);
+
     }
 
     private Page<ProjectLogView> convertProjectOplogPage2PageView(Page<Log> pagelog,

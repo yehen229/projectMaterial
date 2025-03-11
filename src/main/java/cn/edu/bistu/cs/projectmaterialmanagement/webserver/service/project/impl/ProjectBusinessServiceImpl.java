@@ -395,6 +395,7 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
             throw new BusinessException("参数为空");
 
         ProjectReviewMode projectReviewMode = projectReviewForm.getProjectReviewMode();
+        projectReviewMode.setCompanyId(projectReviewForm.getCompanyId());
         if (projectReviewMode == null)
             throw new BusinessException("参数为空");
 

@@ -12,6 +12,8 @@ public class ProjectReviewForm {
     private ProjectReviewUser projectReivewUser;
     private String reviewTempDir;//review_temp_dir,临时审核附件目录，项目审核附件放在此目录中
 
+    private String companyId;
+
     public ProjectReviewMode getProjectReviewMode() {
         return projectReviewMode;
     }
@@ -66,5 +68,13 @@ public class ProjectReviewForm {
 
     public void setDesignCompanyIndex(int designCompanyIndex) {
         this.designCompanyIndex = designCompanyIndex;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
     }
 }

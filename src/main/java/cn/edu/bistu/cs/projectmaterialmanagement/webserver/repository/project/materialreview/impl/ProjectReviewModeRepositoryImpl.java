@@ -29,17 +29,21 @@ public class ProjectReviewModeRepositoryImpl implements IProjectReviewModeReposi
 
         String newId = GUID.getGUID();
         if (jdbcTemplate.update("""
-                                        INSERT INTO t_project_review_mode(id,
-                                        t_project_id,
-                                        t_user_id,
-                                        mode,
-                                        create_datetime)
-                                        VALUES(?,?,?,?,?)
-                                        """,
+                         INSERT INTO t_project_review_mode(id,
+                         t_project_id,
+                         t_user_id,
+                         mode,
+                          t_company_id,
+                         create_datetime
+                        )
+                         VALUES(?,?,?,?,?,?)
+                         """,
                                 newId,
                                 projectReviewMode.getProjectId(),
                                 projectReviewMode.getUserId(),
-                                projectReviewMode.getMode(), new Date()) > 0)
+                                projectReviewMode.getMode(),
+                                projectReviewMode.getCompanyId(),
+                                new Date()) > 0)
             return newId;
         return null;
     }
