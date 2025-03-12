@@ -2554,7 +2554,7 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
      * @return
      */
     @Override
-    public String addFormOfGeneralContractorBuyMaterialSelect(BuyMaterialForm buyMaterialForm){
+    public String addFormOfGeneralContractorBuyMaterialSelect(BuyMaterialForm buyMaterialForm) {
         if (buyMaterialForm == null || buyMaterialForm.getBuyMaterials().length == 0)
             throw new BusinessException("参数为空");
 
@@ -2562,18 +2562,21 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
         if (user == null)
             throw new BusinessException("用户未登录，添加失败");
 
-        //增加订购批次（一个批次可以包含多个品种的物料）
+        // **获取新的 batch（整批次递增）**
+        int newBatch = buyMaterialService.getMaxBatchByBatchIdAndProjectId(buyMaterialForm.getProjectId());
+
+        // **创建新的 t_buy_material_batch 记录**
         BuyMaterialBatch buyMaterialBatch = new BuyMaterialBatch();
         buyMaterialBatch.setUserId(user.getId());
         buyMaterialBatch.setProjectId(buyMaterialForm.getProjectId());
         buyMaterialBatch.setCreateDatetime(new Date());
         String buyMaterialBatchId = buyMaterialBatchService.add(buyMaterialBatch);
-        Integer currentMaxBatch = buyMaterialService.getMaxBatchByBatchId(buyMaterialBatchId);
-        int newBatch = currentMaxBatch + 1;
+
         if (buyMaterialBatchId == null)
             throw new BusinessException("添加失败");
 
         List<String> buyMaterialIds = new ArrayList<>();
+
         for (BuyMaterial buyMaterial : buyMaterialForm.getBuyMaterials()) {
             UseMaterial useMaterial = useMaterialService.getById(buyMaterial.getUseMaterialId());
             if (useMaterial == null) {
@@ -2604,12 +2607,15 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
             }
 
             buyMaterial.setBuyMaterialBatchId(buyMaterialBatchId); // 关联批次 ID
-            buyMaterial.setBatch(newBatch);
+            buyMaterial.setBatch(newBatch); // **设置新的 batch（整批共享）**
+
             String buyMaterialId = buyMaterialService.add(buyMaterial);
             buyMaterialIds.add(buyMaterialId);
         }
+
         return buyMaterialBatchId;
     }
+
 
     @Override
     public List<String> addFormOfGeneralContractorBuyProjectMaterial(BuyMaterial[] buyMaterials) {
