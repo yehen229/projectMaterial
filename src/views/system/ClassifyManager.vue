@@ -474,6 +474,7 @@ const remove = (node: Node, data: Tree) => {
           type: "warning",
           message: "删除失败",
         });
+      window.location.reload();
     })
     .catch(() => {
       ElMessage({
