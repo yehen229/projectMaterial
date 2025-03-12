@@ -22,12 +22,8 @@ import {
   serverGetProjectListPageView
 } from "@/server/project/statisticalanalysis";
 import DesignUnpaaTable from "@/views/project/statisticalCompont/designUnpaaTable.vue";
+import BeforeZongBaoTable from "@/views/project/statisticalCompont/beforeZongBaoTable.vue";
 
-// 二维码生成器 qr-code
-const qrCodeValue = ref("123")
-const qrCodeWidth = ref(150)
-const qrCodeDarkColor = ref('#000')
-const qrCodeLightColor = ref('#FFF')
 onMounted(async () => {
   await fetchTableData();
   await getagreecount();
@@ -280,7 +276,11 @@ const getchart_bar= async ()=>{
 
 
     <el-card>
+      <h2>设计单位审核不通过</h2>
       <DesignUnpaaTable/>
+
+      <h2>材料外观审核不通过</h2>
+      <Before-zong-bao-table/>
 
 
 
