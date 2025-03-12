@@ -30,6 +30,26 @@ export async function servergetunpassreviewbyprojectidmaterialid_companyid(
     }
 }
 
+export async function servergetunpassreviewbefore_zongbao(
+    projectid: string,
+    materialid: string
+) {
+    try {
+        let res = await axios.get<
+            any,
+            IServerResponseData<IServerPage<IServerProjectView>>
+        >(BASEURL.statisticalanalysis + "get_unpass_review_before_zongbao", {
+            params: {
+                projectid: projectid,
+                materialid: materialid,
+            },
+        });
+        return res;
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+}
 
 
 export async function servergetdesignUnpassData(
@@ -53,7 +73,26 @@ export async function servergetdesignUnpassData(
     }
 }
 
-
+export async function servergetunpassbeforezongbao(
+    pageNo: number,
+    pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
+    try {
+        let res = await axios.get<
+            any,
+            IServerResponseData<IServerPage<IServerProjectView>>
+        >(BASEURL.statisticalanalysis + "get_unpass_revie_before_zongbao", {
+            params: {
+                pageNo: pageNo,
+                pageSize: pageSize,
+            },
+        });
+        return res;
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+}
 
 export async function serverGetProjectListPageView(
     pageNo: number,
