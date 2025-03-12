@@ -5,13 +5,17 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.*;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.project.Project;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Company;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.CompanyUser;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Material;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.IStatisticalanalysisRepository;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.appearance.IProjectAppearanceReviewRepository;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.account.IUserService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.camunda.flow.ProjectFlow;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IProjectService;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.appearance.IProjectAppearanceReviewUserService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.materialreview.IProjectReviewUserService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.ICompanyService;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.ICompanyUserService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IMaterialService;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,12 +36,19 @@ public class StatisticalanalysisController {
     private final ICompanyService companyService;
     private final IUserService userService;
     private final IProjectReviewUserService projectReviewUserService;
+    private  final IProjectAppearanceReviewUserService projectAppearanceReviewUserService;
+    private  final ICompanyUserService companyUserService;
+
 
     private IStatisticalanalysisRepository statisticalanalysisRepository;
 
+
     public StatisticalanalysisController(IProjectService projectService, ProjectFlow projectMaterialFlow, IStatisticalanalysisRepository statisticalanalysisRepository,
                                          IMaterialService materialService, ICompanyService companyService, IUserService userService,
-                                         IProjectReviewUserService projectReviewUserService) {
+                                         IProjectReviewUserService projectReviewUserService,
+                                         IProjectAppearanceReviewUserService projectAppearanceReviewUserService,
+                                         ICompanyUserService companyUserService
+    ) {
         this.companyService = companyService;
         this.materialService = materialService;
         this.projectService = projectService;
@@ -45,6 +56,8 @@ public class StatisticalanalysisController {
         this.statisticalanalysisRepository = statisticalanalysisRepository;
         this.userService = userService;
         this.projectReviewUserService = projectReviewUserService;
+        this.projectAppearanceReviewUserService = projectAppearanceReviewUserService;
+        this.companyUserService = companyUserService;
     }
 
 
@@ -151,8 +164,9 @@ public class StatisticalanalysisController {
         return topTen;
     }
 
+    //    设计单位审核不通过
     @GetMapping("get_solomaterial_unpass_message")
-    public List<List<UnpassmaterialmessageList>>  getSolomaterialUnpassMessage() {
+    public List<List<UnpassmaterialmessageList>> getSolomaterialUnpassMessage() {
         /*根据projectid origin_id company_id 可以确定一个该项目的材料信息
          * */
 //       1.从t_project_material表中获取每一条数据中的projectid  company_id
@@ -210,7 +224,8 @@ public class StatisticalanalysisController {
 
     }
 
-    @GetMapping("get_unpass_material_message")
+
+    @GetMapping("get_unpass_material_message")   //    获取分页
     public Page<Unpassonlymaterial> getUnpassMaterialMessage(@RequestParam(value = "pageNo", required = false) Integer pageNo,
                                                              @RequestParam(value = "pageSize", required = false) Integer pageSize) {
 //        pageNo = pageNo == null ? 1 : pageNo;
@@ -231,9 +246,11 @@ public class StatisticalanalysisController {
         }
         return page;
     }
-    @GetMapping("get_unpass_review_by_projectid_materialid_companyid")
+
+
+    @GetMapping("get_unpass_review_by_projectid_materialid_companyid")    //    获取评论
     public List<OnematerialUnpass> getunpassreviewbyprojectidmaterialid_companyid(@RequestParam(value = "projectid") String projectid,
-                                                               @RequestParam(value = "companyid") String companyid) {
+                                                                                  @RequestParam(value = "companyid") String companyid) {
         List<OnematerialUnpass> unpassmaterialmessage = statisticalanalysisRepository.getunpassreviewbyprojectidmaterialid_companyid(projectid, companyid);
 
         for (OnematerialUnpass onematerialUnpass : unpassmaterialmessage) {
@@ -244,4 +261,50 @@ public class StatisticalanalysisController {
         return unpassmaterialmessage;
     }
 
+    //    总包公司订购之前审核
+    @GetMapping("get_unpass_revie_before_zongbao")
+    public Page<Unpassonlymaterial> getunpassbeforezongbao(@RequestParam(value = "pageNo", required = false) Integer pageNo,
+                                       @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+//        pageNo = pageNo == null ? 1 : pageNo;
+//        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+
+        //        1.从t_project_material表中获取每一条数据中的projectid materialid
+//        2.根据t_project_material表中的id 到t_use_material表中获取相应t_use_material_brand_select_id
+//        3.根据t_use_material表中的t_use_material_brand_select_id到t_project_appearance_review_model表中获取 id
+//        4.根据t_project_appearance_review_model表中的id到t_project_review表中获取相应的id 且 review_result为2
+//        5.根据t_project_review表中的id到t_project_review_user表中获取review_content t_user_id
+
+
+        Page<Unpassonlymaterial> page = statisticalanalysisRepository.getunpassbeforezongbaoPage(pageNo, pageSize);
+//        List<Unpassonlymaterial> unpassOnlymaterial = page.getResult();
+
+//        List<Unpassonlymaterial> unpassOnlymaterial = statisticalanalysisRepository.getUnpassOnlymaterial();
+
+
+        for (Unpassonlymaterial unpassonlymaterial : page.getResult()) {
+            Material materialServiceById = materialService.getById(unpassonlymaterial.getMaterialId());
+            unpassonlymaterial.setMaterial(materialServiceById);
+            Project projectServiceById = projectService.getById(unpassonlymaterial.getProjectId());
+            unpassonlymaterial.setProject(projectServiceById);
+        }
+
+        return  page;
+    }
+
+    @GetMapping("get_unpass_review_before_zongbao")    //    获取评论
+    public List<OnematerialUnpassbeforeZongbao> getunpassreviewbeforezongbao(@RequestParam(value = "projectid") String projectid,
+                                                                                  @RequestParam(value = "materialid") String materialid) {
+        List<OnematerialUnpassbeforeZongbao> unpassmaterialmessage = statisticalanalysisRepository.getunpassreviewbeforezongbao(projectid, materialid);
+
+        for (OnematerialUnpassbeforeZongbao onematerialUnpass : unpassmaterialmessage) {
+            onematerialUnpass.setUser(userService.getById(onematerialUnpass.getUserid()));
+            onematerialUnpass.setProjectAppearanceReviewUser(projectAppearanceReviewUserService.getById(onematerialUnpass.getId()));
+//          通过user获取company表信息
+            CompanyUser byUserId = companyUserService.getByUserId(onematerialUnpass.getUser().getId());
+            Company company = companyService.getById(byUserId.getCompanyId());
+            onematerialUnpass.setCompany(company);
+        }
+
+        return unpassmaterialmessage;
+    }
 }
