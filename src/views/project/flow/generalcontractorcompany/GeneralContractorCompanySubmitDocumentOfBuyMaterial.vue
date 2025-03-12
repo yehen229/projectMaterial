@@ -458,7 +458,14 @@ const onUploadDocument1Success = async (
           </el-table-column>
 
           <el-table-column label="批次" show-overflow-tooltip>
-            <template #default="scope"> </template>
+            <template #default="scope"> 
+                <div :class="{ textEllipsis: textElipsisValue }">
+                {{
+                  scope.row.buyMaterialView
+                    .buyMaterial.batch
+                }}
+              </div>
+            </template>
           </el-table-column>
 
           <el-table-column label="工程材料" show-overflow-tooltip width="250px">
