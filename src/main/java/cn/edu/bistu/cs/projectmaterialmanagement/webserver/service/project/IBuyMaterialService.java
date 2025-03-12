@@ -36,7 +36,7 @@ public interface IBuyMaterialService {
     int getCountByProjectMaterialBrandPrivateId(String projectMaterialBrandPrivateId);
 
     int getCountByProjectMaterialBrandPublicId(String projectMaterialBrandPublicId);
-    int  getMaxBatchByBatchId(String buyMaterialBatchId);
+    int  getMaxBatchByBatchIdAndProjectId(String projectId);
 
     BuyMaterial getById(String id);
 

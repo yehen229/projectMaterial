@@ -155,9 +155,9 @@ public class BuyMaterialServiceImpl implements IBuyMaterialService {
         return buyMaterialRepository.getCountByProjectMaterialBrandPublicId(projectMaterialBrandPublicId);
     }
     @Override
-    public int getMaxBatchByBatchId(String buyMaterialBatchId){
-        Integer maxBatch = buyMaterialRepository.findMaxBatchByBatchId(buyMaterialBatchId);
-        return (maxBatch == null ? 0 : maxBatch);
+    public int getMaxBatchByBatchIdAndProjectId(String projectId){
+        Integer maxBatch = buyMaterialRepository.findMaxBatchByBatchId(projectId);
+        return maxBatch;
     }
 
     /**
