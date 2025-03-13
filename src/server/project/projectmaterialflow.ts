@@ -1127,6 +1127,204 @@ export async function serverGetProjecMaterialAcceptancePageViewByTaskId(
   }
 }
 
+export async function serverGetProjecMaterialAcceptancePageViewByTaskIdAndName(
+  projectId: string,
+  taskId: string,
+  name: string,
+  pageNo: number,
+  pageSize: number
+): Promise<
+  IServerResponseData<IServerPage<IServerProjectMaterialAcceptanceView>>
+> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerProjectMaterialAcceptanceView>>
+    >(
+      BASEURL.projectmaterialflow +
+        "page-project-material-acceptance-view-by-current-login-user-and-project-id-and-task-id-and-name",
+      {
+        params: {
+          projectId: projectId,
+          taskId: taskId,
+          name: name,
+          pageNo: pageNo,
+          pageSize: pageSize,
+        },
+      }
+    );
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function serverGetProjecMaterialAcceptancePageViewByTaskIdAndLocation(
+  projectId: string,
+  taskId: string,
+  location: string,
+  pageNo: number,
+  pageSize: number
+): Promise<
+  IServerResponseData<IServerPage<IServerProjectMaterialAcceptanceView>>
+> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerProjectMaterialAcceptanceView>>
+    >(
+      BASEURL.projectmaterialflow +
+        "page-project-material-acceptance-view-by-current-login-user-and-project-id-and-task-id-and-location",
+      {
+        params: {
+          projectId: projectId,
+          taskId: taskId,
+          location: location,
+          pageNo: pageNo,
+          pageSize: pageSize,
+        },
+      }
+    );
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function serverGetProjecMaterialAcceptancePageViewByTaskIdAndItemMark(
+  projectId: string,
+  taskId: string,
+  itemMark: string,
+  pageNo: number,
+  pageSize: number
+): Promise<
+  IServerResponseData<IServerPage<IServerProjectMaterialAcceptanceView>>
+> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerProjectMaterialAcceptanceView>>
+    >(
+      BASEURL.projectmaterialflow +
+        "page-project-material-acceptance-view-by-current-login-user-and-project-id-and-task-id-and-item-mark",
+      {
+        params: {
+          projectId: projectId,
+          taskId: taskId,
+          itemMark: itemMark,
+          pageNo: pageNo,
+          pageSize: pageSize,
+        },
+      }
+    );
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function serverGetProjecMaterialAcceptancePageViewByTaskIdAndTechnology(
+  projectId: string,
+  taskId: string,
+  technology: string,
+  pageNo: number,
+  pageSize: number
+): Promise<
+  IServerResponseData<IServerPage<IServerProjectMaterialAcceptanceView>>
+> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerProjectMaterialAcceptanceView>>
+    >(
+      BASEURL.projectmaterialflow +
+        "page-project-material-acceptance-view-by-current-login-user-and-project-id-and-task-id-and-technology",
+      {
+        params: {
+          projectId: projectId,
+          taskId: taskId,
+          technology: technology,
+          pageNo: pageNo,
+          pageSize: pageSize,
+        },
+      }
+    );
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function serverGetProjecMaterialAcceptancePageViewByTaskIdAndInstallation(
+  projectId: string,
+  taskId: string,
+  installation: string,
+  pageNo: number,
+  pageSize: number
+): Promise<
+  IServerResponseData<IServerPage<IServerProjectMaterialAcceptanceView>>
+> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerProjectMaterialAcceptanceView>>
+    >(
+      BASEURL.projectmaterialflow +
+        "page-project-material-acceptance-view-by-current-login-user-and-project-id-and-task-id-and-installation",
+      {
+        params: {
+          projectId: projectId,
+          taskId: taskId,
+          installation: installation,
+          pageNo: pageNo,
+          pageSize: pageSize,
+        },
+      }
+    );
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function serverGetProjecMaterialAcceptancePageViewByTaskIdAndBrand(
+  projectId: string,
+  taskId: string,
+  brand: string,
+  pageNo: number,
+  pageSize: number
+): Promise<
+  IServerResponseData<IServerPage<IServerProjectMaterialAcceptanceView>>
+> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerProjectMaterialAcceptanceView>>
+    >(
+      BASEURL.projectmaterialflow +
+        "page-project-material-acceptance-view-by-current-login-user-and-project-id-and-task-id-and-brand",
+      {
+        params: {
+          projectId: projectId,
+          taskId: taskId,
+          brand: brand,
+          pageNo: pageNo,
+          pageSize: pageSize,
+        },
+      }
+    );
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
 export async function serverGetProjectAppearanceReviewUserViewPageByTaskId(
   projectId: string,
   taskId: string,

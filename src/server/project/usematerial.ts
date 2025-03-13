@@ -278,6 +278,174 @@ export async function serverGetBoughtUseMaterialPageViewByProject(
   }
 }
 
+/**
+ *从服务器获得已经购买的、并且没有被禁止使用的物料
+ */
+export async function serverGetBoughtUseMaterialPageViewByProjectAndName(
+  projectId: string,
+  name: string,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerProjectMaterialView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerProjectMaterialView>>
+    >(BASEURL.buymaterial + "page-bought-material-view-by-project-id-and-name", {
+      params: {
+        projectId: projectId,
+        name: name,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+/**
+ *从服务器获得已经购买的、并且没有被禁止使用的物料
+ */
+export async function serverGetBoughtUseMaterialPageViewByProjectAndLocation(
+  projectId: string,
+  location: string,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerProjectMaterialView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerProjectMaterialView>>
+    >(BASEURL.buymaterial + "page-bought-material-view-by-project-id-and-location", {
+      params: {
+        projectId: projectId,
+        location: location,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+/**
+ *从服务器获得已经购买的、并且没有被禁止使用的物料
+ */
+export async function serverGetBoughtUseMaterialPageViewByProjectAndItemMark(
+  projectId: string,
+  itemMark: string,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerProjectMaterialView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerProjectMaterialView>>
+    >(BASEURL.buymaterial + "page-bought-material-view-by-project-id-and-item-mark", {
+      params: {
+        projectId: projectId,
+        itemMark: itemMark,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+/**
+ *从服务器获得已经购买的、并且没有被禁止使用的物料
+ */
+export async function serverGetBoughtUseMaterialPageViewByProjectAndTechnology(
+  projectId: string,
+  technology: string,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerProjectMaterialView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerProjectMaterialView>>
+    >(BASEURL.buymaterial + "page-bought-material-view-by-project-id-and-technology", {
+      params: {
+        projectId: projectId,
+        technology: technology,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+/**
+ *从服务器获得已经购买的、并且没有被禁止使用的物料
+ */
+export async function serverGetBoughtUseMaterialPageViewByProjectAndInstallation(
+  projectId: string,
+  installation: string,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerProjectMaterialView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerProjectMaterialView>>
+    >(BASEURL.buymaterial + "page-bought-material-view-by-project-id-and-installation", {
+      params: {
+        projectId: projectId,
+        installation: installation,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+/**
+ *从服务器获得已经购买的、并且没有被禁止使用的物料
+ */
+export async function serverGetBoughtUseMaterialPageViewByProjectAndBrand(
+  projectId: string,
+  brand: string,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerProjectMaterialView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerProjectMaterialView>>
+    >(BASEURL.buymaterial + "page-bought-material-view-by-project-id-and-brand", {
+      params: {
+        projectId: projectId,
+        brand: brand,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
 export async function serverGetBuyMaterialPageViewByProjectId(
   projectId: string,
   pageNo: number,

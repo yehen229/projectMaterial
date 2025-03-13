@@ -280,7 +280,6 @@ const onRowShowButtonClick = async (
   index: number,
   row: IServerProjectMaterialView
 ) => {
-  console.log(row);
   updateProjectMaterialView.value = row;
   dialogShowDetailsVisible.value = true;
 };

@@ -194,21 +194,21 @@ const dialogFormVisible = computed({
 const materialClassifyOption = ref<IMaterialClassifyOption[]>([]);
 const onOpenDialog = async () => {
   materialClassifyOption.value = await generateMaterialClassifyOption();
-
-  console.log(materialClassifyOption.value);
-
+  console.log(props.useMaterialView, "nonononono");
+  
+  
   form.materialId = props.projectMaterialView.projectMaterial.materialId;
   form.materialClassifySectionId =
     props.projectMaterialView.material.materialClassifySectionId;
-  form.name = props.useMaterialView.material.name;
-  form.itemMark = props.useMaterialView.material.itemMark;
-  form.location = props.useMaterialView.material.location;
-  form.technology = props.useMaterialView.material.technology;
-  form.material = props.useMaterialView.material.material;
-  form.color = props.useMaterialView.material.color;
-  form.dimension = props.useMaterialView.material.dimension;
-  form.fireRating = props.useMaterialView.material.fireRating;
-  form.installation = props.useMaterialView.material.installation;
+  form.name = props.projectMaterialView.material.name;
+  form.itemMark = props.projectMaterialView.material.itemMark;
+  form.location = props.projectMaterialView.material.location;
+  form.technology = props.projectMaterialView.material.technology;
+  form.material = props.projectMaterialView.material.material;
+  form.color = props.projectMaterialView.material.color;
+  form.dimension = props.projectMaterialView.material.dimension;
+  form.fireRating = props.projectMaterialView.material.fireRating;
+  form.installation = props.projectMaterialView.material.installation;
   form.materialCount = props.projectMaterialView.projectMaterial.materialCount;
   form.materialUnit = props.projectMaterialView.projectMaterial.materialUnit;
 
