@@ -2853,25 +2853,50 @@ public class ProjectFlow {
             //设置复检结果，根据此结果走不同的流程
             //前端传过来的值：0不需要复检，1需要复检
 
-            if(projectMaterialRetestListNeedReCheck.isEmpty()){
-                //不需要复检
+            if (projectMaterialRetestListNeedReCheck.isEmpty()) {
+                // 情况 1：不需要复检
                 taskService.setVariable(task.getId(), "nNeedReCheckReviewResult", 0);
-            }else {
-                //需要复检，但可能不是所有物料都需要复检
-                int nNeedReCheckReviewResult = 1;
-                int nReCheckReviewResult =  0;
-                if(!projectMaterialRetestListNotNeedReCheck.isEmpty())nNeedReCheckReviewResult=0;
-                taskService.setVariable(task.getId(), "nNeedReCheckReviewResult", nNeedReCheckReviewResult);
-                if(projectMaterialRetestListNotNeedReCheck.isEmpty()){
-                    for(ProjectMaterialRetest projectMaterialRetest : projectMaterialRetestListNeedReCheck){
-                        if(projectMaterialRetest.getReviewResult() == 1) {
-                            nReCheckReviewResult = 1;
-                            break;
+                taskService.setVariable(task.getId(), "nReCheckReviewResult", 1); // 设为1，确保流程进入下一步
+            } else {
+                int nNeedReCheckReviewResult = 1;  // 默认需要复检
+                int nReCheckReviewResult = 0;  // 默认复检未通过
+                boolean allPass = true;  // 是否所有复检材料都通过
+                boolean anyPass = false;  // 是否至少有一个材料复检通过
+
+                // 如果有部分材料不需要复检，则复检状态可能不需要
+                if (!projectMaterialRetestListNotNeedReCheck.isEmpty()) {
+                    nNeedReCheckReviewResult = 0;
+                }
+
+                if (projectMaterialRetestListNotNeedReCheck.isEmpty()) {
+                    for (ProjectMaterialRetest projectMaterialRetest : projectMaterialRetestListNeedReCheck) {
+                        if (projectMaterialRetest.getReviewResult() == 1) {
+                            anyPass = true; // 至少有一个通过
+                        } else {
+                            allPass = false; // 只要有一个未通过，就不是全部通过
                         }
                     }
-                    taskService.setVariable(task.getId(), "nReCheckReviewResult", nReCheckReviewResult);
+
+                    if (allPass) {
+                        // 情况 2：所有复检材料都通过
+                        nNeedReCheckReviewResult = 0; // 不再需要复检
+                        nReCheckReviewResult = 1; // 复检审核通过
+                    } else if (anyPass) {
+                        // 情况 3：部分复检通过
+                        nNeedReCheckReviewResult = 0; // 继续进入下一步
+                        nReCheckReviewResult = 1; // 至少有一个通过
+                    } else {
+                        // 情况 4：全部复检未通过，需要返回上一步
+                        nNeedReCheckReviewResult = 1; // 仍然需要复检
+                        nReCheckReviewResult = 0; // 没有一个通过
+                    }
                 }
+
+                // 设置流程变量
+                taskService.setVariable(task.getId(), "nNeedReCheckReviewResult", nNeedReCheckReviewResult);
+                taskService.setVariable(task.getId(), "nReCheckReviewResult", nReCheckReviewResult);
             }
+
 
             //end :监理简单审批，不对物料复检进行再次审批
             taskService.setVariable(task.getId(), "projectMaterialRetestBatchId", projectMaterialRetestBatchId);
