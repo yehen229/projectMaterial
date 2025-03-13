@@ -157,7 +157,6 @@ const getdesignUnpass = async (projectId,materialId) => {
       </el-table-column>
       <el-table-column label="材料审核详情">
         <template #default="scope">
-
           <el-collapse  @change="handleCollapseChange(scope.$index)" >
             <el-collapse-item title="审核详情" name="1">
               <el-timeline style="max-width: 600px">
@@ -184,7 +183,6 @@ const getdesignUnpass = async (projectId,materialId) => {
               </el-timeline>
             </el-collapse-item>
             </el-collapse>
-
         </template>
       </el-table-column>
 

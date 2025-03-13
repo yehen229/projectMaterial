@@ -51,6 +51,47 @@ export async function servergetunpassreviewbefore_zongbao(
     }
 }
 
+export async function servergetunpassreviewjianli(
+    projectid: string,
+    materialid: string
+) {
+    try {
+        let res = await axios.get<
+            any,
+            IServerResponseData<IServerPage<IServerProjectView>>
+        >(BASEURL.statisticalanalysis + "get_unpass_reviewcontent_jianli", {
+            params: {
+                projectid: projectid,
+                materialid: materialid,
+            },
+        });
+        return res;
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+}
+
+export async function servergetunpassreviewjianliandgongchengbu(
+    projectid: string,
+    materialid: string
+) {
+    try {
+        let res = await axios.get<
+            any,
+            IServerResponseData<IServerPage<IServerProjectView>>
+        >(BASEURL.statisticalanalysis + "get_unpass_reviewcontent_jianli_gongchengbu", {
+            params: {
+                projectid: projectid,
+                materialid: materialid,
+            },
+        });
+        return res;
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+}
 
 export async function servergetdesignUnpassData(
     pageNo: number,
@@ -82,6 +123,47 @@ export async function servergetunpassbeforezongbao(
             any,
             IServerResponseData<IServerPage<IServerProjectView>>
         >(BASEURL.statisticalanalysis + "get_unpass_revie_before_zongbao", {
+            params: {
+                pageNo: pageNo,
+                pageSize: pageSize,
+            },
+        });
+        return res;
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+}
+
+export async function servergetunpassjianli(
+    pageNo: number,
+    pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
+    try {
+        let res = await axios.get<
+            any,
+            IServerResponseData<IServerPage<IServerProjectView>>
+        >(BASEURL.statisticalanalysis + "get_unpass_review_jianli", {
+            params: {
+                pageNo: pageNo,
+                pageSize: pageSize,
+            },
+        });
+        return res;
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+}
+export async function servergetunpassjianliandgongchengbu(
+    pageNo: number,
+    pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
+    try {
+        let res = await axios.get<
+            any,
+            IServerResponseData<IServerPage<IServerProjectView>>
+        >(BASEURL.statisticalanalysis + "get_unpass_review_jianli_and_gongchengbu", {
             params: {
                 pageNo: pageNo,
                 pageSize: pageSize,

@@ -10,9 +10,9 @@ import {IServerProjectView} from "@/server/types/project/project";
 import router from "@/router";
 import * as echarts from 'echarts';
 import 'echarts/core';
-import { BarChart } from 'echarts/charts';
-import { TitleComponent, TooltipComponent, GridComponent } from 'echarts/components';
-import { CanvasRenderer } from 'echarts/renderers';
+import {BarChart} from 'echarts/charts';
+import {TitleComponent, TooltipComponent, GridComponent} from 'echarts/components';
+import {CanvasRenderer} from 'echarts/renderers';
 import {
   byprojectname_getList,
   getAllList_agree,
@@ -23,32 +23,32 @@ import {
 } from "@/server/project/statisticalanalysis";
 import DesignUnpaaTable from "@/views/project/statisticalCompont/designUnpaaTable.vue";
 import BeforeZongBaoTable from "@/views/project/statisticalCompont/beforeZongBaoTable.vue";
+import JianlireviewTable from "@/views/project/statisticalCompont/jianlireviewTable.vue";
+import JianliAndgongchengbureviewTable from "@/views/project/statisticalCompont/jianliAndgongchengbureviewTable.vue";
 
 onMounted(async () => {
   await fetchTableData();
   await getagreecount();
   await getdisagreecount();
   await getchart();
-  await  getchart_bar();
+  await getchart_bar();
 });
-const getBar_Chart_data=ref()
-const transformDataForChart= (data)=>{
+const getBar_Chart_data = ref()
+const transformDataForChart = (data) => {
   return data.map(item => ([
     item.totalReviewResulDisagree,
-     item.projectName
+    item.projectName
   ]));
 }
-const chartOptions = ref({
-
-});
-const agreecount=ref()
+const chartOptions = ref({});
+const agreecount = ref()
 const getagreecount = async () => {
   try {
     // 调用 API 获取项目列表
     const ret = await getAllList_agree();
 
     if (ret && ret.code == 200) {
-      agreecount.value=ret.data
+      agreecount.value = ret.data
       // console.log(agreecount.value)
     }
   } catch (error) {
@@ -57,14 +57,14 @@ const getagreecount = async () => {
   }
 };
 
-const disagreecount=ref()
+const disagreecount = ref()
 const getdisagreecount = async () => {
   try {
     // 调用 API 获取项目列表
     const ret = await getAllList_disagree();
 
     if (ret && ret.code == 200) {
-      disagreecount.value=ret.data
+      disagreecount.value = ret.data
       console.log(disagreecount.value)
     }
   } catch (error) {
@@ -88,7 +88,7 @@ const fetchTableData = async () => {
 
 const projectViewPage = ref<IServerPage<IServerProjectView>>();
 
-const tableData = computed(   () => {
+const tableData = computed(() => {
   return projectViewPage.value?.result;
 });
 const totalCount = computed(() => {
@@ -136,7 +136,7 @@ const inputSearch = async () => {
     let projectname = inputProjectName.value.trim();
     let materialname = inputMaterialName.value.trim();
     // 调用 API 获取项目列表
-    const ret = await byprojectname_getList(inputProjectName.value,pageNo.value, pageSize.value);
+    const ret = await byprojectname_getList(inputProjectName.value, pageNo.value, pageSize.value);
 
     if (ret && ret.code == 200) {
       projectViewPage.value = ret.data;
@@ -166,20 +166,20 @@ const getporit = (successfulresult, totalresult) => {
   let porit = successfulresult / totalresult * 100;
   return Math.floor(porit) + "%";
 };
-const onProjectDetailsButtonClick = (projectItem:string
+const onProjectDetailsButtonClick = (projectItem: string
 ) => {
   const projectlist = {
-    project:{
-      id:"",
+    project: {
+      id: "",
     }
   }
-  projectlist.project.id=projectItem
+  projectlist.project.id = projectItem
   console.log(projectItem)
-  router.push({ path: `/project-details/${projectlist.project.id}` });
+  router.push({path: `/project-details/${projectlist.project.id}`});
 };
 
 const chartRef = ref(null);
-const getchart=()=>{
+const getchart = () => {
   // 基于准备好的dom，初始化echarts实例
   const chartDom = chartRef.value;
   const myChart = echarts.init(chartDom);
@@ -200,8 +200,8 @@ const getchart=()=>{
         startAngle: 180,
         endAngle: 360,
         data: [
-          { value: agreecount.value, name: '已完成项目' },
-          { value: disagreecount.value, name: '正在进行中项目' },
+          {value: agreecount.value, name: '已完成项目'},
+          {value: disagreecount.value, name: '正在进行中项目'},
         ]
       }
     ]
@@ -211,13 +211,13 @@ const getchart=()=>{
 }
 
 const chartRef_bar = ref(null);
-const getchart_bar= async ()=>{
+const getchart_bar = async () => {
   try {
     // 调用 API 获取项目列表
     const ret = await getchart_projectname_totalReviewResulDisagree();
 
     if (ret && ret.code == 200) {
-      getBar_Chart_data.value=transformDataForChart(ret.data)
+      getBar_Chart_data.value = transformDataForChart(ret.data)
       console.log(getBar_Chart_data.value)
     }
   } catch (error) {
@@ -229,31 +229,31 @@ const getchart_bar= async ()=>{
   const myChart = echarts.init(chartDom);
   const option = {
     title: {
-      text: '审核不通过次数最多的项目' ,
+      text: '审核不通过次数最多的项目',
     },
     dataset: [
       {
-        dimensions: [ 'score', 'name'],
+        dimensions: ['score', 'name'],
         source: getBar_Chart_data.value
       },
       {
         transform: {
           type: 'sort',
-          config: { dimension: 'score', order: 'desc' }
+          config: {dimension: 'score', order: 'desc'}
         }
       }
     ],
     xAxis: {
       type: 'category',
-      axisLabel: { interval: 0, rotate: 30 },
-      name:"项目名称"
+      axisLabel: {interval: 0, rotate: 30},
+      name: "项目名称"
     },
     yAxis: {
-      name:"审核不通过的次数"
+      name: "审核不通过的次数"
     },
     series: {
       type: 'bar',
-      encode: { x: 'name', y: 'score' },
+      encode: {x: 'name', y: 'score'},
       datasetIndex: 1,
       showBackground: true,
       backgroundStyle: {
@@ -281,12 +281,10 @@ const getchart_bar= async ()=>{
 
       <h2>材料外观审核不通过</h2>
       <Before-zong-bao-table/>
-
-
-
-
-
-
+      <h2>监理审核不通过记录</h2>
+      <Jianlireview-table/>
+      <h2>监理和工程部审核不通过记录</h2>
+      <jianli-andgongchengbureview-table/>
 
       <el-row :gutter="20">
         <el-col :span="12">
@@ -297,8 +295,6 @@ const getchart_bar= async ()=>{
         </el-col>
 
       </el-row>
-
-
 
 
       <div style="margin-left: 0.1%;margin-bottom: 1%;margin-top: 1%">
@@ -342,14 +338,14 @@ const getchart_bar= async ()=>{
                   class="project-title"
                   v-if="scope.row.checkProjectWhetherEnd==true"
               >
-                <el-tag type="success">{{"已完成"}}</el-tag>
+                <el-tag type="success">{{ "已完成" }}</el-tag>
               </div>
               <div
                   style="display: flex; align-items: center"
                   class="project-title"
                   v-if="scope.row.checkProjectWhetherEnd==false"
               >
-                <el-tag type="info"> {{"进行中"}}</el-tag>
+                <el-tag type="info"> {{ "进行中" }}</el-tag>
 
               </div>
             </template>
@@ -361,7 +357,7 @@ const getchart_bar= async ()=>{
                   style="display: flex; align-items: center"
                   class="project-title"
               >
-                {{ getporit(scope.row.totalReviewResultAgree,scope.row.totalReviewResult) }}
+                {{ getporit(scope.row.totalReviewResultAgree, scope.row.totalReviewResult) }}
               </div>
             </template>
           </el-table-column>
@@ -373,7 +369,7 @@ const getchart_bar= async ()=>{
                   style="display: flex; align-items: center"
                   class="project-title"
               >
-                {{ scope.row.totalReviewResulDisagree+"项" }}
+                {{ scope.row.totalReviewResulDisagree + "项" }}
               </div>
             </template>
           </el-table-column>
@@ -392,7 +388,6 @@ const getchart_bar= async ()=>{
               </div>
             </template>
           </el-table-column>
-
 
 
         </el-table>
