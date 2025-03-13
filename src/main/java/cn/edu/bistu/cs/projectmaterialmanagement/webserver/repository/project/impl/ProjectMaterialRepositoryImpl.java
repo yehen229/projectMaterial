@@ -189,8 +189,9 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
             i = jdbcTemplate.queryForObject("""
                                                         SELECT DISTINCT count(DISTINCT t_project_material.id)
                                                         FROM t_project_material
-                                                        INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
+                                                        LEFT JOIN t_material ON t_material.id=t_project_material.t_material_id
                                                         WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_material.name LIKE ?
+                                                        AND t_material.deleted_at IS NULL
                                                         """,
                     Integer.class,  projectId, name);
         } else if(location != ""){
@@ -200,6 +201,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
                                                         FROM t_project_material
                                                         left join t_material ON t_material.id=t_project_material.t_material_id
                                                         WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_material.location LIKE ?
+                                                        AND t_material.deleted_at IS NULL
                                                         """,
                     Integer.class, projectId, location);
         } else if(itemMark != ""){
@@ -209,6 +211,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
                                                         FROM t_project_material
                                                         left join t_material ON t_material.id=t_project_material.t_material_id
                                                         WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_material.item_mark LIKE ?
+                                                        AND t_material.deleted_at IS NULL
                                                         """,
                     Integer.class, projectId, itemMark);
         } else if(technology != ""){
@@ -218,6 +221,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
                                                         FROM t_project_material
                                                         left join t_material ON t_material.id=t_project_material.t_material_id
                                                         WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL And t_material.technology LIKE ?
+                                                        AND t_material.deleted_at IS NULL
                                                         """,
                     Integer.class, projectId, technology);
         } else if(installation != ""){
@@ -227,35 +231,39 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
                                                         FROM t_project_material
                                                         left join t_material ON t_material.id=t_project_material.t_material_id
                                                         WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_material.installation LIKE ?
+                                                        AND t_material.deleted_at IS NULL
                                                         """,
                     Integer.class, projectId, installation);
         } else if(brand != "") {
             brand = "%" + brand.trim() + "%";
             i = jdbcTemplate.queryForObject("""
                                                       SELECT DISTINCT count(DISTINCT t_project_material.id) FROM t_project_material
-                                                      INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
-                                                      INNER JOIN t_project_material_brand_public ON t_project_material.id=t_project_material_brand_public.t_project_material_id
-                                                      INNER JOIN t_brand_public ON t_brand_public.id=t_project_material_brand_public.t_brand_public_id
-                                                      INNER JOIN t_brand ON t_brand.id=t_brand_public.t_brand_id
+                                                      LEFT JOIN t_project_material_brand_public ON t_project_material.id=t_project_material_brand_public.t_project_material_id
+                                                      LEFT JOIN t_brand_public ON t_brand_public.id=t_project_material_brand_public.t_brand_public_id
+                                                      LEFT JOIN t_brand ON t_brand.id=t_brand_public.t_brand_id
                                                       WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_brand.name LIKE ?
+                                                      AND t_project_material_brand_public.deleted_at IS NULL
+                                                      AND t_brand_public.deleted_at IS NULL
+                                                      AND t_brand.deleted_at IS NULL
                                                         """,
                     Integer.class, projectId, brand);
         } else if(brandPrivate != "") {
             brandPrivate = "%" + brandPrivate.trim() + "%";
             i = jdbcTemplate.queryForObject("""
                                                       SELECT DISTINCT count(DISTINCT t_project_material.id) FROM t_project_material
-                                                      INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
-                                                      INNER JOIN t_project_material_brand_private ON t_project_material.id=t_project_material_brand_private.t_project_material_id
-                                                      INNER JOIN t_project_brand ON t_project_brand.id=t_project_material_brand_private.t_project_brand_id
-                                                      INNER JOIN t_brand ON t_brand.id=t_project_brand.t_brand_id
+                                                      LEFT JOIN t_project_material_brand_private ON t_project_material.id=t_project_material_brand_private.t_project_material_id
+                                                      LEFT JOIN t_project_brand ON t_project_brand.id=t_project_material_brand_private.t_project_brand_id
+                                                      LEFT JOIN t_brand ON t_brand.id=t_project_brand.t_brand_id
                                                       WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_brand.name LIKE ?
+                                                      AND t_project_material_brand_private.deleted_at IS NULL
+                                                      AND t_project_brand.deleted_at IS NULL
+                                                      AND t_brand.deleted_at IS NULL
                                                         """,
                     Integer.class, projectId, brandPrivate);
         } else {
             i = jdbcTemplate.queryForObject("""
                                                       SELECT count(*) 
                                                         FROM t_project_material
-                                                        left join t_material ON t_material.id=t_project_material.t_material_id
                                                         WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL
                                                         """,
                     Integer.class, projectId);
@@ -300,8 +308,9 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
             i = jdbcTemplate.queryForObject("""
                                                         SELECT DISTINCT count(DISTINCT t_project_material.id)
                                                         FROM t_project_material
-                                                        INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
+                                                        LEFT JOIN t_material ON t_material.id=t_project_material.t_material_id
                                                         WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.name LIKE ?
+                                                        AND t_material.deleted_at IS NULL
                                                         """,
                     Integer.class,  projectId, companyId, name);
         } else if(location != ""){
@@ -311,6 +320,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
                                                         FROM t_project_material
                                                         left join t_material ON t_material.id=t_project_material.t_material_id
                                                         WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.location LIKE ?
+                                                        AND t_material.deleted_at IS NULL
                                                         """,
                     Integer.class, projectId, companyId, location);
         } else if(itemMark != ""){
@@ -320,6 +330,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
                                                         FROM t_project_material
                                                         left join t_material ON t_material.id=t_project_material.t_material_id
                                                         WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.item_mark LIKE ?
+                                                        AND t_material.deleted_at IS NULL
                                                         """,
                     Integer.class, projectId, companyId, itemMark);
         } else if(technology != ""){
@@ -329,6 +340,7 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
                                                         FROM t_project_material
                                                         left join t_material ON t_material.id=t_project_material.t_material_id
                                                         WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL And t_material.technology LIKE ?
+                                                        AND t_material.deleted_at IS NULL
                                                         """,
                     Integer.class, projectId, companyId, technology);
         } else if(installation != ""){
@@ -338,35 +350,39 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
                                                         FROM t_project_material
                                                         left join t_material ON t_material.id=t_project_material.t_material_id
                                                         WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.installation LIKE ?
+                                                        AND t_material.deleted_at IS NULL
                                                         """,
                     Integer.class, projectId, companyId, installation);
         } else if(brand != "") {
             brand = "%" + brand.trim() + "%";
             i = jdbcTemplate.queryForObject("""
                                                       SELECT DISTINCT count(DISTINCT t_project_material.id) FROM t_project_material
-                                                      INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
-                                                      INNER JOIN t_project_material_brand_public ON t_project_material.id=t_project_material_brand_public.t_project_material_id
-                                                      INNER JOIN t_brand_public ON t_brand_public.id=t_project_material_brand_public.t_brand_public_id
-                                                      INNER JOIN t_brand ON t_brand.id=t_brand_public.t_brand_id
+                                                      LEFT JOIN t_project_material_brand_public ON t_project_material.id=t_project_material_brand_public.t_project_material_id
+                                                      LEFT JOIN t_brand_public ON t_brand_public.id=t_project_material_brand_public.t_brand_public_id
+                                                      LEFT JOIN t_brand ON t_brand.id=t_brand_public.t_brand_id
                                                       WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_brand.name LIKE ?
+                                                      AND t_project_material_brand_public.deleted_at IS NULL
+                                                      AND t_brand_public.deleted_at IS NULL
+                                                      AND t_brand.deleted_at IS NULL
                                                         """,
                     Integer.class, projectId, companyId, brand);
         } else if(brandPrivate != "") {
             brandPrivate = "%" + brandPrivate.trim() + "%";
             i = jdbcTemplate.queryForObject("""
                                                       SELECT DISTINCT count(DISTINCT t_project_material.id) FROM t_project_material
-                                                      INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
-                                                      INNER JOIN t_project_material_brand_private ON t_project_material.id=t_project_material_brand_private.t_project_material_id
-                                                      INNER JOIN t_project_brand ON t_project_brand.id=t_project_material_brand_private.t_project_brand_id
-                                                      INNER JOIN t_brand ON t_brand.id=t_project_brand.t_brand_id
+                                                      LEFT JOIN t_project_material_brand_private ON t_project_material.id=t_project_material_brand_private.t_project_material_id
+                                                      LEFT JOIN t_project_brand ON t_project_brand.id=t_project_material_brand_private.t_project_brand_id
+                                                      LEFT JOIN t_brand ON t_brand.id=t_project_brand.t_brand_id
                                                       WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_brand.name LIKE ?
+                                                      AND t_project_material_brand_private.deleted_at IS NULL
+                                                      AND t_project_brand.deleted_at IS NULL
+                                                      AND t_brand.deleted_at IS NULL
                                                         """,
                     Integer.class, projectId, companyId, brandPrivate);
         } else {
                 i = jdbcTemplate.queryForObject("""
                                                       SELECT count(*) 
                                                         FROM t_project_material
-                                                        left join t_material ON t_material.id=t_project_material.t_material_id
                                                         WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL
                                                         """,
                         Integer.class, projectId, companyId);
@@ -675,8 +691,8 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
             return jdbcTemplate.query("""
                                           SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
-                                          INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
-                                          WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.name LIKE ?
+                                          LEFT JOIN t_material ON t_material.id=t_project_material.t_material_id
+                                          WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.name LIKE ? AND t_material.deleted_at IS NULL
                                           LIMIT ?,?
                                           """,
                     new ProjectMaterialMapper(), projectId, companyId, name, pageNo * pageSize, pageSize);
@@ -685,8 +701,8 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
             return jdbcTemplate.query("""
                                           SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
-                                          INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
-                                          WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.location LIKE ?
+                                          LEFT JOIN t_material ON t_material.id=t_project_material.t_material_id
+                                          WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.location LIKE ? AND t_material.deleted_at IS NULL
                                           LIMIT ?,?
                                           """,
                     new ProjectMaterialMapper(), projectId, companyId, location, pageNo * pageSize, pageSize);
@@ -695,8 +711,8 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
             return jdbcTemplate.query("""
                                           SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
-                                          INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
-                                          WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.item_mark LIKE ?
+                                          LEFT JOIN t_material ON t_material.id=t_project_material.t_material_id
+                                          WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.item_mark LIKE ? AND t_material.deleted_at IS NULL
                                           LIMIT ?,?
                                           """,
                     new ProjectMaterialMapper(), projectId, companyId, itemMark, pageNo * pageSize, pageSize);
@@ -705,8 +721,8 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
             return jdbcTemplate.query("""
                                           SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
-                                          INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
-                                          WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.technology LIKE ?
+                                          LEFT JOIN t_material ON t_material.id=t_project_material.t_material_id
+                                          WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.technology LIKE ? AND t_material.deleted_at IS NULL
                                           LIMIT ?,?
                                           """,
                     new ProjectMaterialMapper(), projectId, companyId, technology, pageNo * pageSize, pageSize);
@@ -715,8 +731,8 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
             return jdbcTemplate.query("""
                                           SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
-                                          INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
-                                          WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.installation LIKE ?
+                                          LEFT JOIN t_material ON t_material.id=t_project_material.t_material_id
+                                          WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_material.installation LIKE ? AND t_material.deleted_at IS NULL
                                           LIMIT ?,?
                                           """,
                     new ProjectMaterialMapper(), projectId, companyId, installation, pageNo * pageSize, pageSize);
@@ -725,11 +741,13 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
             return jdbcTemplate.query("""
                                           SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
-                                          INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
-                                          INNER JOIN t_project_material_brand_public ON t_project_material.id=t_project_material_brand_public.t_project_material_id
-                                          INNER JOIN t_brand_public ON t_brand_public.id=t_project_material_brand_public.t_brand_public_id
-                                          INNER JOIN t_brand ON t_brand.id=t_brand_public.t_brand_id
-                                          WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_brand.name LIKE ?
+                                          LEFT JOIN t_project_material_brand_public ON t_project_material.id=t_project_material_brand_public.t_project_material_id
+                                          LEFT JOIN t_brand_public ON t_brand_public.id=t_project_material_brand_public.t_brand_public_id
+                                          LEFT JOIN t_brand ON t_brand.id=t_brand_public.t_brand_id
+                                          WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_brand.name LIKE ? 
+                                            AND t_project_material_brand_public.deleted_at IS NULL
+                                            AND t_brand_public.deleted_at IS NULL
+                                            AND t_brand.deleted_at IS NULL
                                           LIMIT ?,?
                                           """,
                     new ProjectMaterialMapper(), projectId, companyId, brand, pageNo * pageSize, pageSize);
@@ -738,11 +756,13 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
             return jdbcTemplate.query("""
                                           SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
-                                          INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
-                                          INNER JOIN t_project_material_brand_private ON t_project_material.id=t_project_material_brand_private.t_project_material_id
-                                          INNER JOIN t_project_brand ON t_project_brand.id=t_project_material_brand_private.t_project_brand_id
-                                          INNER JOIN t_brand ON t_brand.id=t_project_brand.t_brand_id
+                                          LEFT JOIN t_project_material_brand_private ON t_project_material.id=t_project_material_brand_private.t_project_material_id
+                                          LEFT JOIN t_project_brand ON t_project_brand.id=t_project_material_brand_private.t_project_brand_id
+                                          LEFT JOIN t_brand ON t_brand.id=t_project_brand.t_brand_id
                                           WHERE t_project_material.t_project_id=? AND t_project_material.t_company_id=? AND t_project_material.deleted_at IS NULL AND t_brand.name LIKE ?
+                                            AND t_project_material_brand_private.deleted_at IS NULL
+                                            AND t_project_brand.deleted_at IS NULL
+                                            AND t_brand.deleted_at IS NULL
                                           LIMIT ?,?
                                           """,
                     new ProjectMaterialMapper(), projectId, companyId, brandPrivate, pageNo * pageSize, pageSize);
@@ -773,8 +793,8 @@ private List<ProjectMaterial> getPageQueryByProjectIdWithParams(String projectId
             return jdbcTemplate.query("""
                                           SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
-                                          INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
-                                          WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_material.name LIKE ?
+                                          LEFT JOIN t_material ON t_material.id=t_project_material.t_material_id
+                                          WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_material.name LIKE ? AND t_material.deleted_at IS NULL
                                           LIMIT ?,?
                                           """,
                     new ProjectMaterialMapper(), projectId, name, pageNo * pageSize, pageSize);
@@ -783,8 +803,8 @@ private List<ProjectMaterial> getPageQueryByProjectIdWithParams(String projectId
             return jdbcTemplate.query("""
                                           SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
-                                          INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
-                                          WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_material.location LIKE ?
+                                          LEFT JOIN t_material ON t_material.id=t_project_material.t_material_id
+                                          WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_material.location LIKE ? AND t_material.deleted_at IS NULL
                                           LIMIT ?,?
                                           """,
                     new ProjectMaterialMapper(), projectId, location, pageNo * pageSize, pageSize);
@@ -793,8 +813,8 @@ private List<ProjectMaterial> getPageQueryByProjectIdWithParams(String projectId
             return jdbcTemplate.query("""
                                           SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
-                                          INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
-                                          WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_material.item_mark LIKE ?
+                                          LEFT JOIN t_material ON t_material.id=t_project_material.t_material_id
+                                          WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_material.item_mark LIKE ? AND t_material.deleted_at IS NULL
                                           LIMIT ?,?
                                           """,
                     new ProjectMaterialMapper(), projectId, itemMark, pageNo * pageSize, pageSize);
@@ -803,8 +823,8 @@ private List<ProjectMaterial> getPageQueryByProjectIdWithParams(String projectId
             return jdbcTemplate.query("""
                                           SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
-                                          INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
-                                          WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_material.technology LIKE ?
+                                          LEFT JOIN t_material ON t_material.id=t_project_material.t_material_id
+                                          WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_material.technology LIKE ? AND t_material.deleted_at IS NULL
                                           LIMIT ?,?
                                           """,
                     new ProjectMaterialMapper(), projectId, technology, pageNo * pageSize, pageSize);
@@ -813,8 +833,8 @@ private List<ProjectMaterial> getPageQueryByProjectIdWithParams(String projectId
             return jdbcTemplate.query("""
                                           SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
-                                          INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
-                                          WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_material.installation LIKE ?
+                                          LEFT JOIN t_material ON t_material.id=t_project_material.t_material_id
+                                          WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_material.installation LIKE ? AND t_material.deleted_at IS NULL
                                           LIMIT ?,?
                                           """,
                     new ProjectMaterialMapper(), projectId, installation, pageNo * pageSize, pageSize);
@@ -823,11 +843,13 @@ private List<ProjectMaterial> getPageQueryByProjectIdWithParams(String projectId
             return jdbcTemplate.query("""
                                           SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
-                                          INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
-                                          INNER JOIN t_project_material_brand_public ON t_project_material.id=t_project_material_brand_public.t_project_material_id
-                                          INNER JOIN t_brand_public ON t_brand_public.id=t_project_material_brand_public.t_brand_public_id
-                                          INNER JOIN t_brand ON t_brand.id=t_brand_public.t_brand_id
+                                          LEFT JOIN t_project_material_brand_public ON t_project_material.id=t_project_material_brand_public.t_project_material_id
+                                          LEFT JOIN t_brand_public ON t_brand_public.id=t_project_material_brand_public.t_brand_public_id
+                                          LEFT JOIN t_brand ON t_brand.id=t_brand_public.t_brand_id
                                           WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_brand.name LIKE ?
+                                              AND t_project_material_brand_public.deleted_at IS NULL
+                                              AND t_brand_public.deleted_at IS NULL
+                                              AND t_brand.deleted_at IS NULL
                                           LIMIT ?,?
                                           """,
                     new ProjectMaterialMapper(), projectId, brand, pageNo * pageSize, pageSize);
@@ -836,11 +858,13 @@ private List<ProjectMaterial> getPageQueryByProjectIdWithParams(String projectId
             return jdbcTemplate.query("""
                                           SELECT DISTINCT t_project_material.* 
                                           FROM t_project_material
-                                          INNER JOIN t_material ON t_material.id=t_project_material.t_material_id
-                                          INNER JOIN t_project_material_brand_private ON t_project_material.id=t_project_material_brand_private.t_project_material_id
-                                          INNER JOIN t_project_brand ON t_project_brand.id=t_project_material_brand_private.t_project_brand_id
-                                          INNER JOIN t_brand ON t_brand.id=t_project_brand.t_brand_id
+                                          LEFT JOIN t_project_material_brand_private ON t_project_material.id=t_project_material_brand_private.t_project_material_id
+                                          LEFT JOIN t_project_brand ON t_project_brand.id=t_project_material_brand_private.t_project_brand_id
+                                          LEFT JOIN t_brand ON t_brand.id=t_project_brand.t_brand_id
                                           WHERE t_project_material.t_project_id=? AND t_project_material.deleted_at IS NULL AND t_brand.name LIKE ?
+                                              AND t_project_material_brand_private.deleted_at IS NULL
+                                              AND t_project_brand.deleted_at IS NULL
+                                              AND t_brand.deleted_at IS NULL
                                           LIMIT ?,?
                                           """,
                     new ProjectMaterialMapper(), projectId, brandPrivate, pageNo * pageSize, pageSize);

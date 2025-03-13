@@ -217,6 +217,114 @@ public class ProjectMaterialAcceptanceRepositoryImpl implements IProjectMaterial
         return i == null ? 0 : i;
     }
 
+    @Override
+    public int getCountByProjectMaterialAcceptanceBatchIdAndName(String projectMaterialAcceptanceBatchId, String name) {
+        name = "%" + name + "%";
+        Integer i = jdbcTemplate.queryForObject("""
+                                                        SELECT DISTINCT count(t_project_material_acceptance.id) 
+                                                        FROM t_project_material_acceptance
+                                                        LEFT JOIN t_project_material ON t_project_material_acceptance.t_project_material_id=t_project_material.id
+                                                        LEFT JOIN t_material ON t_project_material.t_material_id=t_material.id
+                                                        WHERE t_project_material_acceptance.t_project_material_acceptance_batch_id=? AND t_project_material_acceptance.deleted_at IS NULL
+                                                        AND t_project_material.deleted_at IS NULL
+                                                        AND t_material.deleted_at IS NULL
+                                                        AND t_material.name LIKE ?
+                                                        """,
+                                                Integer.class, projectMaterialAcceptanceBatchId, name);
+        return i == null ? 0 : i;
+    }
+
+    @Override
+    public int getCountByProjectMaterialAcceptanceBatchIdAndLocation(String projectMaterialAcceptanceBatchId, String location) {
+        location = "%" + location + "%";
+        Integer i = jdbcTemplate.queryForObject("""
+                                                        SELECT DISTINCT count(t_project_material_acceptance.id) 
+                                                        FROM t_project_material_acceptance
+                                                        LEFT JOIN t_project_material ON t_project_material_acceptance.t_project_material_id=t_project_material.id
+                                                        LEFT JOIN t_material ON t_project_material.t_material_id=t_material.id
+                                                        WHERE t_project_material_acceptance.t_project_material_acceptance_batch_id=? AND t_project_material_acceptance.deleted_at IS NULL
+                                                        AND t_project_material.deleted_at IS NULL
+                                                        AND t_material.deleted_at IS NULL
+                                                        AND t_material.location LIKE ?
+                                                        """,
+                                                Integer.class, projectMaterialAcceptanceBatchId, location);
+        return i == null ? 0 : i;
+    }
+
+    @Override
+    public int getCountByProjectMaterialAcceptanceBatchIdAndItemMark(String projectMaterialAcceptanceBatchId, String itemMark) {
+        itemMark = "%" + itemMark + "%";
+        Integer i = jdbcTemplate.queryForObject("""
+                                                        SELECT DISTINCT count(t_project_material_acceptance.id) 
+                                                        FROM t_project_material_acceptance
+                                                        LEFT JOIN t_project_material ON t_project_material_acceptance.t_project_material_id=t_project_material.id
+                                                        LEFT JOIN t_material ON t_project_material.t_material_id=t_material.id
+                                                        WHERE t_project_material_acceptance.t_project_material_acceptance_batch_id=? AND t_project_material_acceptance.deleted_at IS NULL
+                                                        AND t_project_material.deleted_at IS NULL
+                                                        AND t_material.deleted_at IS NULL
+                                                        AND t_material.item_mark LIKE ?
+                                                        """,
+                                                Integer.class, projectMaterialAcceptanceBatchId, itemMark);
+        return i == null ? 0 : i;
+    }
+
+    @Override
+    public int getCountByProjectMaterialAcceptanceBatchIdAndTechnology(String projectMaterialAcceptanceBatchId, String technology) {
+        technology = "%" + technology + "%";
+        Integer i = jdbcTemplate.queryForObject("""
+                                                        SELECT DISTINCT count(t_project_material_acceptance.id) 
+                                                        FROM t_project_material_acceptance
+                                                        LEFT JOIN t_project_material ON t_project_material_acceptance.t_project_material_id=t_project_material.id
+                                                        LEFT JOIN t_material ON t_project_material.t_material_id=t_material.id
+                                                        WHERE t_project_material_acceptance.t_project_material_acceptance_batch_id=? AND t_project_material_acceptance.deleted_at IS NULL
+                                                        AND t_project_material.deleted_at IS NULL
+                                                        AND t_material.deleted_at IS NULL
+                                                        AND t_material.technology LIKE ?
+                                                        """,
+                                                Integer.class, projectMaterialAcceptanceBatchId, technology);
+        return i == null ? 0 : i;
+    }
+
+    @Override
+    public int getCountByProjectMaterialAcceptanceBatchIdAndInstallation(String projectMaterialAcceptanceBatchId, String installation) {
+        installation = "%" + installation + "%";
+        Integer i = jdbcTemplate.queryForObject("""
+                                                        SELECT DISTINCT count(t_project_material_acceptance.id) 
+                                                        FROM t_project_material_acceptance
+                                                        LEFT JOIN t_project_material ON t_project_material_acceptance.t_project_material_id=t_project_material.id
+                                                        LEFT JOIN t_material ON t_project_material.t_material_id=t_material.id
+                                                        WHERE t_project_material_acceptance.t_project_material_acceptance_batch_id=? AND t_project_material_acceptance.deleted_at IS NULL
+                                                        AND t_project_material.deleted_at IS NULL
+                                                        AND t_material.deleted_at IS NULL
+                                                        AND t_material.installation LIKE ?
+                                                        """,
+                                                Integer.class, projectMaterialAcceptanceBatchId, installation);
+        return i == null ? 0 : i;
+    }
+
+    @Override
+    public int getCountByProjectMaterialAcceptanceBatchIdAndBrand(String projectMaterialAcceptanceBatchId, String brand) {
+        brand = "%" + brand + "%";
+        Integer i = jdbcTemplate.queryForObject("""
+                                                        SELECT DISTINCT count(t_project_material_acceptance.id) 
+                                                        FROM t_project_material_acceptance
+                                                        LEFT JOIN t_project_material_brand_private ON t_project_material_acceptance.t_project_material_brand_private_id=t_project_material_brand_private.id
+                                                        LEFT JOIN t_project_material_brand_public ON t_project_material_acceptance.t_project_material_brand_public_id=t_project_material_brand_public.id
+                                                        LEFT JOIN t_project_brand ON t_project_material_brand_private.t_project_brand_id=t_project_brand.id
+                                                        LEFT JOIN t_brand_public ON t_project_material_brand_public.t_brand_public_id=t_brand_public.id
+                                                        LEFT JOIN t_brand ON t_project_brand.t_brand_id=t_brand.id OR t_brand_public.t_brand_id=t_brand.id
+                                                        WHERE t_project_material_acceptance.t_project_material_acceptance_batch_id=? AND t_project_material_acceptance.deleted_at IS NULL
+                                                        AND t_project_material_brand_private.deleted_at IS NULL
+                                                        AND t_project_material_brand_public.deleted_at IS NULL
+                                                        AND t_project_brand.deleted_at IS NULL
+                                                        AND t_brand_public.deleted_at IS NULL
+                                                        AND t_brand.deleted_at IS NULL
+                                                        AND t_brand.name LIKE ?
+                                                        """,
+                                                Integer.class, projectMaterialAcceptanceBatchId, brand);
+        return i == null ? 0 : i;
+    }
+
     /**
      * 根据外键ProjectMaterialId得到总数量
      */
@@ -433,6 +541,84 @@ public class ProjectMaterialAcceptanceRepositoryImpl implements IProjectMaterial
         return new Page<>(0, totalCount, (int) totalCount, resultData);
     }
 
+    @Override
+    public Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndName(String projectMaterialAcceptanceBatchId,
+                                                                                     String name,
+                                                                                     int pageNo,
+                                                                                     int pageSize) {
+        long totalCount = getCountByProjectMaterialAcceptanceBatchIdAndName(projectMaterialAcceptanceBatchId, name);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<ProjectMaterialAcceptance> resultData = getPageQueryByProjectMaterialAcceptanceBatchIdAndName(
+                projectMaterialAcceptanceBatchId, name, pageNo - 1, pageSize);
+        return new Page<>(0, totalCount, (int) totalCount, resultData);
+    }
+
+    @Override
+    public Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndLocation(String projectMaterialAcceptanceBatchId,
+                                                                                     String location,
+                                                                                     int pageNo,
+                                                                                     int pageSize) {
+        long totalCount = getCountByProjectMaterialAcceptanceBatchIdAndLocation(projectMaterialAcceptanceBatchId, location);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<ProjectMaterialAcceptance> resultData = getPageQueryByProjectMaterialAcceptanceBatchIdAndLocation(
+                projectMaterialAcceptanceBatchId, location, pageNo - 1, pageSize);
+        return new Page<>(0, totalCount, (int) totalCount, resultData);
+    }
+
+    @Override
+    public Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndItemMark(String projectMaterialAcceptanceBatchId,
+                                                                                     String itemMark,
+                                                                                     int pageNo,
+                                                                                     int pageSize) {
+        long totalCount = getCountByProjectMaterialAcceptanceBatchIdAndItemMark(projectMaterialAcceptanceBatchId, itemMark);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<ProjectMaterialAcceptance> resultData = getPageQueryByProjectMaterialAcceptanceBatchIdAndItemMark(
+                projectMaterialAcceptanceBatchId, itemMark, pageNo - 1, pageSize);
+        return new Page<>(0, totalCount, (int) totalCount, resultData);
+    }
+
+    @Override
+    public Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndTechnology(String projectMaterialAcceptanceBatchId,
+                                                                                     String technology,
+                                                                                     int pageNo,
+                                                                                     int pageSize) {
+        long totalCount = getCountByProjectMaterialAcceptanceBatchIdAndTechnology(projectMaterialAcceptanceBatchId, technology);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<ProjectMaterialAcceptance> resultData = getPageQueryByProjectMaterialAcceptanceBatchIdAndTechnology(
+                projectMaterialAcceptanceBatchId, technology, pageNo - 1, pageSize);
+        return new Page<>(0, totalCount, (int) totalCount, resultData);
+    }
+
+    @Override
+    public Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndInstallation(String projectMaterialAcceptanceBatchId,
+                                                                                     String installation,
+                                                                                     int pageNo,
+                                                                                     int pageSize) {
+        long totalCount = getCountByProjectMaterialAcceptanceBatchIdAndInstallation(projectMaterialAcceptanceBatchId, installation);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<ProjectMaterialAcceptance> resultData = getPageQueryByProjectMaterialAcceptanceBatchIdAndInstallation(
+                projectMaterialAcceptanceBatchId, installation, pageNo - 1, pageSize);
+        return new Page<>(0, totalCount, (int) totalCount, resultData);
+    }
+
+    @Override
+    public Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndBrand(String projectMaterialAcceptanceBatchId,
+                                                                                     String brand,
+                                                                                     int pageNo,
+                                                                                     int pageSize) {
+        long totalCount = getCountByProjectMaterialAcceptanceBatchIdAndBrand(projectMaterialAcceptanceBatchId, brand);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<ProjectMaterialAcceptance> resultData = getPageQueryByProjectMaterialAcceptanceBatchIdAndBrand(
+                projectMaterialAcceptanceBatchId, brand, pageNo - 1, pageSize);
+        return new Page<>(0, totalCount, (int) totalCount, resultData);
+    }
+
     /**
      * 获得指定页面数据
      *
@@ -537,6 +723,132 @@ public class ProjectMaterialAcceptanceRepositoryImpl implements IProjectMaterial
                                           LIMIT ?,?
                                           """,
                                   new ProjectMaterialAcceptanceMapper(), projectMaterialBrandPrivateId,
+                                  pageNo * pageSize, pageSize);
+    }
+
+    private List<ProjectMaterialAcceptance> getPageQueryByProjectMaterialAcceptanceBatchIdAndName(String projectMaterialBrandPrivateId,
+                                                                                           String name,
+                                                                                           int pageNo,
+                                                                                           int pageSize) {
+        name = "%" + name + "%";
+        return jdbcTemplate.query("""
+                                          SELECT DISTINCT t_project_material_acceptance.* 
+                                          FROM t_project_material_acceptance
+                                          LEFT JOIN t_project_material ON t_project_material_acceptance.t_project_material_id=t_project_material.id
+                                          LEFT JOIN t_material ON t_project_material.t_material_id=t_material.id
+                                          WHERE t_project_material_acceptance.t_project_material_acceptance_batch_id=? AND t_project_material_acceptance.deleted_at IS NULL
+                                          AND t_project_material.deleted_at IS NULL
+                                          AND t_material.deleted_at IS NULL
+                                          AND t_material.name LIKE ?
+                                          LIMIT ?,?
+                                          """,
+                                  new ProjectMaterialAcceptanceMapper(), projectMaterialBrandPrivateId, name,
+                                  pageNo * pageSize, pageSize);
+    }
+
+    private List<ProjectMaterialAcceptance> getPageQueryByProjectMaterialAcceptanceBatchIdAndLocation(String projectMaterialBrandPrivateId,
+                                                                                           String location,
+                                                                                           int pageNo,
+                                                                                           int pageSize) {
+        location = "%" + location + "%";
+        return jdbcTemplate.query("""
+                                          SELECT DISTINCT t_project_material_acceptance.* 
+                                          FROM t_project_material_acceptance
+                                          LEFT JOIN t_project_material ON t_project_material_acceptance.t_project_material_id=t_project_material.id
+                                          LEFT JOIN t_material ON t_project_material.t_material_id=t_material.id
+                                          WHERE t_project_material_acceptance.t_project_material_acceptance_batch_id=? AND t_project_material_acceptance.deleted_at IS NULL
+                                          AND t_project_material.deleted_at IS NULL
+                                          AND t_material.deleted_at IS NULL
+                                          AND t_material.location LIKE ?
+                                          LIMIT ?,?
+                                          """,
+                                  new ProjectMaterialAcceptanceMapper(), projectMaterialBrandPrivateId, location,
+                                  pageNo * pageSize, pageSize);
+    }
+
+    private List<ProjectMaterialAcceptance> getPageQueryByProjectMaterialAcceptanceBatchIdAndItemMark(String projectMaterialBrandPrivateId,
+                                                                                           String itemMark,
+                                                                                           int pageNo,
+                                                                                           int pageSize) {
+        itemMark = "%" + itemMark + "%";
+        return jdbcTemplate.query("""
+                                          SELECT DISTINCT t_project_material_acceptance.* 
+                                          FROM t_project_material_acceptance
+                                          LEFT JOIN t_project_material ON t_project_material_acceptance.t_project_material_id=t_project_material.id
+                                          LEFT JOIN t_material ON t_project_material.t_material_id=t_material.id
+                                          WHERE t_project_material_acceptance.t_project_material_acceptance_batch_id=? AND t_project_material_acceptance.deleted_at IS NULL
+                                          AND t_project_material.deleted_at IS NULL
+                                          AND t_material.deleted_at IS NULL
+                                          AND t_material.item_mark LIKE ?
+                                          LIMIT ?,?
+                                          """,
+                                  new ProjectMaterialAcceptanceMapper(), projectMaterialBrandPrivateId, itemMark,
+                                  pageNo * pageSize, pageSize);
+    }
+
+    private List<ProjectMaterialAcceptance> getPageQueryByProjectMaterialAcceptanceBatchIdAndTechnology(String projectMaterialBrandPrivateId,
+                                                                                           String technology,
+                                                                                           int pageNo,
+                                                                                           int pageSize) {
+        technology = "%" + technology + "%";
+        return jdbcTemplate.query("""
+                                          SELECT DISTINCT t_project_material_acceptance.* 
+                                          FROM t_project_material_acceptance
+                                          LEFT JOIN t_project_material ON t_project_material_acceptance.t_project_material_id=t_project_material.id
+                                          LEFT JOIN t_material ON t_project_material.t_material_id=t_material.id
+                                          WHERE t_project_material_acceptance.t_project_material_acceptance_batch_id=? AND t_project_material_acceptance.deleted_at IS NULL
+                                          AND t_project_material.deleted_at IS NULL
+                                          AND t_material.deleted_at IS NULL
+                                          AND t_material.technology LIKE ?
+                                          LIMIT ?,?
+                                          """,
+                                  new ProjectMaterialAcceptanceMapper(), projectMaterialBrandPrivateId, technology,
+                                  pageNo * pageSize, pageSize);
+    }
+
+    private List<ProjectMaterialAcceptance> getPageQueryByProjectMaterialAcceptanceBatchIdAndInstallation(String projectMaterialBrandPrivateId,
+                                                                                           String installation,
+                                                                                           int pageNo,
+                                                                                           int pageSize) {
+        installation = "%" + installation + "%";
+        return jdbcTemplate.query("""
+                                          SELECT DISTINCT t_project_material_acceptance.* 
+                                          FROM t_project_material_acceptance
+                                          LEFT JOIN t_project_material ON t_project_material_acceptance.t_project_material_id=t_project_material.id
+                                          LEFT JOIN t_material ON t_project_material.t_material_id=t_material.id
+                                          WHERE t_project_material_acceptance.t_project_material_acceptance_batch_id=? AND t_project_material_acceptance.deleted_at IS NULL
+                                          AND t_project_material.deleted_at IS NULL
+                                          AND t_material.deleted_at IS NULL
+                                          AND t_material.installation LIKE ?
+                                          LIMIT ?,?
+                                          """,
+                                  new ProjectMaterialAcceptanceMapper(), projectMaterialBrandPrivateId, installation,
+                                  pageNo * pageSize, pageSize);
+    }
+
+    private List<ProjectMaterialAcceptance> getPageQueryByProjectMaterialAcceptanceBatchIdAndBrand(String projectMaterialBrandPrivateId,
+                                                                                           String brand,
+                                                                                           int pageNo,
+                                                                                           int pageSize) {
+        brand = "%" + brand + "%";
+        return jdbcTemplate.query("""
+                                          SELECT DISTINCT t_project_material_acceptance.*
+                                          FROM t_project_material_acceptance
+                                                            LEFT JOIN t_project_material_brand_private ON t_project_material_acceptance.t_project_material_brand_private_id=t_project_material_brand_private.id
+                                                            LEFT JOIN t_project_material_brand_public ON t_project_material_acceptance.t_project_material_brand_public_id=t_project_material_brand_public.id
+                                                            LEFT JOIN t_project_brand ON t_project_material_brand_private.t_project_brand_id=t_project_brand.id
+                                                            LEFT JOIN t_brand_public ON t_project_material_brand_public.t_brand_public_id=t_brand_public.id
+                                                            LEFT JOIN t_brand ON t_project_brand.t_brand_id=t_brand.id OR t_brand_public.t_brand_id=t_brand.id
+                                                            WHERE t_project_material_acceptance.t_project_material_acceptance_batch_id=? AND t_project_material_acceptance.deleted_at IS NULL
+                                                            AND t_project_material_brand_private.deleted_at IS NULL
+                                                            AND t_project_material_brand_public.deleted_at IS NULL
+                                                            AND t_project_brand.deleted_at IS NULL
+                                                            AND t_brand_public.deleted_at IS NULL
+                                                            AND t_brand.deleted_at IS NULL
+                                                            AND t_brand.name LIKE ?
+                                          LIMIT ?,?
+                                          """,
+                                  new ProjectMaterialAcceptanceMapper(), projectMaterialBrandPrivateId, brand,
                                   pageNo * pageSize, pageSize);
     }
 

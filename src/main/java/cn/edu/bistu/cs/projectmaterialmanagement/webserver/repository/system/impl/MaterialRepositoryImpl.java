@@ -318,7 +318,11 @@ public class MaterialRepositoryImpl implements IMaterialRepository {
                                           FROM t_material
                                           LEFT JOIN t_material_brand ON t_material.id=t_material_brand.t_material_id
                                           LEFT JOIN t_brand ON t_brand.id=t_material_brand.t_brand_id
-                                          WHERE t_material.deleted_at IS NULL AND t_material_brand.deleted_at IS NULL AND t_brand.name LIKE ? AND t_material.material_project_bind_type=?
+                                          WHERE t_material.deleted_at IS NULL 
+                                          AND t_material_brand.deleted_at IS NULL 
+                                          AND t_brand.deleted_at IS NULL
+                                          AND t_brand.name LIKE ? 
+                                          AND t_material.material_project_bind_type=?
                                                         """,
                                                 Integer.class, brand, projectBindType);
         return i;
@@ -641,6 +645,7 @@ public class MaterialRepositoryImpl implements IMaterialRepository {
                                             AND t_material.material_project_bind_type=? 
                                             AND t_material.deleted_at IS NULL
                                             AND t_material_brand.deleted_at IS NULL
+                                            AND t_brand.deleted_at IS NULL
                                           LIMIT ?,?
                                           """,
                                   new MaterialMapper(), brand, projectBindType,pageNo * pageSize, pageSize);

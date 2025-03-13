@@ -53,6 +53,36 @@ public interface IProjectMaterialAcceptanceService {
                                                                               int pageNo,
                                                                               int pageSize);
 
+    Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndName(String projectMaterialAcceptanceBatchId,
+                                                                              String name,
+                                                                              int pageNo,
+                                                                              int pageSize);
+
+    Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndLocation(String projectMaterialAcceptanceBatchId,
+                                                                              String location,
+                                                                              int pageNo,
+                                                                              int pageSize);
+
+    Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndItemMark(String projectMaterialAcceptanceBatchId,
+                                                                              String itemMark,
+                                                                              int pageNo,
+                                                                              int pageSize);
+
+    Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndTechnology(String projectMaterialAcceptanceBatchId,
+                                                                              String technology,
+                                                                              int pageNo,
+                                                                              int pageSize);
+
+    Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndInstallation(String projectMaterialAcceptanceBatchId,
+                                                                              String installation,
+                                                                              int pageNo,
+                                                                              int pageSize);
+
+    Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndBrand(String projectMaterialAcceptanceBatchId,
+                                                                              String brand,
+                                                                              int pageNo,
+                                                                              int pageSize);
+
     Page<ProjectMaterialAcceptance> getPageByProjectMaterialId(String projectMaterialId,
                                                                int pageNo,
                                                                int pageSize);

@@ -285,7 +285,9 @@ public class UseMaterialRepositoryImpl implements IUseMaterialRepository {
             AND mt.t_use_material_brand_select_id = st.id
             AND st.t_project_id =?
         )
-    ) AND t_material.name LIKE ?
+    ) AND t_material.name LIKE ? 
+    AND t_project_material.deleted_at IS NULL
+    AND t_material.deleted_at IS NULL
 """, Integer.class, projectId, projectId, name);
     }
 
@@ -314,6 +316,8 @@ public class UseMaterialRepositoryImpl implements IUseMaterialRepository {
             AND st.t_project_id =?
         )
     ) AND t_material.location LIKE ?
+    AND t_project_material.deleted_at IS NULL
+    AND t_material.deleted_at IS NULL
 """, Integer.class, projectId, projectId, location);
     }
 
@@ -342,6 +346,8 @@ public class UseMaterialRepositoryImpl implements IUseMaterialRepository {
             AND st.t_project_id =?
         )
     )  AND t_material.item_mark LIKE ?
+    AND t_project_material.deleted_at IS NULL
+    AND t_material.deleted_at IS NULL
 """, Integer.class, projectId, projectId, itemMark);
     }
 
@@ -370,6 +376,8 @@ public class UseMaterialRepositoryImpl implements IUseMaterialRepository {
             AND st.t_project_id =?
         )
     ) AND t_material.technology LIKE ?
+    AND t_project_material.deleted_at IS NULL
+    AND t_material.deleted_at IS NULL
 """, Integer.class, projectId, projectId, technology);
     }
 
@@ -398,6 +406,8 @@ public class UseMaterialRepositoryImpl implements IUseMaterialRepository {
             AND st.t_project_id =?
         )
     ) AND t_material.installation LIKE ?
+    AND t_project_material.deleted_at IS NULL
+    AND t_material.deleted_at IS NULL
 """, Integer.class, projectId, projectId, installation);
     }
 
@@ -429,6 +439,11 @@ public class UseMaterialRepositoryImpl implements IUseMaterialRepository {
             AND st.t_project_id =?
         )
     ) AND t_brand.name LIKE ?
+    AND t_project_material_brand_public.deleted_at IS NULL
+    AND t_project_material_brand_private.deleted_at IS NULL
+    AND t_brand_public.deleted_at IS NULL
+    AND t_project_brand.deleted_at IS NULL
+    AND t_brand.deleted_at IS NULL
 """, Integer.class, projectId, projectId, brand);
     }
 
@@ -891,6 +906,8 @@ public class UseMaterialRepositoryImpl implements IUseMaterialRepository {
                                )
                                AND s.deleted_at IS NULL
                        ) AND t_material.name LIKE ?
+                       AND t_project_material.deleted_at IS NULL
+                       AND t_material.deleted_at IS NULL
             limit ?,?
             """, new RowMapper<String>() {
             @Override
@@ -934,6 +951,8 @@ public class UseMaterialRepositoryImpl implements IUseMaterialRepository {
                                )
                                AND s.deleted_at IS NULL
                        ) AND t_material.location LIKE ?
+                        AND t_project_material.deleted_at IS NULL
+                       AND t_material.deleted_at IS NULL
             limit ?,?
             """, new RowMapper<String>() {
             @Override
@@ -977,6 +996,8 @@ public class UseMaterialRepositoryImpl implements IUseMaterialRepository {
                                )
                                AND s.deleted_at IS NULL
                        ) AND t_material.item_mark LIKE ?
+                        AND t_project_material.deleted_at IS NULL
+                       AND t_material.deleted_at IS NULL
             limit ?,?
             """, new RowMapper<String>() {
             @Override
@@ -1020,6 +1041,8 @@ public class UseMaterialRepositoryImpl implements IUseMaterialRepository {
                                )
                                AND s.deleted_at IS NULL
                        ) AND t_material.technology LIKE ?
+                        AND t_project_material.deleted_at IS NULL
+                       AND t_material.deleted_at IS NULL
             limit ?,?
             """, new RowMapper<String>() {
             @Override
@@ -1063,6 +1086,8 @@ public class UseMaterialRepositoryImpl implements IUseMaterialRepository {
                                )
                                AND s.deleted_at IS NULL
                        ) AND t_material.installation LIKE ?
+                        AND t_project_material.deleted_at IS NULL
+                       AND t_material.deleted_at IS NULL
             limit ?,?
             """, new RowMapper<String>() {
             @Override
@@ -1109,6 +1134,11 @@ public class UseMaterialRepositoryImpl implements IUseMaterialRepository {
                                )
                                AND s.deleted_at IS NULL
                        ) AND t_brand.name Like ?
+                       AND t_project_material_brand_public.deleted_at IS NULL
+                       AND t_project_material_brand_private.deleted_at IS NULL
+                       AND t_brand_public.deleted_at IS NULL
+                       AND t_project_brand.deleted_at IS NULL
+                       AND t_brand.deleted_at IS NULL
             limit ?,?
             """, new RowMapper<String>() {
             @Override

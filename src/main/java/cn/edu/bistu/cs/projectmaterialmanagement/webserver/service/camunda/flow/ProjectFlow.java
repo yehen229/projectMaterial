@@ -3752,6 +3752,72 @@ public class ProjectFlow {
                 projectMaterialAcceptanceBatchId, pageNo, pageSize);
     }
 
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndName(String projectId,
+                                                                                                      String taskId,
+                                                                                                      String name,
+                                                                                                      Integer pageNo,
+                                                                                                      Integer pageSize) {
+        String projectMaterialAcceptanceBatchId = (String) taskService.getVariable(taskId,
+                                                                                   "projectMaterialAcceptanceBatchId");
+        return projectBusinessService.getProjectMaterialAcceptanceViewListByCurrentLoginUserAndName(
+                projectMaterialAcceptanceBatchId, name, pageNo, pageSize);
+    }
+
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndLocation(String projectId,
+                                                                                                      String taskId,
+                                                                                                      String location,
+                                                                                                      Integer pageNo,
+                                                                                                      Integer pageSize) {
+        String projectMaterialAcceptanceBatchId = (String) taskService.getVariable(taskId,
+                                                                                   "projectMaterialAcceptanceBatchId");
+        return projectBusinessService.getProjectMaterialAcceptanceViewListByCurrentLoginUserAndLocation(
+                projectMaterialAcceptanceBatchId, location, pageNo, pageSize);
+    }
+
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndItemMark(String projectId,
+                                                                                                      String taskId,
+                                                                                                      String itemMark,
+                                                                                                      Integer pageNo,
+                                                                                                      Integer pageSize) {
+        String projectMaterialAcceptanceBatchId = (String) taskService.getVariable(taskId,
+                                                                                   "projectMaterialAcceptanceBatchId");
+        return projectBusinessService.getProjectMaterialAcceptanceViewListByCurrentLoginUserAndItemMark(
+                projectMaterialAcceptanceBatchId, itemMark, pageNo, pageSize);
+    }
+
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndTechnology(String projectId,
+                                                                                                      String taskId,
+                                                                                                      String technology,
+                                                                                                      Integer pageNo,
+                                                                                                      Integer pageSize) {
+        String projectMaterialAcceptanceBatchId = (String) taskService.getVariable(taskId,
+                                                                                   "projectMaterialAcceptanceBatchId");
+        return projectBusinessService.getProjectMaterialAcceptanceViewListByCurrentLoginUserAndTechnology(
+                projectMaterialAcceptanceBatchId, technology, pageNo, pageSize);
+    }
+
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndInstallation(String projectId,
+                                                                                                      String taskId,
+                                                                                                      String installation,
+                                                                                                      Integer pageNo,
+                                                                                                      Integer pageSize) {
+        String projectMaterialAcceptanceBatchId = (String) taskService.getVariable(taskId,
+                                                                                   "projectMaterialAcceptanceBatchId");
+        return projectBusinessService.getProjectMaterialAcceptanceViewListByCurrentLoginUserAndInstallation(
+                projectMaterialAcceptanceBatchId, installation, pageNo, pageSize);
+    }
+
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndBrand(String projectId,
+                                                                                                      String taskId,
+                                                                                                      String brand,
+                                                                                                      Integer pageNo,
+                                                                                                      Integer pageSize) {
+        String projectMaterialAcceptanceBatchId = (String) taskService.getVariable(taskId,
+                                                                                   "projectMaterialAcceptanceBatchId");
+        return projectBusinessService.getProjectMaterialAcceptanceViewListByCurrentLoginUserAndBrand(
+                projectMaterialAcceptanceBatchId, brand, pageNo, pageSize);
+    }
+
     public ProjectReviewUserView getFeedbackOfProjectMaterialReviewedByProjectIdAndTaskId(String projectId,
                                                                                           String taskId
     ) {
