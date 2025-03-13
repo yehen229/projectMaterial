@@ -16,4 +16,14 @@ public interface IStatisticalanalysisRepository {
 
     List<OnematerialUnpass> getunpassreviewbyprojectidmaterialid_companyid(String projectid, String companyid);
     List<OnematerialUnpassbeforeZongbao> getunpassreviewbeforezongbao(String projectid, String materialid);
+
+    Page<Unpassonlymaterial> getUnpassReviewJianli(int pageNo, int pageSize);
+
+    List<OnematerialUnpassjianli> getunpassreviewcontentjianli(String projectid, String materialid);
+
+    Page<Unpassonlymaterial> getUnpassReviewJianliAndGongchengbu(int pageNo, int pageSize);
+
+    List<OnematerialUnpassjianliandgongchengbu> getunpassreviewcontentjianliandgongchengbu(String projectid, String materialid);
+
+
 }

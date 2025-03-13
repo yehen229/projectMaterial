@@ -11,7 +11,11 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.IS
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.appearance.IProjectAppearanceReviewRepository;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.account.IUserService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.camunda.flow.ProjectFlow;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IProjectMaterialRetestService;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IProjectMaterialService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IProjectService;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IUseMaterialService;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.acceptance.IProjectMaterialAcceptanceReviewUserService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.appearance.IProjectAppearanceReviewUserService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.materialreview.IProjectReviewUserService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.ICompanyService;
@@ -38,6 +42,11 @@ public class StatisticalanalysisController {
     private final IProjectReviewUserService projectReviewUserService;
     private  final IProjectAppearanceReviewUserService projectAppearanceReviewUserService;
     private  final ICompanyUserService companyUserService;
+    private final IUseMaterialService useMaterialService;
+    private  final IProjectMaterialService projectMaterialService;
+    private final IProjectMaterialRetestService projectMaterialRetestService;
+    private final IProjectMaterialAcceptanceReviewUserService projectMaterialAcceptanceReviewUserService;
+
 
 
     private IStatisticalanalysisRepository statisticalanalysisRepository;
@@ -47,7 +56,11 @@ public class StatisticalanalysisController {
                                          IMaterialService materialService, ICompanyService companyService, IUserService userService,
                                          IProjectReviewUserService projectReviewUserService,
                                          IProjectAppearanceReviewUserService projectAppearanceReviewUserService,
-                                         ICompanyUserService companyUserService
+                                         ICompanyUserService companyUserService,
+                                            IUseMaterialService useMaterialService,
+                                            IProjectMaterialService projectMaterialService,
+                                            IProjectMaterialRetestService projectMaterialRetestService,
+                                            IProjectMaterialAcceptanceReviewUserService projectMaterialAcceptanceReviewUserService
     ) {
         this.companyService = companyService;
         this.materialService = materialService;
@@ -58,6 +71,10 @@ public class StatisticalanalysisController {
         this.projectReviewUserService = projectReviewUserService;
         this.projectAppearanceReviewUserService = projectAppearanceReviewUserService;
         this.companyUserService = companyUserService;
+        this.useMaterialService = useMaterialService;
+        this.projectMaterialService = projectMaterialService;
+        this.projectMaterialRetestService = projectMaterialRetestService;
+        this.projectMaterialAcceptanceReviewUserService = projectMaterialAcceptanceReviewUserService;
     }
 
 
@@ -299,6 +316,94 @@ public class StatisticalanalysisController {
         for (OnematerialUnpassbeforeZongbao onematerialUnpass : unpassmaterialmessage) {
             onematerialUnpass.setUser(userService.getById(onematerialUnpass.getUserid()));
             onematerialUnpass.setProjectAppearanceReviewUser(projectAppearanceReviewUserService.getById(onematerialUnpass.getId()));
+//          通过user获取company表信息
+            CompanyUser byUserId = companyUserService.getByUserId(onematerialUnpass.getUser().getId());
+            Company company = companyService.getById(byUserId.getCompanyId());
+            onematerialUnpass.setCompany(company);
+        }
+
+        return unpassmaterialmessage;
+    }
+
+//    监理审核不通过
+    @GetMapping("get_unpass_review_jianli")
+    public Page<Unpassonlymaterial> getUnpassReviewJianli(@RequestParam(value = "pageNo", required = false) Integer pageNo,
+                                       @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+
+//        1.首先从 t_buy_material表中获取 id t_buy_material_batch_id 与t_use_material_id
+//          根据t_buy_material_batch_id到t_project_material_retest_batch表 获取 id
+//          根据t_project_material_retest_batch表的id 跟t_buy_material表中的id  到t_project_material_resest表中获取相应的数据 满足review_result为2
+
+        Page<Unpassonlymaterial> page = statisticalanalysisRepository.getUnpassReviewJianli(pageNo, pageSize);
+
+        for (Unpassonlymaterial unpassonlymaterial : page.getResult()) {
+//           材料信息
+            String usematerialId = unpassonlymaterial.getMaterialId();
+            UseMaterial useMaterialServiceById = useMaterialService.getById(usematerialId);
+            String projectMaterialId = useMaterialServiceById.getProjectMaterialId();
+            ProjectMaterial projectMaterialServiceById = projectMaterialService.getById(projectMaterialId);
+            String materialId = projectMaterialServiceById.getMaterialId();
+            Material materialServiceById1 = materialService.getById(materialId);
+            unpassonlymaterial.setMaterial(materialServiceById1);
+//            项目信息;
+            Project projectServiceById = projectService.getById(unpassonlymaterial.getProjectId());
+            unpassonlymaterial.setProject(projectServiceById);
+        }
+
+        return  page;
+    }
+
+    @GetMapping("get_unpass_reviewcontent_jianli")    //    获取评论
+    public List<OnematerialUnpassjianli> getunpassreviewcontentjianli(@RequestParam(value = "projectid") String projectid,
+                                                                             @RequestParam(value = "materialid") String materialid) {
+        List<OnematerialUnpassjianli> unpassmaterialmessage = statisticalanalysisRepository.getunpassreviewcontentjianli(projectid, materialid);
+
+        for (OnematerialUnpassjianli onematerialUnpass : unpassmaterialmessage) {
+            onematerialUnpass.setUser(userService.getById(onematerialUnpass.getUserid()));
+            onematerialUnpass.setProjectMaterialRetest(projectMaterialRetestService.getById(onematerialUnpass.getId()));
+//          通过user获取company表信息
+            CompanyUser byUserId = companyUserService.getByUserId(onematerialUnpass.getUser().getId());
+            Company company = companyService.getById(byUserId.getCompanyId());
+            onematerialUnpass.setCompany(company);
+        }
+
+        return unpassmaterialmessage;
+    }
+//第18 20 步骤 监理与工程部进行审核
+    @GetMapping("get_unpass_review_jianli_and_gongchengbu")
+    public Page<Unpassonlymaterial> getUnpassReviewJianliAndGongchengbu(@RequestParam(value = "pageNo", required = false) Integer pageNo,
+                                                                       @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+//        1.首先从t_project_material_acceptance 表中获取每一条数据中的t_project_material_acceptance_batch_id  t_project_material_id
+//        2.根据首先从t_project_material_acceptance表的表中获取每一条数据中的t_project_material_acceptance_batch_id到
+//          t_project_material_acceptance_batch表获取 id t_project_id
+//        3.根据 t_project_material_acceptance_batch表的id到  t_project_material_acceptance_review_model表中获取id
+//        4.根据t_project_material_acceptance_review_model表的id到 t_project_material_acceptance_review 表中获取相应的数据
+//        5.根据 t_project_material_acceptance_review 表中的id到 t_project_material_acceptance_review_user表中的数据 满足review_result为2
+
+        Page<Unpassonlymaterial> page = statisticalanalysisRepository.getUnpassReviewJianliAndGongchengbu(pageNo, pageSize);
+        for (Unpassonlymaterial unpassonlymaterial : page.getResult()) {
+//           材料信息
+            String projectmaterialId = unpassonlymaterial.getMaterialId();
+            ProjectMaterial projectMaterialServiceById = projectMaterialService.getById(projectmaterialId);
+            String materialId = projectMaterialServiceById.getMaterialId();
+            Material materialServiceById1 = materialService.getById(materialId);
+            unpassonlymaterial.setMaterial(materialServiceById1);
+//            评论信息
+            unpassonlymaterial.setProject(projectService.getById(unpassonlymaterial.getProjectId()));
+        }
+
+        return  page;
+    }
+
+
+    @GetMapping("get_unpass_reviewcontent_jianli_gongchengbu")    //    获取评论
+    public List<OnematerialUnpassjianliandgongchengbu> getunpassreviewcontentJianliAndGongchengbu(@RequestParam(value = "projectid") String projectid,
+                                                                      @RequestParam(value = "materialid") String materialid) {
+        List<OnematerialUnpassjianliandgongchengbu> unpassmaterialmessage = statisticalanalysisRepository.getunpassreviewcontentjianliandgongchengbu(projectid, materialid);
+
+        for (OnematerialUnpassjianliandgongchengbu onematerialUnpass : unpassmaterialmessage) {
+            onematerialUnpass.setUser(userService.getById(onematerialUnpass.getUserid()));
+            onematerialUnpass.setProjectMaterialAcceptanceReviewUser(projectMaterialAcceptanceReviewUserService.getById(onematerialUnpass.getId()));
 //          通过user获取company表信息
             CompanyUser byUserId = companyUserService.getByUserId(onematerialUnpass.getUser().getId());
             Company company = companyService.getById(byUserId.getCompanyId());

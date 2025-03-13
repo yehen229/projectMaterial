@@ -6,8 +6,8 @@ public class ConfigConstant {
    // private final static String FILE_PATH_WINDOWS = "D:\\AAAproject\\vue\\temp";
    // private final static String FILE_PATH_TEMP_WINDOWS = "D:\\AAAproject\\vue\\temp";
 
-    private final static String FILE_PATH_WINDOWS = "C:\\Users\\hbs\\own\\Project\\MaterialManagefiles\\temp";
-    private final static String FILE_PATH_TEMP_WINDOWS = "C:\\Users\\hbs\\own\\Project\\MaterialManagefiles\\temp";
+    private final static String FILE_PATH_WINDOWS = "D:\\AAAproject\\Java\\MaterialManage1\\temp";
+    private final static String FILE_PATH_TEMP_WINDOWS = "D:\\AAAproject\\Java\\MaterialManage1\\temp";
 
 
     //题目中的图片等路径，用于Markdown中
