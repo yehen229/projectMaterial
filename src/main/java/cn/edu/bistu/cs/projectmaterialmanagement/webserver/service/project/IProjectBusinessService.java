@@ -285,8 +285,122 @@ public interface IProjectBusinessService {
                                                                    Integer pageNo,
                                                                    Integer pageSize);
 
+    /**
+     * 从服务器获得已经购买的、并且没有被禁止使用的物料
+     *
+     * @param projectId
+     * @param name
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    Page<ProjectMaterialView> getBoughtMaterialViewPageByProjectIdAndName(String projectId,
+                                                                   String name,
+                                                                   Integer pageNo,
+                                                                   Integer pageSize);
+
+    /**
+     * 从服务器获得已经购买的、并且没有被禁止使用的物料
+     *
+     * @param projectId
+     * @param location
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    Page<ProjectMaterialView> getBoughtMaterialViewPageByProjectIdAndLocation(String projectId,
+                                                                   String location,
+                                                                   Integer pageNo,
+                                                                   Integer pageSize);
+
+    /**
+     * 从服务器获得已经购买的、并且没有被禁止使用的物料
+     *
+     * @param projectId
+     * @param itemMark
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    Page<ProjectMaterialView> getBoughtMaterialViewPageByProjectIdAndItemMark(String projectId,
+                                                                   String itemMark,
+                                                                   Integer pageNo,
+                                                                   Integer pageSize);
+
+    /**
+     * 从服务器获得已经购买的、并且没有被禁止使用的物料
+     *
+     * @param projectId
+     * @param technology
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    Page<ProjectMaterialView> getBoughtMaterialViewPageByProjectIdAndTechnology(String projectId,
+                                                                   String technology,
+                                                                   Integer pageNo,
+                                                                   Integer pageSize);
+
+    /**
+     * 从服务器获得已经购买的、并且没有被禁止使用的物料
+     *
+     * @param projectId
+     * @param installation
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    Page<ProjectMaterialView> getBoughtMaterialViewPageByProjectIdAndInstallation(String projectId,
+                                                                   String installation,
+                                                                   Integer pageNo,
+                                                                   Integer pageSize);
+
+    /**
+     * 从服务器获得已经购买的、并且没有被禁止使用的物料
+     *
+     * @param projectId
+     * @param brand
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    Page<ProjectMaterialView> getBoughtMaterialViewPageByProjectIdAndBrand(String projectId,
+                                                                   String brand,
+                                                                   Integer pageNo,
+                                                                   Integer pageSize);
+
 
     Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUser(String projectMaterialAcceptanceBatchId,
+                                                                                               Integer pageNo,
+                                                                                               Integer pageSize);
+
+    Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndName(String projectMaterialAcceptanceBatchId,
+                                                                                               String name,
+                                                                                               Integer pageNo,
+                                                                                               Integer pageSize);
+
+    Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndLocation(String projectMaterialAcceptanceBatchId,
+                                                                                               String location,
+                                                                                               Integer pageNo,
+                                                                                               Integer pageSize);
+
+    Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndItemMark(String projectMaterialAcceptanceBatchId,
+                                                                                               String itemMark,
+                                                                                               Integer pageNo,
+                                                                                               Integer pageSize);
+
+    Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndTechnology(String projectMaterialAcceptanceBatchId,
+                                                                                               String technology,
+                                                                                               Integer pageNo,
+                                                                                               Integer pageSize);
+
+    Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndInstallation(String projectMaterialAcceptanceBatchId,
+                                                                                               String installation,
+                                                                                               Integer pageNo,
+                                                                                               Integer pageSize);
+
+    Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndBrand(String projectMaterialAcceptanceBatchId,
+                                                                                               String brand,
                                                                                                Integer pageNo,
                                                                                                Integer pageSize);
 

@@ -89,6 +89,36 @@ public interface IBuyMaterialRepository {
                                                     Integer pageNo,
                                                     Integer pageSize);
 
+    Page<String> getBoughtMaterialIdPageByProjectIdAndName(String projectId,
+                                                    String name,
+                                                    Integer pageNo,
+                                                    Integer pageSize);
+
+    Page<String> getBoughtMaterialIdPageByProjectIdAndLocation(String projectId,
+                                                    String location,
+                                                    Integer pageNo,
+                                                    Integer pageSize);
+
+    Page<String> getBoughtMaterialIdPageByProjectIdAndItemMark(String projectId,
+                                                    String itemMark,
+                                                    Integer pageNo,
+                                                    Integer pageSize);
+
+    Page<String> getBoughtMaterialIdPageByProjectIdAndTechnology(String projectId,
+                                                    String technology,
+                                                    Integer pageNo,
+                                                    Integer pageSize);
+
+    Page<String> getBoughtMaterialIdPageByProjectIdAndInstallation(String projectId,
+                                                    String installation,
+                                                    Integer pageNo,
+                                                    Integer pageSize);
+
+    Page<String> getBoughtMaterialIdPageByProjectIdAndBrand(String projectId,
+                                                    String brand,
+                                                    Integer pageNo,
+                                                    Integer pageSize);
+
 
     List<String> getBoughtProjectMaterialBrandPrivateIdListPageByProjectIdAndMaterialId(String projectId,
                                                                                         String materialId);

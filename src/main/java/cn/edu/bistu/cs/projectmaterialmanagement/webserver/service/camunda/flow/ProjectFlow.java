@@ -2852,26 +2852,58 @@ public class ProjectFlow {
 
             //设置复检结果，根据此结果走不同的流程
             //前端传过来的值：0不需要复检，1需要复检
-
-            if(projectMaterialRetestListNeedReCheck.isEmpty()){
-                //不需要复检
+            if (projectMaterialRetestListNeedReCheck.isEmpty()) {
+                // 不需要复检
                 taskService.setVariable(task.getId(), "nNeedReCheckReviewResult", 0);
-            }else {
-                //需要复检，但可能不是所有物料都需要复检
-                int nNeedReCheckReviewResult = 1;
-                int nReCheckReviewResult =  0;
-                if(!projectMaterialRetestListNotNeedReCheck.isEmpty())nNeedReCheckReviewResult=0;
+                taskService.setVariable(task.getId(), "nReCheckReviewResult", 1); // 设置为1，确保流程进入下一步
+            } else {
+                // 需要复检，但可能不是所有物料都需要复检
+                int nNeedReCheckReviewResult = 1;  // 默认需要复检
+                int nReCheckReviewResult = 0;  // 默认复检未通过
+
+                // 如果有物料不需要复检，设定复检状态为0
+                if (!projectMaterialRetestListNotNeedReCheck.isEmpty()) {
+                    nNeedReCheckReviewResult = 0;
+                }
+
                 taskService.setVariable(task.getId(), "nNeedReCheckReviewResult", nNeedReCheckReviewResult);
-                if(projectMaterialRetestListNotNeedReCheck.isEmpty()){
-                    for(ProjectMaterialRetest projectMaterialRetest : projectMaterialRetestListNeedReCheck){
-                        if(projectMaterialRetest.getReviewResult() == 1) {
-                            nReCheckReviewResult = 1;
-                            break;
+
+                // 只有在所有需要复检的物料的 `nNeedReCheckReviewResult` 是 1 时，才会继续进行复检状态判断
+                if (projectMaterialRetestListNotNeedReCheck.isEmpty()) {
+                    boolean allPass = true;  // 默认全部通过
+                    boolean anyPass = false;  // 默认没有通过
+
+                    for (ProjectMaterialRetest projectMaterialRetest : projectMaterialRetestListNeedReCheck) {
+                        // 检查每个复检材料的审核结果
+                        System.out.println("Material ReviewResult: " + projectMaterialRetest.getReviewResult());
+
+                        if (projectMaterialRetest.getReviewResult() == 1) {
+                            anyPass = true; // 只要有一个通过，就标记为有通过
+                        } else {
+                            allPass = false; // 只要有一个未通过，标记为未全部通过
                         }
                     }
+
+                    // 根据审核结果判断 `nReCheckReviewResult`
+                    if (allPass) {
+                        // 情况：全部审核通过
+                        nReCheckReviewResult = 1;
+                    } else if (anyPass) {
+                        // 情况：部分复检审核通过
+                        nReCheckReviewResult = 1;
+                    } else {
+                        // 情况：全部复检未通过
+                        nReCheckReviewResult = 0;
+                    }
+
                     taskService.setVariable(task.getId(), "nReCheckReviewResult", nReCheckReviewResult);
                 }
             }
+
+
+
+
+
 
             //end :监理简单审批，不对物料复检进行再次审批
             taskService.setVariable(task.getId(), "projectMaterialRetestBatchId", projectMaterialRetestBatchId);
@@ -3718,6 +3750,72 @@ public class ProjectFlow {
                                                                                    "projectMaterialAcceptanceBatchId");
         return projectBusinessService.getProjectMaterialAcceptanceViewListByCurrentLoginUser(
                 projectMaterialAcceptanceBatchId, pageNo, pageSize);
+    }
+
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndName(String projectId,
+                                                                                                      String taskId,
+                                                                                                      String name,
+                                                                                                      Integer pageNo,
+                                                                                                      Integer pageSize) {
+        String projectMaterialAcceptanceBatchId = (String) taskService.getVariable(taskId,
+                                                                                   "projectMaterialAcceptanceBatchId");
+        return projectBusinessService.getProjectMaterialAcceptanceViewListByCurrentLoginUserAndName(
+                projectMaterialAcceptanceBatchId, name, pageNo, pageSize);
+    }
+
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndLocation(String projectId,
+                                                                                                      String taskId,
+                                                                                                      String location,
+                                                                                                      Integer pageNo,
+                                                                                                      Integer pageSize) {
+        String projectMaterialAcceptanceBatchId = (String) taskService.getVariable(taskId,
+                                                                                   "projectMaterialAcceptanceBatchId");
+        return projectBusinessService.getProjectMaterialAcceptanceViewListByCurrentLoginUserAndLocation(
+                projectMaterialAcceptanceBatchId, location, pageNo, pageSize);
+    }
+
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndItemMark(String projectId,
+                                                                                                      String taskId,
+                                                                                                      String itemMark,
+                                                                                                      Integer pageNo,
+                                                                                                      Integer pageSize) {
+        String projectMaterialAcceptanceBatchId = (String) taskService.getVariable(taskId,
+                                                                                   "projectMaterialAcceptanceBatchId");
+        return projectBusinessService.getProjectMaterialAcceptanceViewListByCurrentLoginUserAndItemMark(
+                projectMaterialAcceptanceBatchId, itemMark, pageNo, pageSize);
+    }
+
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndTechnology(String projectId,
+                                                                                                      String taskId,
+                                                                                                      String technology,
+                                                                                                      Integer pageNo,
+                                                                                                      Integer pageSize) {
+        String projectMaterialAcceptanceBatchId = (String) taskService.getVariable(taskId,
+                                                                                   "projectMaterialAcceptanceBatchId");
+        return projectBusinessService.getProjectMaterialAcceptanceViewListByCurrentLoginUserAndTechnology(
+                projectMaterialAcceptanceBatchId, technology, pageNo, pageSize);
+    }
+
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndInstallation(String projectId,
+                                                                                                      String taskId,
+                                                                                                      String installation,
+                                                                                                      Integer pageNo,
+                                                                                                      Integer pageSize) {
+        String projectMaterialAcceptanceBatchId = (String) taskService.getVariable(taskId,
+                                                                                   "projectMaterialAcceptanceBatchId");
+        return projectBusinessService.getProjectMaterialAcceptanceViewListByCurrentLoginUserAndInstallation(
+                projectMaterialAcceptanceBatchId, installation, pageNo, pageSize);
+    }
+
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndBrand(String projectId,
+                                                                                                      String taskId,
+                                                                                                      String brand,
+                                                                                                      Integer pageNo,
+                                                                                                      Integer pageSize) {
+        String projectMaterialAcceptanceBatchId = (String) taskService.getVariable(taskId,
+                                                                                   "projectMaterialAcceptanceBatchId");
+        return projectBusinessService.getProjectMaterialAcceptanceViewListByCurrentLoginUserAndBrand(
+                projectMaterialAcceptanceBatchId, brand, pageNo, pageSize);
     }
 
     public ProjectReviewUserView getFeedbackOfProjectMaterialReviewedByProjectIdAndTaskId(String projectId,

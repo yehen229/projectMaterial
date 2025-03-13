@@ -136,7 +136,7 @@ public class BrandPublicRepositoryImpl implements IBrandPublicRepository {
                                                         SELECT count(*) 
                                                         FROM t_brand_public
                                                         LEFT JOIN t_brand ON t_brand_public.t_brand_id = t_brand.id
-                                                        WHERE name LIKE ? AND t_brand.deleted_at IS NULL AND t_brand_public.deleted_at IS NULL
+                                                        WHERE t_brand.name LIKE ? AND t_brand.deleted_at IS NULL AND t_brand_public.deleted_at IS NULL
                                                         """,
                                                 Integer.class, brandName);
         return i == null ? 0 : i;
@@ -148,7 +148,7 @@ public class BrandPublicRepositoryImpl implements IBrandPublicRepository {
                                                         SELECT count(*) 
                                                         FROM t_brand_public
                                                         LEFT JOIN t_brand ON t_brand_public.t_brand_id = t_brand.id
-                                                        WHERE position=? AND t_brand.deleted_at IS NULL AND t_brand_public.deleted_at IS NULL
+                                                        WHERE t_brand.position=? AND t_brand.deleted_at IS NULL AND t_brand_public.deleted_at IS NULL
                                                         """,
                                                 Integer.class, brandPosition);
         return i == null ? 0 : i;
@@ -286,7 +286,7 @@ public class BrandPublicRepositoryImpl implements IBrandPublicRepository {
                                           SELECT * 
                                           FROM t_brand_public
                                           LEFT JOIN t_brand ON t_brand_public.t_brand_id = t_brand.id
-                                          WHERE name LIKE ? AND t_brand.deleted_at IS NULL AND t_brand_public.deleted_at IS NULL
+                                          WHERE t_brand.name LIKE ? AND t_brand.deleted_at IS NULL AND t_brand_public.deleted_at IS NULL
                                           LIMIT ?,?
                                           """,
                                   new BrandPublicMapper(), brandName, pageNo * pageSize, pageSize);
@@ -299,7 +299,7 @@ public class BrandPublicRepositoryImpl implements IBrandPublicRepository {
                                           SELECT * 
                                           FROM t_brand_public
                                           LEFT JOIN t_brand ON t_brand_public.t_brand_id = t_brand.id
-                                          WHERE position = ? AND t_brand.deleted_at IS NULL AND t_brand_public.deleted_at IS NULL
+                                          WHERE t_brand.position = ? AND t_brand.deleted_at IS NULL AND t_brand_public.deleted_at IS NULL
                                           LIMIT ?,?
                                           """,
                                   new BrandPublicMapper(), brandPosition, pageNo * pageSize, pageSize);

@@ -581,6 +581,54 @@ public class BuyMaterialServiceImpl implements IBuyMaterialService {
     }
 
     @Override
+    public Page<String> getBoughtMaterialIdPageByProjectIdAndName(String projectId,
+                                                           String name,
+                                                           Integer pageNo,
+                                                           Integer pageSize) {
+        return buyMaterialRepository.getBoughtMaterialIdPageByProjectIdAndName(projectId, name, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<String> getBoughtMaterialIdPageByProjectIdAndLocation(String projectId,
+                                                           String location,
+                                                           Integer pageNo,
+                                                           Integer pageSize) {
+        return buyMaterialRepository.getBoughtMaterialIdPageByProjectIdAndLocation(projectId, location, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<String> getBoughtMaterialIdPageByProjectIdAndItemMark(String projectId,
+                                                           String itemMark,
+                                                           Integer pageNo,
+                                                           Integer pageSize) {
+        return buyMaterialRepository.getBoughtMaterialIdPageByProjectIdAndItemMark(projectId, itemMark, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<String> getBoughtMaterialIdPageByProjectIdAndTechnology(String projectId,
+                                                           String technology,
+                                                           Integer pageNo,
+                                                           Integer pageSize) {
+        return buyMaterialRepository.getBoughtMaterialIdPageByProjectIdAndTechnology(projectId, technology, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<String> getBoughtMaterialIdPageByProjectIdAndInstallation(String projectId,
+                                                           String installation,
+                                                           Integer pageNo,
+                                                           Integer pageSize) {
+        return buyMaterialRepository.getBoughtMaterialIdPageByProjectIdAndInstallation(projectId, installation, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<String> getBoughtMaterialIdPageByProjectIdAndBrand(String projectId,
+                                                           String brand,
+                                                           Integer pageNo,
+                                                           Integer pageSize) {
+        return buyMaterialRepository.getBoughtMaterialIdPageByProjectIdAndBrand(projectId, brand, pageNo, pageSize);
+    }
+
+    @Override
     public List<String> getBoughtProjectMaterialBrandPrivateIdListPageByProjectIdAndMaterialId(String projectId,
                                                                                                String materialId) {
         return buyMaterialRepository.getBoughtProjectMaterialBrandPrivateIdListPageByProjectIdAndMaterialId(projectId,
