@@ -165,12 +165,12 @@ const getdesignUnpass = async (projectId,materialId) => {
                                   placement="top"
                                   v-for="(item, index) in scope.row.reviewData"
                                   :key="index"
+                                  v-show="item.reviewcotent"
                 >
                   <el-card>
                     <el-descriptions
                         :column="1"
                         border
-                        v-if="item.reviewcotent"
                     >
                       <el-descriptions-item label="提交单位" >{{item.company.companyType	 }}</el-descriptions-item>
                       <el-descriptions-item label="提交单位名字" >{{ item.company.name }}</el-descriptions-item>
