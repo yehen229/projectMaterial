@@ -2756,13 +2756,131 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
     }
 
     @Override
+    public Page<ProjectMaterialView> getBoughtMaterialViewPageByProjectIdAndName(String projectId,
+                                                                          String name,
+                                                                          Integer pageNo,
+                                                                          Integer pageSize) {
+
+        Page<String> projectMaterialIdPage = buyMaterialService.getBoughtMaterialIdPageByProjectIdAndName(projectId, name, pageNo,
+                                                                                                   pageSize);
+        return convertProjectMaterialIdPage2ProjectMaterialViewPage(projectMaterialIdPage, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<ProjectMaterialView> getBoughtMaterialViewPageByProjectIdAndLocation(String projectId,
+                                                                          String location,
+                                                                          Integer pageNo,
+                                                                          Integer pageSize) {
+
+        Page<String> projectMaterialIdPage = buyMaterialService.getBoughtMaterialIdPageByProjectIdAndLocation(projectId, location, pageNo,
+                                                                                                   pageSize);
+        return convertProjectMaterialIdPage2ProjectMaterialViewPage(projectMaterialIdPage, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<ProjectMaterialView> getBoughtMaterialViewPageByProjectIdAndItemMark(String projectId,
+                                                                          String itemMark,
+                                                                          Integer pageNo,
+                                                                          Integer pageSize) {
+
+        Page<String> projectMaterialIdPage = buyMaterialService.getBoughtMaterialIdPageByProjectIdAndItemMark(projectId, itemMark, pageNo,
+                                                                                                   pageSize);
+        return convertProjectMaterialIdPage2ProjectMaterialViewPage(projectMaterialIdPage, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<ProjectMaterialView> getBoughtMaterialViewPageByProjectIdAndTechnology(String projectId,
+                                                                          String technology,
+                                                                          Integer pageNo,
+                                                                          Integer pageSize) {
+
+        Page<String> projectMaterialIdPage = buyMaterialService.getBoughtMaterialIdPageByProjectIdAndTechnology(projectId, technology, pageNo,
+                                                                                                   pageSize);
+        return convertProjectMaterialIdPage2ProjectMaterialViewPage(projectMaterialIdPage, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<ProjectMaterialView> getBoughtMaterialViewPageByProjectIdAndInstallation(String projectId,
+                                                                          String installation,
+                                                                          Integer pageNo,
+                                                                          Integer pageSize) {
+
+        Page<String> projectMaterialIdPage = buyMaterialService.getBoughtMaterialIdPageByProjectIdAndInstallation(projectId, installation, pageNo,
+                                                                                                   pageSize);
+        return convertProjectMaterialIdPage2ProjectMaterialViewPage(projectMaterialIdPage, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<ProjectMaterialView> getBoughtMaterialViewPageByProjectIdAndBrand(String projectId,
+                                                                          String brand,
+                                                                          Integer pageNo,
+                                                                          Integer pageSize) {
+
+        Page<String> projectMaterialIdPage = buyMaterialService.getBoughtMaterialIdPageByProjectIdAndBrand(projectId, brand, pageNo,
+                                                                                                   pageSize);
+        return convertProjectMaterialIdPage2ProjectMaterialViewPage(projectMaterialIdPage, pageNo, pageSize);
+    }
+
+    @Override
     public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUser(String projectMaterialAcceptanceBatchId,
                                                                                                       Integer pageNo,
                                                                                                       Integer pageSize) {
-
         return projectMaterialAcceptanceBusinessService.getPageViewByProjectMaterialAcceptanceBatchId(
                 projectMaterialAcceptanceBatchId, pageNo, pageSize);
+    }
 
+    @Override
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndName(String projectMaterialAcceptanceBatchId,
+                                                                                                      String name,
+                                                                                                      Integer pageNo,
+                                                                                                      Integer pageSize) {
+        return projectMaterialAcceptanceBusinessService.getPageViewByProjectMaterialAcceptanceBatchIdAndName(
+                projectMaterialAcceptanceBatchId, name, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndLocation(String projectMaterialAcceptanceBatchId,
+                                                                                                      String location,
+                                                                                                      Integer pageNo,
+                                                                                                      Integer pageSize) {
+        return projectMaterialAcceptanceBusinessService.getPageViewByProjectMaterialAcceptanceBatchIdAndLocation(
+                projectMaterialAcceptanceBatchId, location, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndItemMark(String projectMaterialAcceptanceBatchId,
+                                                                                                      String itemMark,
+                                                                                                      Integer pageNo,
+                                                                                                      Integer pageSize) {
+        return projectMaterialAcceptanceBusinessService.getPageViewByProjectMaterialAcceptanceBatchIdAndItemMark(
+                projectMaterialAcceptanceBatchId, itemMark, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndTechnology(String projectMaterialAcceptanceBatchId,
+                                                                                                      String technology,
+                                                                                                      Integer pageNo,
+                                                                                                      Integer pageSize) {
+        return projectMaterialAcceptanceBusinessService.getPageViewByProjectMaterialAcceptanceBatchIdAndTechnology(
+                projectMaterialAcceptanceBatchId, technology, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndInstallation(String projectMaterialAcceptanceBatchId,
+                                                                                                      String installation,
+                                                                                                      Integer pageNo,
+                                                                                                      Integer pageSize) {
+        return projectMaterialAcceptanceBusinessService.getPageViewByProjectMaterialAcceptanceBatchIdAndInstallation(
+                projectMaterialAcceptanceBatchId, installation, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndBrand(String projectMaterialAcceptanceBatchId,
+                                                                                                      String brand,
+                                                                                                      Integer pageNo,
+                                                                                                      Integer pageSize) {
+        return projectMaterialAcceptanceBusinessService.getPageViewByProjectMaterialAcceptanceBatchIdAndBrand(
+                projectMaterialAcceptanceBatchId, brand, pageNo, pageSize);
     }
 
     @Override

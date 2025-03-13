@@ -112,6 +112,66 @@ public class ProjectMaterialAcceptanceBusinessServiceImpl implements IProjectMat
     }
 
     @Override
+    public Page<ProjectMaterialAcceptanceView> getPageViewByProjectMaterialAcceptanceBatchIdAndName(String projectMaterialAcceptanceBatchId,
+                                                                                             String name,
+                                                                                             int pageNo,
+                                                                                             int pageSize) {
+        Page<ProjectMaterialAcceptance> projectMaterialAcceptancePage = projectMaterialAcceptanceService.getPageByProjectMaterialAcceptanceBatchIdAndName(
+                projectMaterialAcceptanceBatchId, name, pageNo, pageSize);
+        return convertProjectMaterialAcceptancePage2PageView(projectMaterialAcceptancePage, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<ProjectMaterialAcceptanceView> getPageViewByProjectMaterialAcceptanceBatchIdAndLocation(String projectMaterialAcceptanceBatchId,
+                                                                                             String location,
+                                                                                             int pageNo,
+                                                                                             int pageSize) {
+        Page<ProjectMaterialAcceptance> projectMaterialAcceptancePage = projectMaterialAcceptanceService.getPageByProjectMaterialAcceptanceBatchIdAndLocation(
+                projectMaterialAcceptanceBatchId, location, pageNo, pageSize);
+        return convertProjectMaterialAcceptancePage2PageView(projectMaterialAcceptancePage, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<ProjectMaterialAcceptanceView> getPageViewByProjectMaterialAcceptanceBatchIdAndItemMark(String projectMaterialAcceptanceBatchId,
+                                                                                             String itemMark,
+                                                                                             int pageNo,
+                                                                                             int pageSize) {
+        Page<ProjectMaterialAcceptance> projectMaterialAcceptancePage = projectMaterialAcceptanceService.getPageByProjectMaterialAcceptanceBatchIdAndItemMark(
+                projectMaterialAcceptanceBatchId, itemMark, pageNo, pageSize);
+        return convertProjectMaterialAcceptancePage2PageView(projectMaterialAcceptancePage, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<ProjectMaterialAcceptanceView> getPageViewByProjectMaterialAcceptanceBatchIdAndTechnology(String projectMaterialAcceptanceBatchId,
+                                                                                             String technology,
+                                                                                             int pageNo,
+                                                                                             int pageSize) {
+        Page<ProjectMaterialAcceptance> projectMaterialAcceptancePage = projectMaterialAcceptanceService.getPageByProjectMaterialAcceptanceBatchIdAndTechnology(
+                projectMaterialAcceptanceBatchId, technology, pageNo, pageSize);
+        return convertProjectMaterialAcceptancePage2PageView(projectMaterialAcceptancePage, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<ProjectMaterialAcceptanceView> getPageViewByProjectMaterialAcceptanceBatchIdAndInstallation(String projectMaterialAcceptanceBatchId,
+                                                                                             String installation,
+                                                                                             int pageNo,
+                                                                                             int pageSize) {
+        Page<ProjectMaterialAcceptance> projectMaterialAcceptancePage = projectMaterialAcceptanceService.getPageByProjectMaterialAcceptanceBatchIdAndInstallation(
+                projectMaterialAcceptanceBatchId, installation, pageNo, pageSize);
+        return convertProjectMaterialAcceptancePage2PageView(projectMaterialAcceptancePage, pageNo, pageSize);
+    }
+
+    @Override
+    public Page<ProjectMaterialAcceptanceView> getPageViewByProjectMaterialAcceptanceBatchIdAndBrand(String projectMaterialAcceptanceBatchId,
+                                                                                             String brand,
+                                                                                             int pageNo,
+                                                                                             int pageSize) {
+        Page<ProjectMaterialAcceptance> projectMaterialAcceptancePage = projectMaterialAcceptanceService.getPageByProjectMaterialAcceptanceBatchIdAndBrand(
+                projectMaterialAcceptanceBatchId, brand, pageNo, pageSize);
+        return convertProjectMaterialAcceptancePage2PageView(projectMaterialAcceptancePage, pageNo, pageSize);
+    }
+
+    @Override
     public Page<ProjectMaterialAcceptanceReviewUserView> getViewPageByProjectMaterialAcceptanceReviewModeId(String projectMaterialAcceptanceReviewModeId, Integer pageNo, Integer pageSize) {
         Page<ProjectMaterialAcceptanceReviewUser> projectMaterialAcceptanceReviewUserPage= projectMaterialAcceptanceReviewUserService.getViewPageByProjectMaterialAcceptanceReviewModeId(
                 projectMaterialAcceptanceReviewModeId, pageNo, pageSize);

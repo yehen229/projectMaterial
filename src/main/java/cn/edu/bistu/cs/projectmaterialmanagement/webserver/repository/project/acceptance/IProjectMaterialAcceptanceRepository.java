@@ -34,6 +34,12 @@ public interface IProjectMaterialAcceptanceRepository {
     int getCountByUserId(String userId);
 
     int getCountByProjectMaterialAcceptanceBatchId(String projectMaterialAcceptanceBatchId);
+    int getCountByProjectMaterialAcceptanceBatchIdAndName(String projectMaterialAcceptanceBatchId, String name);
+    int getCountByProjectMaterialAcceptanceBatchIdAndLocation(String projectMaterialAcceptanceBatchId, String location);
+    int getCountByProjectMaterialAcceptanceBatchIdAndItemMark(String projectMaterialAcceptanceBatchId, String itemMark);
+    int getCountByProjectMaterialAcceptanceBatchIdAndTechnology(String projectMaterialAcceptanceBatchId, String technology);
+    int getCountByProjectMaterialAcceptanceBatchIdAndInstallation(String projectMaterialAcceptanceBatchId, String installation);
+    int getCountByProjectMaterialAcceptanceBatchIdAndBrand(String projectMaterialAcceptanceBatchId, String brand);
 
     int getCountByProjectMaterialId(String projectMaterialId);
 
@@ -61,6 +67,36 @@ public interface IProjectMaterialAcceptanceRepository {
                                                     int pageSize);
 
     Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchId(String projectMaterialAcceptanceBatchId,
+                                                                              int pageNo,
+                                                                              int pageSize);
+
+    Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndName(String projectMaterialAcceptanceBatchId,
+                                                                              String name,
+                                                                              int pageNo,
+                                                                              int pageSize);
+
+    Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndLocation(String projectMaterialAcceptanceBatchId,
+                                                                              String location,
+                                                                              int pageNo,
+                                                                              int pageSize);
+
+    Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndItemMark(String projectMaterialAcceptanceBatchId,
+                                                                              String itemMark,
+                                                                              int pageNo,
+                                                                              int pageSize);
+
+    Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndTechnology(String projectMaterialAcceptanceBatchId,
+                                                                              String technology,
+                                                                              int pageNo,
+                                                                              int pageSize);
+
+    Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndInstallation(String projectMaterialAcceptanceBatchId,
+                                                                              String installation,
+                                                                              int pageNo,
+                                                                              int pageSize);
+
+    Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndBrand(String projectMaterialAcceptanceBatchId,
+                                                                              String brand,
                                                                               int pageNo,
                                                                               int pageSize);
 

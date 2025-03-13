@@ -184,4 +184,130 @@ public class BuyMaterialController {
         return projectBusinessService.getBoughtMaterialViewPageByProjectId(projectId, pageNo, pageSize);
     }
 
+    /**
+     * 从服务器获得已经购买的、并且没有被禁止使用的物料
+     *
+     * @param projectId
+     * @param name
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @GetMapping(value = "page-bought-material-view-by-project-id-and-name")
+    @PreAuthorize("hasAnyRole('Admin') or @ProjectPermission.isInGeneralContractorCompany(#projectId)")
+    public Page<ProjectMaterialView> getBoughtMaterialViewPageByProjectIdAndName(
+            @RequestParam(value = "projectId", required = true) String projectId,
+            @RequestParam(value = "name", required = true) String name,
+            @RequestParam(value = "pageNo", required = false) Integer pageNo,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+        return projectBusinessService.getBoughtMaterialViewPageByProjectIdAndName(projectId, name, pageNo, pageSize);
+    }
+
+    /**
+     * 从服务器获得已经购买的、并且没有被禁止使用的物料
+     *
+     * @param projectId
+     * @param location
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @GetMapping(value = "page-bought-material-view-by-project-id-and-location")
+    @PreAuthorize("hasAnyRole('Admin') or @ProjectPermission.isInGeneralContractorCompany(#projectId)")
+    public Page<ProjectMaterialView> getBoughtMaterialViewPageByProjectIdAndLocation(
+            @RequestParam(value = "projectId", required = true) String projectId,
+            @RequestParam(value = "location", required = true) String location,
+            @RequestParam(value = "pageNo", required = false) Integer pageNo,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+        return projectBusinessService.getBoughtMaterialViewPageByProjectIdAndLocation(projectId, location, pageNo, pageSize);
+    }
+
+    /**
+     * 从服务器获得已经购买的、并且没有被禁止使用的物料
+     *
+     * @param projectId
+     * @param itemMark
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @GetMapping(value = "page-bought-material-view-by-project-id-and-item-mark")
+    @PreAuthorize("hasAnyRole('Admin') or @ProjectPermission.isInGeneralContractorCompany(#projectId)")
+    public Page<ProjectMaterialView> getBoughtMaterialViewPageByProjectIdAndItemMark(
+            @RequestParam(value = "projectId", required = true) String projectId,
+            @RequestParam(value = "itemMark", required = true) String itemMark,
+            @RequestParam(value = "pageNo", required = false) Integer pageNo,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+        return projectBusinessService.getBoughtMaterialViewPageByProjectIdAndItemMark(projectId, itemMark, pageNo, pageSize);
+    }
+
+    /**
+     * 从服务器获得已经购买的、并且没有被禁止使用的物料
+     *
+     * @param projectId
+     * @param technology
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @GetMapping(value = "page-bought-material-view-by-project-id-and-technology")
+    @PreAuthorize("hasAnyRole('Admin') or @ProjectPermission.isInGeneralContractorCompany(#projectId)")
+    public Page<ProjectMaterialView> getBoughtMaterialViewPageByProjectIdAndTechnology(
+            @RequestParam(value = "projectId", required = true) String projectId,
+            @RequestParam(value = "technology", required = true) String technology,
+            @RequestParam(value = "pageNo", required = false) Integer pageNo,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+        return projectBusinessService.getBoughtMaterialViewPageByProjectIdAndTechnology(projectId, technology, pageNo, pageSize);
+    }
+
+    /**
+     * 从服务器获得已经购买的、并且没有被禁止使用的物料
+     *
+     * @param projectId
+     * @param installation
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @GetMapping(value = "page-bought-material-view-by-project-id-and-installation")
+    @PreAuthorize("hasAnyRole('Admin') or @ProjectPermission.isInGeneralContractorCompany(#projectId)")
+    public Page<ProjectMaterialView> getBoughtMaterialViewPageByProjectIdAndInstallation(
+            @RequestParam(value = "projectId", required = true) String projectId,
+            @RequestParam(value = "installation", required = true) String installation,
+            @RequestParam(value = "pageNo", required = false) Integer pageNo,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+        return projectBusinessService.getBoughtMaterialViewPageByProjectIdAndInstallation(projectId, installation, pageNo, pageSize);
+    }
+
+    /**
+     * 从服务器获得已经购买的、并且没有被禁止使用的物料
+     *
+     * @param projectId
+     * @param brand
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @GetMapping(value = "page-bought-material-view-by-project-id-and-brand")
+    @PreAuthorize("hasAnyRole('Admin') or @ProjectPermission.isInGeneralContractorCompany(#projectId)")
+    public Page<ProjectMaterialView> getBoughtMaterialViewPageByProjectIdAndBrand(
+            @RequestParam(value = "projectId", required = true) String projectId,
+            @RequestParam(value = "brand", required = true) String brand,
+            @RequestParam(value = "pageNo", required = false) Integer pageNo,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+        return projectBusinessService.getBoughtMaterialViewPageByProjectIdAndBrand(projectId, brand, pageNo, pageSize);
+    }
+
 }

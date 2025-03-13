@@ -224,6 +224,72 @@ public class ProjectMaterialAcceptanceServiceImpl implements IProjectMaterialAcc
                 pageNo, pageSize);
     }
 
+    @Override
+    public Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndName(String projectMaterialAcceptanceBatchId,
+                                                                                     String name,
+                                                                                     int pageNo,
+                                                                                     int pageSize) {
+        return projectMaterialAcceptanceRepository.getPageByProjectMaterialAcceptanceBatchIdAndName(
+                projectMaterialAcceptanceBatchId,
+                name,
+                pageNo, pageSize);
+    }
+
+    @Override
+    public Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndLocation(String projectMaterialAcceptanceBatchId,
+                                                                                     String location,
+                                                                                     int pageNo,
+                                                                                     int pageSize) {
+        return projectMaterialAcceptanceRepository.getPageByProjectMaterialAcceptanceBatchIdAndLocation(
+                projectMaterialAcceptanceBatchId,
+                location,
+                pageNo, pageSize);
+    }
+
+    @Override
+    public Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndItemMark(String projectMaterialAcceptanceBatchId,
+                                                                                     String itemMark,
+                                                                                     int pageNo,
+                                                                                     int pageSize) {
+        return projectMaterialAcceptanceRepository.getPageByProjectMaterialAcceptanceBatchIdAndItemMark(
+                projectMaterialAcceptanceBatchId,
+                itemMark,
+                pageNo, pageSize);
+    }
+
+    @Override
+    public Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndTechnology(String projectMaterialAcceptanceBatchId,
+                                                                                     String technology,
+                                                                                     int pageNo,
+                                                                                     int pageSize) {
+        return projectMaterialAcceptanceRepository.getPageByProjectMaterialAcceptanceBatchIdAndTechnology(
+                projectMaterialAcceptanceBatchId,
+                technology,
+                pageNo, pageSize);
+    }
+
+    @Override
+    public Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndInstallation(String projectMaterialAcceptanceBatchId,
+                                                                                     String installation,
+                                                                                     int pageNo,
+                                                                                     int pageSize) {
+        return projectMaterialAcceptanceRepository.getPageByProjectMaterialAcceptanceBatchIdAndInstallation(
+                projectMaterialAcceptanceBatchId,
+                installation,
+                pageNo, pageSize);
+    }
+
+    @Override
+    public Page<ProjectMaterialAcceptance> getPageByProjectMaterialAcceptanceBatchIdAndBrand(String projectMaterialAcceptanceBatchId,
+                                                                                     String brand,
+                                                                                     int pageNo,
+                                                                                     int pageSize) {
+        return projectMaterialAcceptanceRepository.getPageByProjectMaterialAcceptanceBatchIdAndBrand(
+                projectMaterialAcceptanceBatchId,
+                brand,
+                pageNo, pageSize);
+    }
+
     /**
      * 获得指定页面数据
      *

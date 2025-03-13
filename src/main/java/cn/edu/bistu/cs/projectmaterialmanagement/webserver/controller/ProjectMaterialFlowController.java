@@ -853,6 +853,108 @@ public class ProjectMaterialFlowController {
                                                                                           pageSize);
     }
 
+    @GetMapping(value = "page-project-material-acceptance-view-by-current-login-user-and-project-id-and-task-id-and-name")
+    @PreAuthorize("""
+            hasAnyRole('Admin') 
+            or  @ProjectPermission.isInProject(#projectId)
+            """)
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndName(@RequestParam(value = "projectId") String projectId,
+                                                                                                      @RequestParam(value = "taskId") String taskId,
+                                                                                                      @RequestParam(value = "name") String name,
+                                                                                                      @RequestParam(value = "pageNo", required = false) Integer pageNo,
+                                                                                                      @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+
+        return projectMaterialFlow.getProjectMaterialAcceptanceViewListByCurrentLoginUserAndName(projectId, taskId, name, pageNo,
+                                                                                          pageSize);
+    }
+
+    @GetMapping(value = "page-project-material-acceptance-view-by-current-login-user-and-project-id-and-task-id-and-location")
+    @PreAuthorize("""
+            hasAnyRole('Admin') 
+            or  @ProjectPermission.isInProject(#projectId)
+            """)
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndLocation(@RequestParam(value = "projectId") String projectId,
+                                                                                                      @RequestParam(value = "taskId") String taskId,
+                                                                                                      @RequestParam(value = "location") String location,
+                                                                                                      @RequestParam(value = "pageNo", required = false) Integer pageNo,
+                                                                                                      @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+
+        return projectMaterialFlow.getProjectMaterialAcceptanceViewListByCurrentLoginUserAndLocation(projectId, taskId, location, pageNo,
+                                                                                          pageSize);
+    }
+
+    @GetMapping(value = "page-project-material-acceptance-view-by-current-login-user-and-project-id-and-task-id-and-item-mark")
+    @PreAuthorize("""
+            hasAnyRole('Admin') 
+            or  @ProjectPermission.isInProject(#projectId)
+            """)
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndItemMark(@RequestParam(value = "projectId") String projectId,
+                                                                                                      @RequestParam(value = "taskId") String taskId,
+                                                                                                      @RequestParam(value = "itemMark") String itemMark,
+                                                                                                      @RequestParam(value = "pageNo", required = false) Integer pageNo,
+                                                                                                      @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+
+        return projectMaterialFlow.getProjectMaterialAcceptanceViewListByCurrentLoginUserAndItemMark(projectId, taskId, itemMark, pageNo,
+                                                                                          pageSize);
+    }
+
+    @GetMapping(value = "page-project-material-acceptance-view-by-current-login-user-and-project-id-and-task-id-and-technology")
+    @PreAuthorize("""
+            hasAnyRole('Admin') 
+            or  @ProjectPermission.isInProject(#projectId)
+            """)
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndTechnology(@RequestParam(value = "projectId") String projectId,
+                                                                                                      @RequestParam(value = "taskId") String taskId,
+                                                                                                      @RequestParam(value = "technology") String technology,
+                                                                                                      @RequestParam(value = "pageNo", required = false) Integer pageNo,
+                                                                                                      @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+
+        return projectMaterialFlow.getProjectMaterialAcceptanceViewListByCurrentLoginUserAndTechnology(projectId, taskId, technology, pageNo,
+                                                                                          pageSize);
+    }
+
+    @GetMapping(value = "page-project-material-acceptance-view-by-current-login-user-and-project-id-and-task-id-and-installation")
+    @PreAuthorize("""
+            hasAnyRole('Admin') 
+            or  @ProjectPermission.isInProject(#projectId)
+            """)
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndInstallation(@RequestParam(value = "projectId") String projectId,
+                                                                                                      @RequestParam(value = "taskId") String taskId,
+                                                                                                      @RequestParam(value = "installation") String installation,
+                                                                                                      @RequestParam(value = "pageNo", required = false) Integer pageNo,
+                                                                                                      @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+
+        return projectMaterialFlow.getProjectMaterialAcceptanceViewListByCurrentLoginUserAndInstallation(projectId, taskId, installation, pageNo,
+                                                                                          pageSize);
+    }
+
+    @GetMapping(value = "page-project-material-acceptance-view-by-current-login-user-and-project-id-and-task-id-and-brand")
+    @PreAuthorize("""
+            hasAnyRole('Admin') 
+            or  @ProjectPermission.isInProject(#projectId)
+            """)
+    public Page<ProjectMaterialAcceptanceView> getProjectMaterialAcceptanceViewListByCurrentLoginUserAndBrand(@RequestParam(value = "projectId") String projectId,
+                                                                                                      @RequestParam(value = "taskId") String taskId,
+                                                                                                      @RequestParam(value = "brand") String brand,
+                                                                                                      @RequestParam(value = "pageNo", required = false) Integer pageNo,
+                                                                                                      @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+
+        return projectMaterialFlow.getProjectMaterialAcceptanceViewListByCurrentLoginUserAndBrand(projectId, taskId, brand, pageNo,
+                                                                                          pageSize);
+    }
+
 
     @GetMapping(value = "statistics-project-material-review-by-task-id")
     @PreAuthorize("""

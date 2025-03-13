@@ -573,7 +573,127 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
         List<String> resultData = getPageBoughtMaterialIdPageByProjectId(projectId,
                 pageNo - 1, pageSize);
         return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
-
+    }
+    /**
+     * 从服务器获得已经购买的、并且没有被禁止使用的物料
+     *
+     * @param projectId
+     * @param name
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public Page<String> getBoughtMaterialIdPageByProjectIdAndName(String projectId,
+                                                           String name,
+                                                           Integer pageNo,
+                                                           Integer pageSize) {
+        long totalCount = getCountBoughtMaterialIdPageByProjectIdAndName(projectId, name);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<String> resultData = getPageBoughtMaterialIdPageByProjectIdAndName(projectId, name,
+                pageNo - 1, pageSize);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
+    }
+    /**
+     * 从服务器获得已经购买的、并且没有被禁止使用的物料
+     *
+     * @param projectId
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public Page<String> getBoughtMaterialIdPageByProjectIdAndLocation(String projectId,
+                                                           String location,
+                                                           Integer pageNo,
+                                                           Integer pageSize) {
+        long totalCount = getCountBoughtMaterialIdPageByProjectIdAndLocation(projectId, location);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<String> resultData = getPageBoughtMaterialIdPageByProjectIdAndLocation(projectId, location,
+                pageNo - 1, pageSize);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
+    }
+    /**
+     * 从服务器获得已经购买的、并且没有被禁止使用的物料
+     *
+     * @param projectId
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public Page<String> getBoughtMaterialIdPageByProjectIdAndItemMark(String projectId,
+                                                           String itemMark,
+                                                           Integer pageNo,
+                                                           Integer pageSize) {
+        long totalCount = getCountBoughtMaterialIdPageByProjectIdAndItemMark(projectId, itemMark);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<String> resultData = getPageBoughtMaterialIdPageByProjectIdAndItemMark(projectId, itemMark,
+                pageNo - 1, pageSize);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
+    }
+    /**
+     * 从服务器获得已经购买的、并且没有被禁止使用的物料
+     *
+     * @param projectId
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public Page<String> getBoughtMaterialIdPageByProjectIdAndTechnology(String projectId,
+                                                           String technology,
+                                                           Integer pageNo,
+                                                           Integer pageSize) {
+        long totalCount = getCountBoughtMaterialIdPageByProjectIdAndTechnology(projectId, technology);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<String> resultData = getPageBoughtMaterialIdPageByProjectIdAndTechnology(projectId, technology,
+                pageNo - 1, pageSize);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
+    }
+    /**
+     * 从服务器获得已经购买的、并且没有被禁止使用的物料
+     *
+     * @param projectId
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public Page<String> getBoughtMaterialIdPageByProjectIdAndInstallation(String projectId,
+                                                           String installation,
+                                                           Integer pageNo,
+                                                           Integer pageSize) {
+        long totalCount = getCountBoughtMaterialIdPageByProjectIdAndInstallation(projectId, installation);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<String> resultData = getPageBoughtMaterialIdPageByProjectIdAndInstallation(projectId, installation,
+                pageNo - 1, pageSize);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
+    }
+    /**
+     * 从服务器获得已经购买的、并且没有被禁止使用的物料
+     *
+     * @param projectId
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public Page<String> getBoughtMaterialIdPageByProjectIdAndBrand(String projectId,
+                                                           String brand,
+                                                           Integer pageNo,
+                                                           Integer pageSize) {
+        long totalCount = getCountBoughtMaterialIdPageByProjectIdAndBrand(projectId, brand);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<String> resultData = getPageBoughtMaterialIdPageByProjectIdAndBrand(projectId, brand,
+                pageNo - 1, pageSize);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
     }
 
     @Override
@@ -672,6 +792,146 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
         return i;
     }
 
+    private int getCountBoughtMaterialIdPageByProjectIdAndName(String projectId, String name) {
+        name = "%" + name + "%";
+        Integer i = jdbcTemplate.queryForObject("""
+                        SELECT count(distinct (t_project_material_id)) 
+                        FROM t_use_material
+                        LEFT JOIN t_buy_material ON t_buy_material.t_use_material_id = t_use_material.id
+                        LEFT JOIN t_project_material ON t_use_material.t_project_material_id = t_project_material.id
+                        LEFT JOIN t_material ON t_project_material.t_material_id = t_material.id
+                        WHERE t_project_material.t_project_id=?
+                        AND  t_buy_material.deleted_at IS  null 
+                        AND  t_use_material.deleted_at IS  null  
+                        AND  t_material.deleted_at IS  null  
+                        AND  t_project_material.deleted_at IS  null  AND t_buy_material.id IN(
+                        SELECT t_buy_material_id
+                        FROM t_project_material_retest       
+                        WHERE need_retest=0 OR (review_result=1 AND need_retest = 1 )
+                        ) AND t_material.name LIKE ?
+                        """,
+                Integer.class, projectId, name);
+        return i;
+    }
+
+    private int getCountBoughtMaterialIdPageByProjectIdAndLocation(String projectId, String location) {
+        location = "%" + location + "%";
+        Integer i = jdbcTemplate.queryForObject("""
+                        SELECT count(distinct (t_project_material_id)) 
+                        FROM t_use_material
+                        LEFT JOIN t_buy_material ON t_buy_material.t_use_material_id = t_use_material.id
+                        LEFT JOIN t_project_material ON t_use_material.t_project_material_id = t_project_material.id
+                        LEFT JOIN t_material ON t_project_material.t_material_id = t_material.id
+                        WHERE t_project_material.t_project_id=?
+                        AND  t_buy_material.deleted_at IS  null 
+                        AND  t_use_material.deleted_at IS  null
+                        AND  t_material.deleted_at IS  null  
+                        AND  t_project_material.deleted_at IS  null  AND t_buy_material.id IN(
+                        SELECT t_buy_material_id
+                        FROM t_project_material_retest       
+                        WHERE need_retest=0 OR (review_result=1 AND need_retest = 1 )
+                        ) AND t_material.location LIKE ?
+                        """,
+                Integer.class, projectId, location);
+        return i;
+    }
+
+    private int getCountBoughtMaterialIdPageByProjectIdAndItemMark(String projectId, String itemMark) {
+        itemMark = "%" + itemMark + "%";
+        Integer i = jdbcTemplate.queryForObject("""
+                        SELECT count(distinct (t_project_material_id)) 
+                        FROM t_use_material
+                        LEFT JOIN t_buy_material ON t_buy_material.t_use_material_id = t_use_material.id
+                        LEFT JOIN t_project_material ON t_use_material.t_project_material_id = t_project_material.id
+                        LEFT JOIN t_material ON t_project_material.t_material_id = t_material.id
+                        WHERE t_project_material.t_project_id=?
+                        AND  t_buy_material.deleted_at IS  null 
+                        AND  t_use_material.deleted_at IS  null  
+                        AND  t_material.deleted_at IS  null
+                        AND  t_project_material.deleted_at IS  null  AND t_buy_material.id IN(
+                        SELECT t_buy_material_id
+                        FROM t_project_material_retest       
+                        WHERE need_retest=0 OR (review_result=1 AND need_retest = 1 )
+                        ) AND t_material.item_mark LIKE ?
+                        """,
+                Integer.class, projectId, itemMark);
+        return i;
+    }
+
+    private int getCountBoughtMaterialIdPageByProjectIdAndTechnology(String projectId, String technology) {
+        technology = "%" + technology + "%";
+        Integer i = jdbcTemplate.queryForObject("""
+                        SELECT count(distinct (t_project_material_id)) 
+                        FROM t_use_material
+                        LEFT JOIN t_buy_material ON t_buy_material.t_use_material_id = t_use_material.id
+                        LEFT JOIN t_project_material ON t_use_material.t_project_material_id = t_project_material.id
+                        LEFT JOIN t_material ON t_project_material.t_material_id = t_material.id
+                        WHERE t_project_material.t_project_id=?
+                        AND  t_buy_material.deleted_at IS  null 
+                        AND  t_use_material.deleted_at IS  null
+                        AND   t_material.deleted_at IS  null
+                        AND  t_project_material.deleted_at IS  null  AND t_buy_material.id IN(
+                        SELECT t_buy_material_id
+                        FROM t_project_material_retest       
+                        WHERE need_retest=0 OR (review_result=1 AND need_retest = 1 )
+                        ) AND t_material.technology LIKE ?
+                        """,
+                Integer.class, projectId, technology);
+        return i;
+    }
+
+    private int getCountBoughtMaterialIdPageByProjectIdAndInstallation(String projectId, String installation) {
+        installation = "%" + installation + "%";
+        Integer i = jdbcTemplate.queryForObject("""
+                        SELECT count(distinct (t_project_material_id)) 
+                        FROM t_use_material
+                        LEFT JOIN t_buy_material ON t_buy_material.t_use_material_id = t_use_material.id
+                        LEFT JOIN t_project_material ON t_use_material.t_project_material_id = t_project_material.id
+                        LEFT JOIN t_material ON t_project_material.t_material_id = t_material.id
+                        WHERE t_project_material.t_project_id=?
+                        AND  t_buy_material.deleted_at IS  null 
+                        AND  t_use_material.deleted_at IS  null
+                        AND   t_material.deleted_at IS  null
+                        AND  t_project_material.deleted_at IS  null  AND t_buy_material.id IN(
+                        SELECT t_buy_material_id
+                        FROM t_project_material_retest       
+                        WHERE need_retest=0 OR (review_result=1 AND need_retest = 1 )
+                        ) AND t_material.installation LIKE ?
+                        """,
+                Integer.class, projectId, installation);
+        return i;
+    }
+
+    private int getCountBoughtMaterialIdPageByProjectIdAndBrand(String projectId, String brand) {
+        brand = "%" + brand + "%";
+        Integer i = jdbcTemplate.queryForObject("""
+                        SELECT count(distinct (t_use_material.t_project_material_id)) 
+                        FROM t_use_material
+                        LEFT JOIN t_buy_material ON t_buy_material.t_use_material_id = t_use_material.id
+                        LEFT JOIN t_project_material ON t_use_material.t_project_material_id = t_project_material.id
+                        LEFT JOIN t_project_material_brand_private ON t_use_material.t_project_material_brand_private_id = t_project_material_brand_private.id
+                        LEFT JOIN t_project_material_brand_public ON t_use_material.t_project_material_brand_public_id = t_project_material_brand_public.id
+                        LEFT JOIN t_project_brand ON t_project_material_brand_private.t_project_brand_id = t_project_brand.id
+                        LEFT JOIN t_brand_public ON t_project_material_brand_public.t_brand_public_id = t_brand_public.id
+                        LEFT JOIN t_brand ON t_project_brand.t_brand_id = t_brand.id OR t_brand_public.t_brand_id = t_brand.id
+                        WHERE t_project_material.t_project_id=?
+                        AND  t_buy_material.deleted_at IS  null 
+                        AND  t_use_material.deleted_at IS  null
+                        AND t_project_material_brand_private.deleted_at IS  null
+                        AND t_project_material_brand_public.deleted_at IS  null
+                        AND t_project_brand.deleted_at IS  null
+                        AND t_brand_public.deleted_at IS  null
+                        AND t_brand.deleted_at IS  null
+                        AND  t_project_material.deleted_at IS  null  AND t_buy_material.id IN(
+                        SELECT t_buy_material_id
+                        FROM t_project_material_retest       
+                        WHERE need_retest=0 OR (review_result=1 AND need_retest = 1 )
+                        ) AND t_brand.name LIKE ?
+                        """,
+                Integer.class, projectId, brand);
+        return i;
+    }
+
     private List<String> getPageBoughtMaterialIdPageByProjectId(String projectId,
                                                                 int pageNo,
                                                                 int pageSize) {
@@ -697,6 +957,200 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
                     }
                 },
                 projectId, pageNo * pageSize, pageSize);
+    }
+
+    private List<String> getPageBoughtMaterialIdPageByProjectIdAndName(String projectId,
+                                                                String name,
+                                                                int pageNo,
+                                                                int pageSize) {
+        name = "%" + name + "%";
+        return jdbcTemplate.query("""
+                        SELECT distinct (t_project_material_id) 
+                                      FROM t_use_material
+                                      LEFT JOIN t_buy_material ON t_buy_material.t_use_material_id = t_use_material.id
+                                      LEFT JOIN t_project_material ON t_use_material.t_project_material_id = t_project_material.id
+                                      LEFT JOIN t_material ON t_project_material.t_material_id = t_material.id
+                                      WHERE t_project_material.t_project_id=?
+                                      AND  t_buy_material.deleted_at IS  null 
+                                      AND  t_use_material.deleted_at IS  null
+                                        AND t_material.deleted_at IS  null
+                                      AND  t_project_material.deleted_at IS  null  AND t_buy_material.id IN(
+                                      SELECT t_buy_material_id
+                                      FROM t_project_material_retest       
+                                      WHERE need_retest=0 OR (review_result=1 AND need_retest = 1)
+                                      ) AND t_material.name LIKE ?
+                        LIMIT ?,?
+                        """, new RowMapper<String>() {
+                    @Override
+                    public String mapRow(ResultSet rs,
+                                         int rowNum) throws SQLException {
+                        return rs.getString(1);
+                    }
+                },
+                projectId, name, pageNo * pageSize, pageSize);
+    }
+
+    private List<String> getPageBoughtMaterialIdPageByProjectIdAndLocation(String projectId,
+                                                                String location,
+                                                                int pageNo,
+                                                                int pageSize) {
+        location = "%" + location + "%";
+        return jdbcTemplate.query("""
+                        SELECT distinct (t_project_material_id) 
+                                      FROM t_use_material
+                                      LEFT JOIN t_buy_material ON t_buy_material.t_use_material_id = t_use_material.id
+                                      LEFT JOIN t_project_material ON t_use_material.t_project_material_id = t_project_material.id
+                                      LEFT JOIN t_material ON t_project_material.t_material_id = t_material.id
+                                      WHERE t_project_material.t_project_id=?
+                                      AND  t_buy_material.deleted_at IS  null 
+                                      AND  t_use_material.deleted_at IS  null  
+                                      AND  t_material.deleted_at IS  null  
+                                      AND  t_project_material.deleted_at IS  null  AND t_buy_material.id IN(
+                                      SELECT t_buy_material_id
+                                      FROM t_project_material_retest       
+                                      WHERE need_retest=0 OR (review_result=1 AND need_retest = 1)
+                                      ) AND t_material.location LIKE ?
+                        LIMIT ?,?
+                        """, new RowMapper<String>() {
+                    @Override
+                    public String mapRow(ResultSet rs,
+                                         int rowNum) throws SQLException {
+                        return rs.getString(1);
+                    }
+                },
+                projectId, location, pageNo * pageSize, pageSize);
+    }
+
+    private List<String> getPageBoughtMaterialIdPageByProjectIdAndItemMark(String projectId,
+                                                                String itemMark,
+                                                                int pageNo,
+                                                                int pageSize) {
+        itemMark = "%" + itemMark + "%";
+        return jdbcTemplate.query("""
+                        SELECT distinct (t_project_material_id) 
+                                      FROM t_use_material
+                                      LEFT JOIN t_buy_material ON t_buy_material.t_use_material_id = t_use_material.id
+                                      LEFT JOIN t_project_material ON t_use_material.t_project_material_id = t_project_material.id
+                                      LEFT JOIN t_material ON t_project_material.t_material_id = t_material.id
+                                      WHERE t_project_material.t_project_id=?
+                                      AND  t_buy_material.deleted_at IS  null 
+                                      AND  t_use_material.deleted_at IS  null  
+                                      AND  t_material.deleted_at IS  null  
+                                      AND  t_project_material.deleted_at IS  null  AND t_buy_material.id IN(
+                                      SELECT t_buy_material_id
+                                      FROM t_project_material_retest       
+                                      WHERE need_retest=0 OR (review_result=1 AND need_retest = 1)
+                                      ) AND t_material.item_mark LIKE ?
+                        LIMIT ?,?
+                        """, new RowMapper<String>() {
+                    @Override
+                    public String mapRow(ResultSet rs,
+                                         int rowNum) throws SQLException {
+                        return rs.getString(1);
+                    }
+                },
+                projectId, itemMark, pageNo * pageSize, pageSize);
+    }
+
+    private List<String> getPageBoughtMaterialIdPageByProjectIdAndTechnology(String projectId,
+                                                                String technology,
+                                                                int pageNo,
+                                                                int pageSize) {
+        technology = "%" + technology + "%";
+        return jdbcTemplate.query("""
+                        SELECT distinct (t_project_material_id) 
+                                      FROM t_use_material
+                                      LEFT JOIN t_buy_material ON t_buy_material.t_use_material_id = t_use_material.id
+                                      LEFT JOIN t_project_material ON t_use_material.t_project_material_id = t_project_material.id
+                                      LEFT JOIN t_material ON t_project_material.t_material_id = t_material.id
+                                      WHERE t_project_material.t_project_id=?
+                                      AND  t_buy_material.deleted_at IS  null 
+                                      AND  t_use_material.deleted_at IS  null  
+                                      AND  t_material.deleted_at IS  null  
+                                      AND  t_project_material.deleted_at IS  null  AND t_buy_material.id IN(
+                                      SELECT t_buy_material_id
+                                      FROM t_project_material_retest       
+                                      WHERE need_retest=0 OR (review_result=1 AND need_retest = 1)
+                                      ) AND t_material.technology LIKE ?
+                        LIMIT ?,?
+                        """, new RowMapper<String>() {
+                    @Override
+                    public String mapRow(ResultSet rs,
+                                         int rowNum) throws SQLException {
+                        return rs.getString(1);
+                    }
+                },
+                projectId, technology, pageNo * pageSize, pageSize);
+    }
+
+    private List<String> getPageBoughtMaterialIdPageByProjectIdAndInstallation(String projectId,
+                                                                String installation,
+                                                                int pageNo,
+                                                                int pageSize) {
+        installation = "%" + installation + "%";
+        return jdbcTemplate.query("""
+                        SELECT distinct (t_project_material_id) 
+                                      FROM t_use_material
+                                      LEFT JOIN t_buy_material ON t_buy_material.t_use_material_id = t_use_material.id
+                                      LEFT JOIN t_project_material ON t_use_material.t_project_material_id = t_project_material.id
+                                      LEFT JOIN t_material ON t_project_material.t_material_id = t_material.id
+                                      WHERE t_project_material.t_project_id=?
+                                      AND  t_buy_material.deleted_at IS  null 
+                                      AND  t_use_material.deleted_at IS  null  
+                                      AND  t_material.deleted_at IS  null  
+                                      AND  t_project_material.deleted_at IS  null  AND t_buy_material.id IN(
+                                      SELECT t_buy_material_id
+                                      FROM t_project_material_retest       
+                                      WHERE need_retest=0 OR (review_result=1 AND need_retest = 1)
+                                      ) AND t_material.installation LIKE ?
+                        LIMIT ?,?
+                        """, new RowMapper<String>() {
+                    @Override
+                    public String mapRow(ResultSet rs,
+                                         int rowNum) throws SQLException {
+                        return rs.getString(1);
+                    }
+                },
+                projectId, installation, pageNo * pageSize, pageSize);
+    }
+
+    private List<String> getPageBoughtMaterialIdPageByProjectIdAndBrand(String projectId,
+                                                                String brand,
+                                                                int pageNo,
+                                                                int pageSize) {
+        brand = "%" + brand + "%";
+        return jdbcTemplate.query("""
+                        SELECT distinct (t_use_material.t_project_material_id) 
+                                      FROM t_use_material
+                                      LEFT JOIN t_buy_material ON t_buy_material.t_use_material_id = t_use_material.id
+                                      LEFT JOIN t_project_material ON t_use_material.t_project_material_id = t_project_material.id
+                                        LEFT JOIN t_project_material_brand_private ON t_use_material.t_project_material_brand_private_id = t_project_material_brand_private.id
+                                        LEFT JOIN t_project_material_brand_public ON t_use_material.t_project_material_brand_public_id = t_project_material_brand_public.id
+                                        LEFT JOIN t_project_brand ON t_project_material_brand_private.t_project_brand_id = t_project_brand.id
+                                        LEFT JOIN t_brand_public ON t_project_material_brand_public.t_brand_public_id = t_brand_public.id
+                                        LEFT JOIN t_brand ON t_project_brand.t_brand_id = t_brand.id OR t_brand_public.t_brand_id = t_brand.id
+                                      WHERE t_project_material.t_project_id=?
+                                      AND  t_buy_material.deleted_at IS  null 
+                                      AND  t_use_material.deleted_at IS  null  
+                                      AND  t_project_material_brand_private.deleted_at IS  null  
+                                      AND  t_project_material_brand_public.deleted_at IS  null  
+                                      AND  t_project_brand.deleted_at IS  null  
+                                      AND  t_brand_public.deleted_at IS  null  
+                                      AND  t_brand.deleted_at IS  null  
+                                      AND  t_project_material.deleted_at IS  null  AND t_buy_material.id IN(
+                                      SELECT t_buy_material_id
+                                      FROM t_project_material_retest       
+                                      WHERE need_retest=0 OR (review_result=1 AND need_retest = 1)
+                                      ) AND t_brand.name Like ?
+                        LIMIT ?,?
+                        """, new RowMapper<String>() {
+                    @Override
+                    public String mapRow(ResultSet rs,
+                                         int rowNum) throws SQLException {
+                        return rs.getString(1);
+                    }
+                },
+                projectId, brand, pageNo * pageSize, pageSize);
     }
 
     private List<BuyMaterial> getPageReCheckIsRequiredQueryByProjectId(String projectId,
