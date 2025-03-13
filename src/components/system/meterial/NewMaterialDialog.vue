@@ -167,6 +167,7 @@ const onOk = async () => {
         console.error("材料创建失败");
       }
       emit("onDilalogOk", material);
+      window.location.reload()
     } catch (error) {
       console.error("提交表单时发生错误:", error);
       ElMessage.error("材料信息无效，请重新检查数据是否正确");

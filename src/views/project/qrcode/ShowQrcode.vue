@@ -73,7 +73,8 @@ const downloadQrCode = (qrcodeValue: string, ids: string, projectname: string, m
   console.log(qrcodeValue)
   const qrCodeSrc = document.getElementById(ids).src;
   const link = document.createElement('a');
-  link.href = qrCodeSrc; // 使用 qrCodeSrc 而不是 this.qrCodeValue
+  // 使用 qrCodeSrc 而不是 this.qrCodeValue
+  link.href = qrCodeSrc;
   link.download = projectname + ":第" + materialbatch + "批次:" + materialname + "-" + materialCount + materialunit;
   document.body.appendChild(link);
   link.click();
@@ -188,11 +189,13 @@ const inputReset = async () => {
               </div>
             </template>
           </el-table-column>
+
           <el-table-column label="材料名称">
             <template #default="scope">
               <div
                   style="display: flex; align-items: center"
                   class="project-title"
+                  v-if="scope.row.material"
               >
                 {{ scope.row.material.name }}
               </div>
