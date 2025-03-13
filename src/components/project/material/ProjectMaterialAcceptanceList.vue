@@ -86,6 +86,12 @@ import {
   serverGetTaskByCurrentLoginUser,
   serverGetTaskUseMaterialBrandSelectViewByProjectIdAndTaskId,
   serverGetProjecMaterialAcceptancePageViewByTaskId,
+  serverGetProjecMaterialAcceptancePageViewByTaskIdAndName,
+  serverGetProjecMaterialAcceptancePageViewByTaskIdAndLocation,
+  serverGetProjecMaterialAcceptancePageViewByTaskIdAndItemMark,
+  serverGetProjecMaterialAcceptancePageViewByTaskIdAndTechnology,
+  serverGetProjecMaterialAcceptancePageViewByTaskIdAndInstallation,
+  serverGetProjecMaterialAcceptancePageViewByTaskIdAndBrand,
 } from "@/server/project/projectmaterialflow";
 
 import { serverDownloadUseMaterialNewBrandFileById } from "@/server/project/usematerial";
@@ -146,19 +152,97 @@ const getProjectFromServer = async (projectId: string) => {
 };
 
 const getProjectMaterialAcceptanceViewFromSever = async () => {
-  console.log(projectId);
-  console.log(taskId);
-  const ret = await serverGetProjecMaterialAcceptancePageViewByTaskId(
-    projectId,
-    taskId,
-    pageNo.value,
-    pageSize.value
-  );
-  console.log(ret);
-  if (ret && ret.code == 200) {
-    projectViewPage.value = ret.data;
+  let search = searchText.value.trim();
+
+  if (search) {
+    console.log(searchSelect.value);
+
+    if (searchSelect.value == "0") {
+      //材料名称
+      console.log(search);
+      const ret = await serverGetProjecMaterialAcceptancePageViewByTaskIdAndName(
+        projectId,
+        taskId,
+        searchText.value,
+        pageNo.value,
+        pageSize.value
+      );
+      if (ret && ret.code == 200) {
+        projectViewPage.value = ret.data;
+      }
+    } else if (searchSelect.value == "1") {
+      //材料位置
+      const ret = await serverGetProjecMaterialAcceptancePageViewByTaskIdAndLocation(
+        projectId,
+        taskId,
+        searchText.value,
+        pageNo.value,
+        pageSize.value
+      );
+      if (ret && ret.code == 200) {
+        projectViewPage.value = ret.data;
+      }
+    } else if (searchSelect.value == "2") {
+      //编号
+      const ret = await serverGetProjecMaterialAcceptancePageViewByTaskIdAndItemMark(
+        projectId,
+        taskId,
+        searchText.value,
+        pageNo.value,
+        pageSize.value
+      );
+      if (ret && ret.code == 200) {
+        projectViewPage.value = ret.data;
+      }
+    } else if (searchSelect.value == "3") {
+      //技术要求
+      const ret = await serverGetProjecMaterialAcceptancePageViewByTaskIdAndTechnology(
+        projectId,
+        taskId,
+        searchText.value,
+        pageNo.value,
+        pageSize.value
+      );
+      if (ret && ret.code == 200) {
+        projectViewPage.value = ret.data;
+      }
+    } else if (searchSelect.value == "4") {
+      //施工要求
+      const ret = await serverGetProjecMaterialAcceptancePageViewByTaskIdAndInstallation(
+        projectId,
+        taskId,
+        searchText.value,
+        pageNo.value,
+        pageSize.value
+      );
+      if (ret && ret.code == 200) {
+        projectViewPage.value = ret.data;
+      }
+    } else if (searchSelect.value == "5") {
+      //品牌
+      const ret = await serverGetProjecMaterialAcceptancePageViewByTaskIdAndBrand(
+        projectId,
+        taskId,
+        searchText.value,
+        pageNo.value,
+        pageSize.value
+      );
+      if (ret && ret.code == 200) {
+        projectViewPage.value = ret.data;
+      }
+    }
+  } else {
+    const ret = await serverGetProjecMaterialAcceptancePageViewByTaskId(
+      projectId,
+      taskId,
+      pageNo.value,
+      pageSize.value
+    );
+    console.log(ret);
+    if (ret && ret.code == 200) {
+      projectViewPage.value = ret.data;
+    }
   }
-  console.log(projectViewPage.value);
 };
 
 const tableData = computed(() => {
@@ -266,6 +350,15 @@ watchEffect(async () => {
   }
 });
 
+const onSearchClick = async () => {
+  let search = searchText.value.trim();
+
+  if (search) {
+    pageNo.value = 1;
+  }
+  await getProjectMaterialAcceptanceViewFromSever();
+};
+
 const collapsed = ref(false);
 const textElipsisValue = ref(false);
 </script>
@@ -315,7 +408,6 @@ const textElipsisValue = ref(false);
                 <el-option label="技术要求" value="3" />
                 <el-option label="施工要求" value="4" />
                 <el-option label="品牌" value="5" />
-                <el-option label="审核状态" value="6" />
               </el-select>
             </template>
             <template #append>

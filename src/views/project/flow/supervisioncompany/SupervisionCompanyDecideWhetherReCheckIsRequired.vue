@@ -407,6 +407,12 @@ const submitToServerManagerDirect = async (userId: string) => {
     };
     projectMaterialRetestList.push(projectMaterialRetest);
   }
+for (let i = 0; i < projectMaterialRetestList.length; i++) {
+    const element = projectMaterialRetestList[i];
+    if (radio.value==1 && form.radioReviewResult==1) {
+      element.reviewResult = 1
+  }
+}
 
   //直接审核
   const projectMaterialRetestForm: IServerProjectMaterialRetestForm = {
