@@ -170,6 +170,7 @@ const getdesignUnpass = async (projectId,materialId) => {
                     <el-descriptions
                         :column="1"
                         border
+                        v-if="item.reviewcotent"
                     >
                       <el-descriptions-item label="提交单位" >{{item.company.companyType	 }}</el-descriptions-item>
                       <el-descriptions-item label="提交单位名字" >{{ item.company.name }}</el-descriptions-item>
