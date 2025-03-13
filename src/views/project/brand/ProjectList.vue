@@ -14,7 +14,8 @@ import {
   serverProjectDelete,
   serverGetProjectViewById,
   serverGetProjectPageView,
-  serverGetProjectPageViewByKeyword,
+  serverGetProjectPageViewByProjectName,
+  serverGetProjectPageViewByProjectLocation,
 } from "@/server/project/project";
 
 //服务器返回到前端的类型
@@ -89,37 +90,60 @@ const onSearchClick = async () => {
   if (search) {
     pageNo.value = 1;
   }
-
-  try {
-    // 调用 API 搜索包含特定关键字的项目
-    const ret = await serverGetProjectPageViewByKeyword(
-      search,
-      pageNo.value,
-      pageSize.value
-    );
-
-    if (ret && ret.code == 200) {
-      projectViewPage.value = ret.data;
-    }
-  } catch (error) {
-    ElMessage.error("搜索失败");
-    console.error("获取项目列表失败", error);
-  }
+  await fetchTableData();
+  
 };
 
 // 获取项目列表
 const fetchTableData = async () => {
-  try {
-    // 调用 API 获取项目列表
-    const ret = await serverGetProjectPageView(pageNo.value, pageSize.value);
+  let search = searchText.value.trim();
+  if (searchSelect.value == "0") {
+      try {
+      // 调用 API 搜索包含特定关键字的项目
+      const ret = await serverGetProjectPageViewByProjectName(
+        search,
+        pageNo.value,
+        pageSize.value
+      );
 
-    if (ret && ret.code == 200) {
-      projectViewPage.value = ret.data;
+      if (ret && ret.code == 200) {
+        projectViewPage.value = ret.data;
+      }
+    } catch (error) {
+      ElMessage.error("搜索失败");
+      console.error("获取项目列表失败", error);
     }
-  } catch (error) {
-    ElMessage.error("获取项目列表失败");
-    console.error("获取项目列表失败", error);
+  } else if (searchSelect.value == "1") {
+      try {
+      // 调用 API 搜索包含特定关键字的项目
+      const ret = await serverGetProjectPageViewByProjectLocation(
+        search,
+        pageNo.value,
+        pageSize.value
+      );
+
+      if (ret && ret.code == 200) {
+        projectViewPage.value = ret.data;
+      }
+    } catch (error) {
+      ElMessage.error("搜索失败");
+      console.error("获取项目列表失败", error);
+    }
+  } else {
+    try {
+    // 调用 API 获取项目列表
+      const ret = await serverGetProjectPageView(pageNo.value, pageSize.value);
+
+      if (ret && ret.code == 200) {
+        projectViewPage.value = ret.data;
+      }
+    } catch (error) {
+      ElMessage.error("获取项目列表失败");
+      console.error("获取项目列表失败", error);
+    }
   }
+
+  
 };
 
 // 在组件挂载时获取数据

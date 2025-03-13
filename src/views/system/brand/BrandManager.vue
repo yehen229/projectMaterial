@@ -232,50 +232,50 @@ const onExcelUploadDialogOk = () => {
   dialogFormExcelVisible.value = false;
 };
 
-/**
- * 上传Excel文件，导入用户
- */
-const onExcelUploadButtonClick = () => {
-  dialogFormExcelVisible.value = true;
-};
+// /**
+//  * 上传Excel文件，导入用户
+//  */
+// const onExcelUploadButtonClick = () => {
+//   dialogFormExcelVisible.value = true;
+// };
 
-/**
- * 下载用户名单
- * @param index
- * @param row
- */
-const onDownloadExcelButtonClick = async () => {
-  const downloadFilename = "用户名单";
+// /**
+//  * 下载用户名单
+//  * @param index
+//  * @param row
+//  */
+// const onDownloadExcelButtonClick = async () => {
+//   const downloadFilename = "用户名单";
 
-  loading.value = true;
-  let search = searchText.value.trim();
+//   loading.value = true;
+//   let search = searchText.value.trim();
 
-  if (search) {
-    if (searchSelect.value == "用户名称") {
-      //用户名称
-      const ret = await serverDownloadCompanyUserByUserNamer(
-        searchText.value,
-        downloadFilename
-      );
-    } else if (searchSelect.value == "项目名称") {
-      //项目名称
-      const ret = await serverDownloadCompanyUserByProjectName(
-        searchText.value,
-        downloadFilename
-      );
-    } else if (searchSelect.value == "单位名称") {
-      //单位名称
-      const ret = await serverDownloadCompanyUserByCompanyName(
-        searchText.value,
-        downloadFilename
-      );
-    }
-  } else {
-    await serverDownloadAllCompanyUser(downloadFilename);
-  }
+//   if (search) {
+//     if (searchSelect.value == "用户名称") {
+//       //用户名称
+//       const ret = await serverDownloadCompanyUserByUserNamer(
+//         searchText.value,
+//         downloadFilename
+//       );
+//     } else if (searchSelect.value == "项目名称") {
+//       //项目名称
+//       const ret = await serverDownloadCompanyUserByProjectName(
+//         searchText.value,
+//         downloadFilename
+//       );
+//     } else if (searchSelect.value == "单位名称") {
+//       //单位名称
+//       const ret = await serverDownloadCompanyUserByCompanyName(
+//         searchText.value,
+//         downloadFilename
+//       );
+//     }
+//   } else {
+//     await serverDownloadAllCompanyUser(downloadFilename);
+//   }
 
-  loading.value = false;
-};
+//   loading.value = false;
+// };
 
 const goBack = () => {
   history.back();
