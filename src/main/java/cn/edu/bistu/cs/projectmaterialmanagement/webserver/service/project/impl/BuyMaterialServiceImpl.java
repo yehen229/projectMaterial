@@ -154,6 +154,11 @@ public class BuyMaterialServiceImpl implements IBuyMaterialService {
     public int getCountByProjectMaterialBrandPublicId(String projectMaterialBrandPublicId) {
         return buyMaterialRepository.getCountByProjectMaterialBrandPublicId(projectMaterialBrandPublicId);
     }
+    @Override
+    public int getMaxBatchByBatchIdAndProjectId(String projectId){
+        Integer maxBatch = buyMaterialRepository.findMaxBatchByBatchId(projectId);
+        return maxBatch;
+    }
 
     /**
      * 根据id得到BuyMaterial
@@ -339,7 +344,10 @@ public class BuyMaterialServiceImpl implements IBuyMaterialService {
             if (buyQrcodeMaterialView != null) {
 //                list.add(buyQrcodeMaterialView);
                 BuyMaterial viewBuyMaterial = buyQrcodeMaterialView.getBuyMaterial();
+
                 Material material = buyQrcodeMaterialView.getMaterial();
+                if (material == null) continue;
+
                 Project project = buyQrcodeMaterialView.getProject();
 
                 if (projectname != null && project.getName() != null && batch != -1 && viewBuyMaterial.getBatch() != -1 && materialname != null && material.getName() != null) {

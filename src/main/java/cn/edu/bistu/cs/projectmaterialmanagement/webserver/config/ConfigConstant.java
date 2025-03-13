@@ -6,12 +6,12 @@ public class ConfigConstant {
 //    private final static String FILE_PATH_WINDOWS = "D:\\研究生\\研究生\\项目\\project\\temp";
 //    private final static String FILE_PATH_TEMP_WINDOWS = "D:\\研究生\\研究生\\项目\\project\\temp";
 
-    private final static String FILE_PATH_WINDOWS = "C:\\Users\\hbs\\own\\Project\\MaterialManagefiles\\temp";
-    private final static String FILE_PATH_TEMP_WINDOWS = "C:\\Users\\hbs\\own\\Project\\MaterialManagefiles\\temp";
+    private final static String FILE_PATH_WINDOWS = "D:\\yan2\\MaterialManage\\temp";
+    private final static String FILE_PATH_TEMP_WINDOWS = "D:\\yan2\\MaterialManage\\temp";
 
 
     //题目中的图片等路径，用于Markdown中
-    private final static String FILE_FRONT_PATH_WINDOWS = "C:\\Users\\hbs\\own\\Project\\MaterialManagefiles\\frontend\\public\\static\\";
+    private final static String FILE_FRONT_PATH_WINDOWS = "D:\\yan2\\MaterialManage\\temp";
 
     //Linux平台下路径
     private final static String FILE_PATH_LINUX = "/www/wwwroot/webserver/temp";

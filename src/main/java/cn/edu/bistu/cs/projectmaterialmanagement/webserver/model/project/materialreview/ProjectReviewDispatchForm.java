@@ -9,6 +9,15 @@ public class ProjectReviewDispatchForm {
     private int designCompanyIndex;
     private ProjectReviewMode projectReviewMode;
     private String[] employeeIds;
+    private String companyId;
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
 
     public ProjectReviewMode getProjectReviewMode() {
         return projectReviewMode;

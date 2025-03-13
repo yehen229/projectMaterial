@@ -40,7 +40,7 @@ public interface IBuyMaterialRepository {
     int getCountByProjectMaterialBrandPrivateId(String projectMaterialBrandPrivateId);
 
     int getCountByProjectMaterialBrandPublicId(String projectMaterialBrandPublicId);
-
+    int findMaxBatchByBatchId(String projectId);
 
     BuyMaterial getById(String id);
 

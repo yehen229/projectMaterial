@@ -274,6 +274,20 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
                 Integer.class, projectMaterialBrandPublicId);
         return i;
     }
+    @Override
+    public int findMaxBatchByBatchId(String projectId){
+        Integer maxBatch = jdbcTemplate.queryForObject(
+                """
+                SELECT COALESCE(MAX(bm.batch), 0)
+                FROM t_buy_material bm
+                JOIN t_buy_material_batch bmb ON bm.t_buy_material_batch_id = bmb.id
+                WHERE bmb.t_project_id = ?
+                """,
+                Integer.class,
+                projectId
+        );
+        return (maxBatch == null ? 0 : maxBatch) + 1;
+    }
 
     /**
      * 根据id得到记录
