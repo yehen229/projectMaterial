@@ -112,7 +112,15 @@ import {
   serverGetProjectBrandViewListByProjectId,
 } from "@/server/project/projectbrand";
 
-import { serverGetBoughtUseMaterialPageViewByProject } from "@/server/project/usematerial";
+import {
+  serverGetBoughtUseMaterialPageViewByProject,
+  serverGetBoughtUseMaterialPageViewByProjectAndName,
+  serverGetBoughtUseMaterialPageViewByProjectAndLocation,
+  serverGetBoughtUseMaterialPageViewByProjectAndItemMark,
+  serverGetBoughtUseMaterialPageViewByProjectAndTechnology,
+  serverGetBoughtUseMaterialPageViewByProjectAndInstallation,
+  serverGetBoughtUseMaterialPageViewByProjectAndBrand
+ } from "@/server/project/usematerial";
 import { IServerUseMaterialView } from "@/server/types/project/review";
 
 //服务器返回到前端的类型
@@ -184,9 +192,9 @@ const getProjectBoughtMaterialViewFromSever = async () => {
     console.log(searchSelect.value);
 
     if (searchSelect.value == "0") {
-      //单位类型
+      //材料名称
       console.log(search);
-      const ret = await serverGetCompanyPageByCompanyName(
+      const ret = await serverGetBoughtUseMaterialPageViewByProjectAndName(
         props.projectId,
         searchText.value,
         pageNo.value,
@@ -196,8 +204,52 @@ const getProjectBoughtMaterialViewFromSever = async () => {
         projectMaterialViewPageData.value = ret.data;
       }
     } else if (searchSelect.value == "1") {
-      //单位名称
-      const ret = await serverGetCompanyPageByCompanyType(
+      //材料位置
+      const ret = await serverGetBoughtUseMaterialPageViewByProjectAndLocation(
+        props.projectId,
+        searchText.value,
+        pageNo.value,
+        pageSize.value
+      );
+      if (ret && ret.code == 200) {
+        projectMaterialViewPageData.value = ret.data;
+      }
+    } else if (searchSelect.value == "2") {
+      //编号
+      const ret = await serverGetBoughtUseMaterialPageViewByProjectAndItemMark(
+        props.projectId,
+        searchText.value,
+        pageNo.value,
+        pageSize.value
+      );
+      if (ret && ret.code == 200) {
+        projectMaterialViewPageData.value = ret.data;
+      }
+    } else if (searchSelect.value == "3") {
+      //技术要求
+      const ret = await serverGetBoughtUseMaterialPageViewByProjectAndTechnology(
+        props.projectId,
+        searchText.value,
+        pageNo.value,
+        pageSize.value
+      );
+      if (ret && ret.code == 200) {
+        projectMaterialViewPageData.value = ret.data;
+      }
+    } else if (searchSelect.value == "4") {
+      //施工要求
+      const ret = await serverGetBoughtUseMaterialPageViewByProjectAndInstallation(
+        props.projectId,
+        searchText.value,
+        pageNo.value,
+        pageSize.value
+      );
+      if (ret && ret.code == 200) {
+        projectMaterialViewPageData.value = ret.data;
+      }
+    } else if (searchSelect.value == "5") {
+      //品牌
+      const ret = await serverGetBoughtUseMaterialPageViewByProjectAndBrand(
         props.projectId,
         searchText.value,
         pageNo.value,

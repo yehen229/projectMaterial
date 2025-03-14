@@ -320,7 +320,7 @@ const submitProcess = async () => {
   if (response && response.code === 200) {
     // Debug: 查看创建结果
     console.log(response.data);
-    ElMessage.success("订购成功");
+    ElMessage.success("验收成功");
   } else {
     console.error("订购失败");
   }

@@ -172,6 +172,8 @@ const onRowShowButtonClick = async (
   updateProjectMaterialView.value = useMaterialView.projectMaterialView;
   dialogShowDetailsVisible.value = true;
   updateUseProjectMaterialView.value = useMaterialView;
+  console.log(updateUseProjectMaterialView.value, "updatetetetetet");
+  
 };
 
 const onShowProjectMaterialDialogCancel = () => {

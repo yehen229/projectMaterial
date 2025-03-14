@@ -173,8 +173,8 @@ const dialogFormVisible = computed({
 const materialClassifyOption = ref<IMaterialClassifyOption[]>([]);
 const onOpenDialog = async () => {
   materialClassifyOption.value = await generateMaterialClassifyOption();
-  console.log(materialClassifyOption.value);
-
+  console.log(materialClassifyOption.value, "yesyesyesyes");
+  
   form.materialId = props.projectMaterialView.projectMaterial.materialId;
   form.materialClassifySectionId =
     props.projectMaterialView.material.materialClassifySectionId;
