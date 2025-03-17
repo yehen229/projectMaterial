@@ -184,7 +184,7 @@ export async function serverGetProjectListPageView(
         let res = await axios.get<
             any,
             IServerResponseData<IServerPage<IServerProjectView>>
-        >(BASEURL.statisticalanalysis + "getList", {
+        >(BASEURL.statisticalanalysis + "get_page_project_list", {
             params: {
                 pageNo: pageNo,
                 pageSize: pageSize,
@@ -206,7 +206,7 @@ export async function byprojectname_getList(
         let res = await axios.get<
             any,
             IServerResponseData<IServerPage<IServerProjectView>>
-        >(BASEURL.statisticalanalysis + "byprojectname-getList", {
+        >(BASEURL.statisticalanalysis + "get_search_page_project_list", {
             params: {
                 projectName:projectName,
                 pageNo: pageNo,
@@ -220,13 +220,13 @@ export async function byprojectname_getList(
     }
 }
 
-export async function getAllList_agree(
+export async function getAllList_processing(
 ): Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
     try {
         let res = await axios.get<
             any,
             IServerResponseData<IServerPage<IServerProjectView>>
-        >(BASEURL.statisticalanalysis + "getAllList_agree", {
+        >(BASEURL.statisticalanalysis + "get_processing_project_count", {
             params: {
             },
         });
@@ -236,13 +236,13 @@ export async function getAllList_agree(
         throw err;
     }
 }
-export async function getAllList_disagree(
+export async function getAllList_end(
 ): Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
     try {
         let res = await axios.get<
             any,
             IServerResponseData<IServerPage<IServerProjectView>>
-        >(BASEURL.statisticalanalysis + "getAllList_disagree", {
+        >(BASEURL.statisticalanalysis + "get_end_project_count", {
             params: {
             },
         });
@@ -259,7 +259,7 @@ export async function getchart_projectname_totalReviewResulDisagree(
         let res = await axios.get<
             any,
             IServerResponseData<IServerPage<IServerProjectView>>
-        >(BASEURL.statisticalanalysis + "getchart_projectname_totalReviewResulDisagree", {
+        >(BASEURL.statisticalanalysis + "getAllList_disagree", {
             params: {
             },
         });
