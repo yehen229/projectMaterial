@@ -25,5 +25,20 @@ public interface IStatisticalanalysisRepository {
 
     List<OnematerialUnpassjianliandgongchengbu> getunpassreviewcontentjianliandgongchengbu(String projectid, String materialid);
 
+//    获取设计部审核不通过或通过的次数
+    List<Stastisprojectidandcount> getdesignunpassorpassList(int result);
+    Integer getdesignunpassorpassCount(String projectid,int result);
+
+//    获取总包审核审核不通过或通过的次数
+    List<Stastisprojectidandcount> getzongbaounpassorpassList(int result);
+    Integer getzongbaounpassorpassCount(String projectid, int result);
+
+//    监理审核不通过或通过的次数
+    List<Stastisprojectidandcount> getjianliunpassorpassList(int result);
+    Integer getjianliunpassorpassCount(String projectid, int result);
+//    监理与工程部
+    List<Stastisprojectidandcount> getjianliandgongchengbuunpassorpassList(int result);
+    Integer getjianliandgongchengbuunpassorpassCount(String projectid, int result);
+
 
 }
