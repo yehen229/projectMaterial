@@ -19,6 +19,188 @@ public class StatisticalanalysisRepositoryImpl implements IStatisticalanalysisRe
         this.jdbcTemplate = jdbcTemplate;
     }
 
+//    获取设计部审核项目id
+    public  List<Stastisprojectidandcount> getdesignunpassorpassList(int result){
+        return jdbcTemplate.query("""
+                SELECT DISTINCT\s
+                t_project_material.t_material_id,
+                t_project_material.t_project_id,
+                t_project_material.t_company_id
+                FROM t_project_material,t_project_review_mode,t_project_review,t_project_review_user
+                    WHERE t_project_material.t_company_id=t_project_review_mode.t_company_id\s
+                       	AND  t_project_material.t_project_id=t_project_review_mode.t_project_id
+                       	AND  t_project_review.t_project_review_mode_id=t_project_review_mode.id
+                   	AND t_project_review.review_result= ?
+                       	AND t_project_review.id =t_project_review_user.t_project_review_id                       
+                     """, new DesignreviewMapper(), result);
+
+    }
+    private static final class DesignreviewMapper implements RowMapper<Stastisprojectidandcount> {
+        @Override
+        public Stastisprojectidandcount mapRow(ResultSet rs,
+                                         int rowNum) throws SQLException {
+            Stastisprojectidandcount unpassmaterialmessage = new Stastisprojectidandcount();
+            // 去掉多余的逗号
+            unpassmaterialmessage.setDesigntMaterialId(rs.getString("t_material_id"));
+            unpassmaterialmessage.setDesignProjectId(rs.getString("t_project_id"));
+            unpassmaterialmessage.setDesigntCompanyId(rs.getString("t_company_id"));
+            return unpassmaterialmessage;
+        }
+    }
+    public Integer getdesignunpassorpassCount(String projectid, int result){
+       Integer i = jdbcTemplate.queryForObject("""                
+               select  count(*)
+               from t_project_review_user ,t_project_review
+               WHERE t_project_review_user.t_project_review_id = t_project_review.id
+               and t_project_review_user.review_result = ?
+               and t_project_review.t_project_id=   ?
+               """,
+               Integer.class,result, projectid);
+       if (i == null || i == 0)
+           return null;
+       return i;
+   }
+
+//    获取总包审核
+    public  List<Stastisprojectidandcount> getzongbaounpassorpassList(int result){
+    return jdbcTemplate.query("""
+                       SELECT
+                       t_project_material.t_project_id,
+                       t_project_material.t_material_id,
+                       MAX(t_project_appearance_review_user.review_datetime)  AS latest_review_time
+                   FROM
+                       t_project_material
+                   JOIN t_use_material ON t_project_material.id  = t_use_material.t_project_material_id
+                   JOIN t_project_appearance_review_mode ON t_use_material.t_use_material_brand_select_id = t_project_appearance_review_mode.t_use_material_brand_select_id
+                   JOIN t_project_appearance_review ON t_project_appearance_review_mode.id  = t_project_appearance_review.t_project_appearance_review_mode_id
+                   JOIN t_project_appearance_review_user ON t_project_appearance_review.id  = t_project_appearance_review_user.t_project_appearance_review_id
+                   WHERE
+                       t_project_appearance_review.review_result  = ?
+                   GROUP BY
+                       t_project_material.t_project_id,
+                       t_project_material.t_material_id
+                   ORDER BY
+                       latest_review_time DESC                  
+                     """, new ZongbaoreviewMapper(), result);
+}
+    private static final class ZongbaoreviewMapper implements RowMapper<Stastisprojectidandcount> {
+        @Override
+        public Stastisprojectidandcount mapRow(ResultSet rs,
+                                         int rowNum) throws SQLException {
+            Stastisprojectidandcount unpassmaterialmessage = new Stastisprojectidandcount();
+            // 去掉多余的逗号
+            unpassmaterialmessage.setZongbaoMaterialId(rs.getString("t_material_id"));
+            unpassmaterialmessage.setZongbaoProjectId(rs.getString("t_project_id"));
+            return unpassmaterialmessage;
+        }
+    }
+    public Integer getzongbaounpassorpassCount(String projectid, int result){
+        Integer i = jdbcTemplate.queryForObject("""                
+                        SELECT   COUNT( DISTINCT t_project_appearance_review_mode.t_use_material_brand_select_id)
+                         FROM t_project_material ,t_project_appearance_review,t_project_appearance_review_mode,t_project_appearance_review_user,t_use_material
+                         WHERE t_project_material.id =t_use_material.t_project_material_id
+                         	AND t_use_material.t_use_material_brand_select_id = t_project_appearance_review_mode.t_use_material_brand_select_id
+                         	AND t_project_appearance_review_mode.id =t_project_appearance_review.t_project_appearance_review_mode_id
+                         	AND t_project_appearance_review.review_result=?
+                         	AND t_project_appearance_review.id =t_project_appearance_review_user.t_project_appearance_review_id
+                         	AND t_project_material.t_project_id=?
+                         """,
+                Integer.class, result, projectid);
+        if (i == null || i == 0)
+            return null;
+        return i;
+    }
+//获取监理审核
+    public  List<Stastisprojectidandcount> getjianliunpassorpassList(int result){
+    return jdbcTemplate.query("""       
+                SELECT t_buy_material.t_use_material_id,t_project_material_retest_batch.t_project_id,
+                			 MAX(t_project_material_retest.review_datetime) AS latest_review_time
+                FROM t_buy_material , t_project_material_retest,t_project_material_retest_batch
+                WHERE t_buy_material.t_buy_material_batch_id = t_project_material_retest_batch.t_buy_material_batch_id
+                			AND t_project_material_retest_batch.id  = t_project_material_retest.t_project_material_retest_batch_id
+                			AND t_buy_material.id  = t_project_material_retest.t_buy_material_id
+                			AND t_project_material_retest.review_result= ?
+                GROUP BY t_buy_material.t_use_material_id,
+                				 t_project_material_retest_batch.t_project_id
+                ORDER BY latest_review_time DESC
+                             """, new JianliStatisticalanalysisgetUnpassReviewJianliMapper(),  result);
+}
+    private static final class JianliStatisticalanalysisgetUnpassReviewJianliMapper implements RowMapper<Stastisprojectidandcount> {
+        @Override
+        public Stastisprojectidandcount mapRow(ResultSet rs,
+                                         int rowNum) throws SQLException {
+            Stastisprojectidandcount unpassmaterialmessage = new Stastisprojectidandcount();
+            // 去掉多余的逗号
+            unpassmaterialmessage.setJianliMaterialId(rs.getString("t_use_material_id"));
+            unpassmaterialmessage.setJianliProjectId(rs.getString("t_project_id"));
+            return unpassmaterialmessage;
+        }
+    }
+    public  Integer getjianliunpassorpassCount(String projectid, int result){
+        Integer i = jdbcTemplate.queryForObject("""                
+                                SELECT COUNT(*)
+                                 FROM t_buy_material , t_project_material_retest,t_project_material_retest_batch
+                                 WHERE t_buy_material.t_buy_material_batch_id = t_project_material_retest_batch.t_buy_material_batch_id
+                                    			AND t_project_material_retest_batch.id  = t_project_material_retest.t_project_material_retest_batch_id
+                                     			AND t_buy_material.id  = t_project_material_retest.t_buy_material_id
+                                 			AND t_project_material_retest.review_result= ?
+                                 			AND t_project_material_retest_batch.t_project_id=?
+                        """,
+                Integer.class,result, projectid);
+        if (i == null || i == 0)
+            return null;
+        return i;
+    }
+
+//监理与工程部
+    public  List<Stastisprojectidandcount> getjianliandgongchengbuunpassorpassList(int result){
+        return jdbcTemplate.query("""       
+                SELECT t_project_material_acceptance_batch.t_project_id,t_project_material_acceptance.t_project_material_id,
+                			 MAX(t_project_material_acceptance_review_user.review_datetime) AS latest_review_time
+                FROM t_project_material_acceptance , t_project_material_acceptance_batch,t_project_material_acceptance_review_mode,
+                	   t_project_material_acceptance_review,t_project_material_acceptance_review_user
+                 WHERE t_project_material_acceptance_review_user.t_project_material_acceptance_review_id = t_project_material_acceptance_review.id
+                   AND t_project_material_acceptance_review.t_project_material_acceptance_mode_id =    t_project_material_acceptance_review_mode.id
+                	 AND t_project_material_acceptance_review_mode.t_project_material_acceptance_batch_id = t_project_material_acceptance_batch.id
+                	 AND t_project_material_acceptance_batch.id = t_project_material_acceptance.t_project_material_acceptance_batch_id
+                   AND t_project_material_acceptance_review_user.review_result = ?
+                GROUP BY t_project_material_acceptance_batch.t_project_id,t_project_material_acceptance.t_project_material_id
+                ORDER BY latest_review_time DESC
+                             """, new JianliandgongchengbuStatisticalanalysisgetUnpassReviewJianliAndGongchengbuMapper(), result);
+}
+
+
+    private static final class JianliandgongchengbuStatisticalanalysisgetUnpassReviewJianliAndGongchengbuMapper implements RowMapper<Stastisprojectidandcount> {
+        @Override
+        public Stastisprojectidandcount mapRow(ResultSet rs,
+                                         int rowNum) throws SQLException {
+            Stastisprojectidandcount unpassmaterialmessage = new Stastisprojectidandcount();
+            // 去掉多余的逗号
+            unpassmaterialmessage.setJianliandgongchengbuMaterialId(rs.getString("t_project_material_id"));
+            unpassmaterialmessage.setJianliandgongchengbuProjectId(rs.getString("t_project_id"));
+            return unpassmaterialmessage;
+        }
+    }
+
+    public Integer getjianliandgongchengbuunpassorpassCount(String projectid ,int result){
+        Integer i = jdbcTemplate.queryForObject("""                
+                                SELECT count(DISTINCT t_project_material_acceptance_review_mode.t_project_material_acceptance_batch_id)
+                             FROM t_project_material_acceptance , t_project_material_acceptance_batch,t_project_material_acceptance_review_mode,
+                             	   t_project_material_acceptance_review,t_project_material_acceptance_review_user
+                              WHERE t_project_material_acceptance_review_user.t_project_material_acceptance_review_id = t_project_material_acceptance_review.id
+                                AND t_project_material_acceptance_review.t_project_material_acceptance_mode_id =    t_project_material_acceptance_review_mode.id
+                             	 AND t_project_material_acceptance_review_mode.t_project_material_acceptance_batch_id = t_project_material_acceptance_batch.id
+                             	 AND t_project_material_acceptance_batch.id = t_project_material_acceptance.t_project_material_acceptance_batch_id
+                                AND t_project_material_acceptance_review_user.review_result = ?
+                             AND t_project_material_acceptance_batch.t_project_id= ?
+                        """,
+                Integer.class, result, projectid);
+        if (i == null || i == 0)
+            return null;
+        return i;
+    }
+
+
     @Override
     public List<Unpassmaterialmessage> getUnpassmaterialmessage() {
         Integer i = jdbcTemplate.queryForObject("""                                    
@@ -83,13 +265,14 @@ public class StatisticalanalysisRepositoryImpl implements IStatisticalanalysisRe
 
     }
 
+    //    设计部经理审核
     @Override
     public Page<Unpassonlymaterial> getPage(int pageNo, int pageSize) {
         long totalCount = getCount();
         if (totalCount < 1) return new Page<>();
         int startIndex = Page.getStartOfPage(pageNo, pageSize);
         List<Unpassonlymaterial> resultData = getPageQuery(pageNo - 1, pageSize);
-        return new Page<>(0, totalCount, (int) totalCount, resultData);
+        return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
     }
 
     @Override
@@ -103,7 +286,7 @@ public class StatisticalanalysisRepositoryImpl implements IStatisticalanalysisRe
                         	AND t_project_review_mode.id =t_project_review.t_project_review_mode_id
                          	AND t_project_review.review_result=2
                         	AND t_project_review.id =t_project_review_user.t_project_review_id
-                                                                                                             	ORDER BY  t_project_review_user.review_datetime ASC
+                        	ORDER BY  t_project_review_user.review_datetime ASC
                                                          """,
                 Integer.class, projectid, companyid);
         if (i == null || i == 0)
@@ -275,7 +458,7 @@ public class StatisticalanalysisRepositoryImpl implements IStatisticalanalysisRe
 
     public List<OnematerialUnpassjianli> getunpassreviewcontentjianli(String projectid, String materialid) {
         Integer i = jdbcTemplate.queryForObject("""                
-                                      SELECT COUNT(*)
+                                SELECT COUNT(*)
                                  FROM t_buy_material , t_project_material_retest,t_project_material_retest_batch
                                  WHERE t_buy_material.t_buy_material_batch_id = t_project_material_retest_batch.t_buy_material_batch_id
                                     			AND t_project_material_retest_batch.id  = t_project_material_retest.t_project_material_retest_batch_id
@@ -324,9 +507,10 @@ public class StatisticalanalysisRepositoryImpl implements IStatisticalanalysisRe
         return new Page<>(startIndex, totalCount, (int) totalCount, resultData);
 
     }
+
     public int getUnpassReviewJianliAndGongchengbuliCount() {
         Integer i = jdbcTemplate.queryForObject("""
-                       
+                                               
                         SELECT COUNT(DISTINCT t_project_material_acceptance_batch.t_project_id,t_project_material_acceptance.t_project_material_id)
                         FROM t_project_material_acceptance , t_project_material_acceptance_batch,t_project_material_acceptance_review_mode,
                         	   t_project_material_acceptance_review,t_project_material_acceptance_review_user
@@ -339,8 +523,9 @@ public class StatisticalanalysisRepositoryImpl implements IStatisticalanalysisRe
                 Integer.class);
         return i == null ? 0 : i;
     }
+
     private List<Unpassonlymaterial> getUnpassReviewJianliAndGongchengbuPageQuery(int pageNo,
-                                                                    int pageSize) {
+                                                                                  int pageSize) {
         return jdbcTemplate.query("""       
                 SELECT t_project_material_acceptance_batch.t_project_id,t_project_material_acceptance.t_project_material_id,
                 			 MAX(t_project_material_acceptance_review_user.review_datetime) AS latest_review_time
@@ -375,18 +560,18 @@ public class StatisticalanalysisRepositoryImpl implements IStatisticalanalysisRe
             return null;
 
         return jdbcTemplate.query("""
-                        SELECT t_project_material_acceptance_review_user.id,t_project_material_acceptance_review_user.t_user_id,t_project_material_acceptance_review_user.review_content
-                FROM t_project_material_acceptance , t_project_material_acceptance_batch,t_project_material_acceptance_review_mode,
-                	   t_project_material_acceptance_review,t_project_material_acceptance_review_user
-                 WHERE t_project_material_acceptance_review_user.t_project_material_acceptance_review_id = t_project_material_acceptance_review.id
-                   AND t_project_material_acceptance_review.t_project_material_acceptance_mode_id =    t_project_material_acceptance_review_mode.id
-                	 AND t_project_material_acceptance_review_mode.t_project_material_acceptance_batch_id = t_project_material_acceptance_batch.id
-                	 AND t_project_material_acceptance_batch.id = t_project_material_acceptance.t_project_material_acceptance_batch_id
-                   AND t_project_material_acceptance_review_user.review_result =2
-                	 AND t_project_material_acceptance.t_project_material_id=?
-                	 AND t_project_material_acceptance_batch.t_project_id= ?
-                	 ORDER BY t_project_material_acceptance_review_user.review_datetime ASC
-                             """,
+                                SELECT t_project_material_acceptance_review_user.id,t_project_material_acceptance_review_user.t_user_id,t_project_material_acceptance_review_user.review_content
+                        FROM t_project_material_acceptance , t_project_material_acceptance_batch,t_project_material_acceptance_review_mode,
+                        	   t_project_material_acceptance_review,t_project_material_acceptance_review_user
+                         WHERE t_project_material_acceptance_review_user.t_project_material_acceptance_review_id = t_project_material_acceptance_review.id
+                           AND t_project_material_acceptance_review.t_project_material_acceptance_mode_id =    t_project_material_acceptance_review_mode.id
+                        	 AND t_project_material_acceptance_review_mode.t_project_material_acceptance_batch_id = t_project_material_acceptance_batch.id
+                        	 AND t_project_material_acceptance_batch.id = t_project_material_acceptance.t_project_material_acceptance_batch_id
+                           AND t_project_material_acceptance_review_user.review_result =2
+                        	 AND t_project_material_acceptance.t_project_material_id=?
+                        	 AND t_project_material_acceptance_batch.t_project_id= ?
+                        	 ORDER BY t_project_material_acceptance_review_user.review_datetime ASC
+                                     """,
                 new GetunpassreviewjianliandgongchengbuMapper(), materialid, projectid);
     }
 
@@ -488,7 +673,7 @@ public class StatisticalanalysisRepositoryImpl implements IStatisticalanalysisRe
         }
     }
 
-//    监理审核与项目经理审核
+    //    监理审核与项目经理审核
     private static final class StatisticalanalysisgetUnpassReviewJianliAndGongchengbuMapper implements RowMapper<Unpassonlymaterial> {
         @Override
         public Unpassonlymaterial mapRow(ResultSet rs,
@@ -504,7 +689,7 @@ public class StatisticalanalysisRepositoryImpl implements IStatisticalanalysisRe
     private static final class GetunpassreviewjianliandgongchengbuMapper implements RowMapper<OnematerialUnpassjianliandgongchengbu> {
         @Override
         public OnematerialUnpassjianliandgongchengbu mapRow(ResultSet rs,
-                                              int rowNum) throws SQLException {
+                                                            int rowNum) throws SQLException {
             OnematerialUnpassjianliandgongchengbu onematerialUnpassjianliandgongchengbu = new OnematerialUnpassjianliandgongchengbu();
 
             onematerialUnpassjianliandgongchengbu.setUserid(rs.getString("t_user_id"));

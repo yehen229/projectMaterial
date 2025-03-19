@@ -1,5 +1,6 @@
 package cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.system;
 
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.account.User;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Company;
 
@@ -37,4 +38,5 @@ public interface ICompanyRepository {
     List<Company> getAllCompanyList();
 
     List<Company> getCompanyListByType(String companyType);
+    boolean ExistCompany(Company company);
 }

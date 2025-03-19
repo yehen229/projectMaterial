@@ -3,6 +3,7 @@ package cn.edu.bistu.cs.projectmaterialmanagement.webserver.controller;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.account.User;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.*;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.end.ProjectEnd;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.project.Project;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Company;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.CompanyUser;
@@ -17,6 +18,7 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IProj
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IUseMaterialService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.acceptance.IProjectMaterialAcceptanceReviewUserService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.appearance.IProjectAppearanceReviewUserService;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.end.IProjectEndService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.materialreview.IProjectReviewUserService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.ICompanyService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.ICompanyUserService;
@@ -46,7 +48,7 @@ public class StatisticalanalysisController {
     private  final IProjectMaterialService projectMaterialService;
     private final IProjectMaterialRetestService projectMaterialRetestService;
     private final IProjectMaterialAcceptanceReviewUserService projectMaterialAcceptanceReviewUserService;
-
+    private final IProjectEndService projectEndService;
 
 
     private IStatisticalanalysisRepository statisticalanalysisRepository;
@@ -60,7 +62,8 @@ public class StatisticalanalysisController {
                                             IUseMaterialService useMaterialService,
                                             IProjectMaterialService projectMaterialService,
                                             IProjectMaterialRetestService projectMaterialRetestService,
-                                            IProjectMaterialAcceptanceReviewUserService projectMaterialAcceptanceReviewUserService
+                                            IProjectMaterialAcceptanceReviewUserService projectMaterialAcceptanceReviewUserService,
+                                            IProjectEndService projectEndService
     ) {
         this.companyService = companyService;
         this.materialService = materialService;
@@ -75,6 +78,7 @@ public class StatisticalanalysisController {
         this.projectMaterialService = projectMaterialService;
         this.projectMaterialRetestService = projectMaterialRetestService;
         this.projectMaterialAcceptanceReviewUserService = projectMaterialAcceptanceReviewUserService;
+        this.projectEndService = projectEndService;
     }
 
 
@@ -120,66 +124,361 @@ public class StatisticalanalysisController {
     }
 
     @GetMapping("getAllList_agree")
-    public Integer test4() {
-
-        List<Project> allList = projectService.getAllList();
-        List<ProjectStatisticalAnalysis> projectStatisticalAnalysisList = new ArrayList<>();
-        Integer agreeCount = 0;
-        Integer disagreeCount = 0;
-        for (Project project : allList) {
-            ProjectStatisticalAnalysis statisticsOfProjectViewByTaskId = projectMaterialFlow.getStatisticsOfProjectViewByTaskId("123", project.getId());
-            boolean checkProjectWhetherEnd = statisticsOfProjectViewByTaskId.getCheckProjectWhetherEnd();
-
-            if (checkProjectWhetherEnd == true) {
-                agreeCount++;
-            }
-            if (checkProjectWhetherEnd == false) {
-                disagreeCount++;
-            }
-
+    public List<ProjectStatis> test4() {
+        int result = 1;
+//        1.获取设计部审核不通过的项目列表 2为不通过
+        List<Stastisprojectidandcount> designstastisprojectidandcounts = statisticalanalysisRepository.getdesignunpassorpassList(result);
+        Set<String> designprojectSet = new HashSet<>();
+//        对获取的project进行去重
+        for (Stastisprojectidandcount stastisprojectidandcount : designstastisprojectidandcounts) {
+            designprojectSet.add(stastisprojectidandcount.getDesignProjectId());
+        }
+        Map<String, Integer> designmap = new HashMap<>();
+        for (String projectid : designprojectSet) {
+//            获取每个projectid下的审核不通过次数
+            Integer designunpasscount = statisticalanalysisRepository.getdesignunpassorpassCount(projectid, result);
+//            建立一个map
+            designmap.put(projectid, designunpasscount);
         }
 
-        return agreeCount;
+//        2.总包公司订购之前审核
+        List<Stastisprojectidandcount> zongbaostastisprojectidandcounts = statisticalanalysisRepository.getzongbaounpassorpassList(result);
+        Set<String> zongbaoprojectSet = new HashSet<>();
+        for ( Stastisprojectidandcount stastisprojectidandcount : zongbaostastisprojectidandcounts) {
+            zongbaoprojectSet.add(stastisprojectidandcount.getZongbaoProjectId());
+        }
+        Map<String, Integer> zongbaomap = new HashMap<>();
+        for (String projectid : zongbaoprojectSet) {
+            Integer zongbaounpasscount = statisticalanalysisRepository.getzongbaounpassorpassCount(projectid, result);
+            zongbaomap.put(projectid, zongbaounpasscount);
+        }
+
+//        3.监理审核不通过
+        List<Stastisprojectidandcount> jianlistastisprojectidandcounts = statisticalanalysisRepository.getjianliunpassorpassList(result);
+        Set<String> jianliSet = new HashSet<>();
+        for ( Stastisprojectidandcount stastisprojectidandcount : jianlistastisprojectidandcounts) {
+            jianliSet.add(stastisprojectidandcount.getJianliProjectId());
+        }
+        Map<String, Integer> jianlimap = new HashMap<>();
+        for (String projectid : jianliSet) {
+            Integer jianliunpasscount = statisticalanalysisRepository.getjianliunpassorpassCount(projectid,result);
+            jianlimap.put(projectid, jianliunpasscount);
+        }
+//       4.监理与工程审核不通过
+        List<Stastisprojectidandcount> jianliandgongchengbustastisprojectidandcounts = statisticalanalysisRepository.getjianliandgongchengbuunpassorpassList(result);
+        Set<String> jianliandgongchengbuSet = new HashSet<>();
+        for ( Stastisprojectidandcount stastisprojectidandcount : jianliandgongchengbustastisprojectidandcounts) {
+            jianliandgongchengbuSet.add(stastisprojectidandcount.getJianliandgongchengbuProjectId());
+        }
+        Map<String, Integer> jianliandgongchengbumap = new HashMap<>();
+        for (String projectid : jianliandgongchengbuSet) {
+            Integer jianliandgongchengbuunpasscount = statisticalanalysisRepository.getjianliandgongchengbuunpassorpassCount(projectid, 2);
+            jianliandgongchengbumap.put(projectid, jianliandgongchengbuunpasscount);
+        }
+
+
+//        对designmap zongbaomap jianlimap jianliandgongchengbumap 中string相同的进行合并
+        Map<String, Integer> mergedMap = new HashMap<>();
+        mergeMaps(mergedMap, designmap);
+        mergeMaps(mergedMap, zongbaomap);
+        mergeMaps(mergedMap, jianlimap);
+        mergeMaps(mergedMap, jianliandgongchengbumap);
+        List<ProjectStatis> projectStatisList = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : mergedMap.entrySet()) {
+            ProjectStatis projectStatis = new ProjectStatis();
+            projectStatis.setProjectId(entry.getKey());
+            projectStatis.setCount(entry.getValue());
+            projectStatis.setProject(projectService.getById(entry.getKey()));
+            System.out.println(entry.getKey() + ":" + entry.getValue());
+            projectStatisList.add(projectStatis);
+        }
+
+        return projectStatisList;
     }
 
+//    获取从大到小的前十个审核不通过的项目
     @GetMapping("getAllList_disagree")
-    public Integer test6() {
-
-        List<Project> allList = projectService.getAllList();
-        List<ProjectStatisticalAnalysis> projectStatisticalAnalysisList = new ArrayList<>();
-        Integer agreeCount = 0;
-        Integer disagreeCount = 0;
-        for (Project project : allList) {
-            ProjectStatisticalAnalysis statisticsOfProjectViewByTaskId = projectMaterialFlow.getStatisticsOfProjectViewByTaskId("123", project.getId());
-            boolean checkProjectWhetherEnd = statisticsOfProjectViewByTaskId.getCheckProjectWhetherEnd();
-
-            if (checkProjectWhetherEnd == true) {
-                agreeCount++;
-            }
-            if (checkProjectWhetherEnd == false) {
-                disagreeCount++;
-            }
-
+    public  List<ProjectStatis> test6() {
+        int result = 2;
+//        1.获取设计部审核不通过的项目列表 2为不通过
+        List<Stastisprojectidandcount> designstastisprojectidandcounts = statisticalanalysisRepository.getdesignunpassorpassList(result);
+        Set<String> designprojectSet = new HashSet<>();
+//        对获取的project进行去重
+        for (Stastisprojectidandcount stastisprojectidandcount : designstastisprojectidandcounts) {
+            designprojectSet.add(stastisprojectidandcount.getDesignProjectId());
+        }
+        Map<String, Integer> designmap = new HashMap<>();
+        for (String projectid : designprojectSet) {
+//            获取每个projectid下的审核不通过次数
+            Integer designunpasscount = statisticalanalysisRepository.getdesignunpassorpassCount(projectid, result);
+//            建立一个map
+            designmap.put(projectid, designunpasscount);
         }
 
-        return disagreeCount;
-    }
-
-    @GetMapping("getchart_projectname_totalReviewResulDisagree")
-    public List<ProjectStatisticalAnalysis> test5() {
-
-
-        List<Project> allList = projectService.getAllList();
-        List<ProjectStatisticalAnalysis> projectStatisticalAnalysisList = new ArrayList<>();
-        for (Project project : allList) {
-            ProjectStatisticalAnalysis statisticsOfProjectViewByTaskId = projectMaterialFlow.getStatisticsOfProjectViewByTaskId("123", project.getId());
-            statisticsOfProjectViewByTaskId.setProjectId(project.getId());
-            projectStatisticalAnalysisList.add(statisticsOfProjectViewByTaskId);
+//        2.总包公司订购之前审核
+        List<Stastisprojectidandcount> zongbaostastisprojectidandcounts = statisticalanalysisRepository.getzongbaounpassorpassList(result);
+        Set<String> zongbaoprojectSet = new HashSet<>();
+        for ( Stastisprojectidandcount stastisprojectidandcount : zongbaostastisprojectidandcounts) {
+            zongbaoprojectSet.add(stastisprojectidandcount.getZongbaoProjectId());
         }
-        projectStatisticalAnalysisList.sort((o1, o2) -> Integer.compare(o2.getTotalReviewResulDisagree(), o1.getTotalReviewResulDisagree()));
-        List<ProjectStatisticalAnalysis> topTen = projectStatisticalAnalysisList.subList(0, Math.min(10, projectStatisticalAnalysisList.size()));
+        Map<String, Integer> zongbaomap = new HashMap<>();
+        for (String projectid : zongbaoprojectSet) {
+            Integer zongbaounpasscount = statisticalanalysisRepository.getzongbaounpassorpassCount(projectid, result);
+            zongbaomap.put(projectid, zongbaounpasscount);
+        }
+
+//        3.监理审核不通过
+        List<Stastisprojectidandcount> jianlistastisprojectidandcounts = statisticalanalysisRepository.getjianliunpassorpassList(result);
+        Set<String> jianliSet = new HashSet<>();
+        for ( Stastisprojectidandcount stastisprojectidandcount : jianlistastisprojectidandcounts) {
+            jianliSet.add(stastisprojectidandcount.getJianliProjectId());
+        }
+        Map<String, Integer> jianlimap = new HashMap<>();
+        for (String projectid : jianliSet) {
+            Integer jianliunpasscount = statisticalanalysisRepository.getjianliunpassorpassCount(projectid,result);
+            jianlimap.put(projectid, jianliunpasscount);
+        }
+//       4.监理与工程审核不通过
+        List<Stastisprojectidandcount> jianliandgongchengbustastisprojectidandcounts = statisticalanalysisRepository.getjianliandgongchengbuunpassorpassList(result);
+        Set<String> jianliandgongchengbuSet = new HashSet<>();
+        for ( Stastisprojectidandcount stastisprojectidandcount : jianliandgongchengbustastisprojectidandcounts) {
+            jianliandgongchengbuSet.add(stastisprojectidandcount.getJianliandgongchengbuProjectId());
+        }
+        Map<String, Integer> jianliandgongchengbumap = new HashMap<>();
+        for (String projectid : jianliandgongchengbuSet) {
+            Integer jianliandgongchengbuunpasscount = statisticalanalysisRepository.getjianliandgongchengbuunpassorpassCount(projectid, 2);
+            jianliandgongchengbumap.put(projectid, jianliandgongchengbuunpasscount);
+        }
+
+
+//        对designmap zongbaomap jianlimap jianliandgongchengbumap 中string相同的进行合并
+        Map<String, Integer> mergedMap = new HashMap<>();
+        mergeMaps(mergedMap, designmap);
+        mergeMaps(mergedMap, zongbaomap);
+        mergeMaps(mergedMap, jianlimap);
+        mergeMaps(mergedMap, jianliandgongchengbumap);
+        List<ProjectStatis> projectStatisList = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : mergedMap.entrySet()) {
+            ProjectStatis projectStatis = new ProjectStatis();
+            projectStatis.setProjectId(entry.getKey());
+            projectStatis.setCount(entry.getValue());
+            projectStatis.setProject(projectService.getById(entry.getKey()));
+            System.out.println(entry.getKey() + ":" + entry.getValue());
+            projectStatisList.add(projectStatis);
+        }
+
+
+//  根据projectStatisList中的count进行排序
+        projectStatisList.sort((o1, o2) -> Integer.compare(o2.getCount(), o1.getCount()));
+//        返回projectStatisList的前十个
+        List<ProjectStatis> topTen = projectStatisList.subList(0, Math.min(10, projectStatisList.size()));
         return topTen;
     }
+    private static void mergeMaps(Map<String, Integer> mergedMap, Map<String, Integer> sourceMap) {
+        sourceMap.forEach((key,  value) ->
+                mergedMap.merge(key,  value, Integer::sum)
+        );
+    }
+
+//    获取已经完成的项目的数量
+    @GetMapping("get_end_project_count")
+    public Integer getendprojectcount() {
+       return projectEndService.getCount();
+
+    }
+    //    获取正在进行的项目的数量
+    @GetMapping("get_processing_project_count")
+    public Integer getprocessingprojectcount () {
+        int allprojectcount = projectService.getCount();
+        return (allprojectcount-projectEndService.getCount());
+
+    }
+
+    //    获取项目列表
+    @GetMapping("get_page_project_list")
+    public Page<ProjectStatisticalAnalysis> getprojectlist(@RequestParam(value = "pageNo", required = false) Integer pageNo,
+                                        @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 4 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+
+
+        Page<Project> page = projectService.getPage(pageNo, pageSize);
+        List<ProjectStatisticalAnalysis> projectStatisticalAnalysisList = new ArrayList<>();
+
+        List<ProjectStatis> getallprojectunpasslist = getallprojectunpasslist(2);
+        List<ProjectStatis> getallprojectpasslist = getallprojectunpasslist(1);
+        for (Project project : page.getResult()) {
+            ProjectStatisticalAnalysis projectStatisticalAnalysis = new ProjectStatisticalAnalysis();
+            projectStatisticalAnalysis.setProjectName(project.getName());
+            projectStatisticalAnalysis.setProjectId(project.getId());
+//            判断该项目是否完成
+            List<ProjectEnd> byId = projectEndService.getByProjectId(project.getId());
+            if (byId != null) {
+               projectStatisticalAnalysis.setCheckProjectWhetherEnd(true);
+            } else {
+                projectStatisticalAnalysis.setCheckProjectWhetherEnd(false);;
+            }
+//            获取该项目审核不通过次数 判断在getallprojectunpasslist中projectId是否存在
+            int boolcount = 0;
+            for (ProjectStatis projectStatis : getallprojectunpasslist) {
+                if (projectStatis.getProjectId().equals(project.getId())) {
+                    boolcount=1;
+                    projectStatisticalAnalysis.setTotalReviewResulDisagree(projectStatis.getCount());
+                }
+            }
+           if (boolcount == 0) {
+               projectStatisticalAnalysis.setTotalReviewResulDisagree(0);
+           }
+          boolcount=0;
+//            获取该项目审核通过次数
+            for (ProjectStatis projectStatis : getallprojectpasslist) {
+                if (projectStatis.getProjectId().equals(project.getId())) {
+                    boolcount=1;
+                    projectStatisticalAnalysis.setTotalReviewResultAgree(projectStatis.getCount());
+                }
+            }
+            if (boolcount == 0) {
+                projectStatisticalAnalysis.setTotalReviewResultAgree(0);
+            }
+
+            projectStatisticalAnalysisList.add(projectStatisticalAnalysis);
+        }
+
+        Page<ProjectStatisticalAnalysis> projectStatisticalAnalysisPage = new Page<>(page.getStart(), page.getTotalCount(), page.getPageSize(), projectStatisticalAnalysisList);
+        return projectStatisticalAnalysisPage;
+    }
+
+    //    获取 搜索 项目通过的列表
+    @GetMapping("get_search_page_project_list")
+    public Page<ProjectStatisticalAnalysis> getSearchprojectlist(@RequestParam(value = "pageNo", required = false) Integer pageNo,
+                                                           @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                                             @RequestParam(value = "projectName") String projectName) {
+    pageNo = pageNo == null ? 1 : pageNo;
+    pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 4 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+
+    Page<Project> page =  projectService.getPageByKeyword(projectName, pageNo, pageSize);
+
+    List<ProjectStatisticalAnalysis> projectStatisticalAnalysisList = new ArrayList<>();
+
+    List<ProjectStatis> getallprojectunpasslist = getallprojectunpasslist(2);
+    List<ProjectStatis> getallprojectpasslist = getallprojectunpasslist(1);
+    for (Project project : page.getResult()) {
+        ProjectStatisticalAnalysis projectStatisticalAnalysis = new ProjectStatisticalAnalysis();
+        projectStatisticalAnalysis.setProjectName(project.getName());
+        projectStatisticalAnalysis.setProjectId(project.getId());
+//            判断该项目是否完成
+        List<ProjectEnd> byId = projectEndService.getByProjectId(project.getId());
+        if (byId != null) {
+            projectStatisticalAnalysis.setCheckProjectWhetherEnd(true);
+        } else {
+            projectStatisticalAnalysis.setCheckProjectWhetherEnd(false);;
+        }
+//            获取该项目审核不通过次数 判断在getallprojectunpasslist中projectId是否存在
+        int boolcount = 0;
+        for (ProjectStatis projectStatis : getallprojectunpasslist) {
+            if (projectStatis.getProjectId().equals(project.getId())) {
+                boolcount=1;
+                projectStatisticalAnalysis.setTotalReviewResulDisagree(projectStatis.getCount());
+            }
+        }
+        if (boolcount == 0) {
+            projectStatisticalAnalysis.setTotalReviewResulDisagree(0);
+        }
+        boolcount=0;
+//            获取该项目审核通过次数
+        for (ProjectStatis projectStatis : getallprojectpasslist) {
+            if (projectStatis.getProjectId().equals(project.getId())) {
+                boolcount=1;
+                projectStatisticalAnalysis.setTotalReviewResultAgree(projectStatis.getCount());
+            }
+        }
+        if (boolcount == 0) {
+            projectStatisticalAnalysis.setTotalReviewResultAgree(0);
+        }
+
+        projectStatisticalAnalysisList.add(projectStatisticalAnalysis);
+    }
+
+    Page<ProjectStatisticalAnalysis> projectStatisticalAnalysisPage = new Page<>(page.getStart(), page.getTotalCount(), page.getPageSize(), projectStatisticalAnalysisList);
+    return projectStatisticalAnalysisPage;
+}
+
+
+
+    //    获取所有项目不通过的列表
+    public List<ProjectStatis> getallprojectunpasslist(int kk) {
+        int result = kk;
+//        1.获取设计部审核不通过的项目列表 2为不通过
+        List<Stastisprojectidandcount> designstastisprojectidandcounts = statisticalanalysisRepository.getdesignunpassorpassList(result);
+        Set<String> designprojectSet = new HashSet<>();
+//        对获取的project进行去重
+        for (Stastisprojectidandcount stastisprojectidandcount : designstastisprojectidandcounts) {
+            designprojectSet.add(stastisprojectidandcount.getDesignProjectId());
+        }
+        Map<String, Integer> designmap = new HashMap<>();
+        for (String projectid : designprojectSet) {
+//            获取每个projectid下的审核不通过次数
+            Integer designunpasscount = statisticalanalysisRepository.getdesignunpassorpassCount(projectid, result);
+//            建立一个map
+            designmap.put(projectid, designunpasscount);
+        }
+
+//        2.总包公司订购之前审核
+        List<Stastisprojectidandcount> zongbaostastisprojectidandcounts = statisticalanalysisRepository.getzongbaounpassorpassList(result);
+        Set<String> zongbaoprojectSet = new HashSet<>();
+        for ( Stastisprojectidandcount stastisprojectidandcount : zongbaostastisprojectidandcounts) {
+            zongbaoprojectSet.add(stastisprojectidandcount.getZongbaoProjectId());
+        }
+        Map<String, Integer> zongbaomap = new HashMap<>();
+        for (String projectid : zongbaoprojectSet) {
+            Integer zongbaounpasscount = statisticalanalysisRepository.getzongbaounpassorpassCount(projectid, result);
+            zongbaomap.put(projectid, zongbaounpasscount);
+        }
+
+//        3.监理审核不通过
+        List<Stastisprojectidandcount> jianlistastisprojectidandcounts = statisticalanalysisRepository.getjianliunpassorpassList(result);
+        Set<String> jianliSet = new HashSet<>();
+        for ( Stastisprojectidandcount stastisprojectidandcount : jianlistastisprojectidandcounts) {
+            jianliSet.add(stastisprojectidandcount.getJianliProjectId());
+        }
+        Map<String, Integer> jianlimap = new HashMap<>();
+        for (String projectid : jianliSet) {
+            Integer jianliunpasscount = statisticalanalysisRepository.getjianliunpassorpassCount(projectid,result);
+            jianlimap.put(projectid, jianliunpasscount);
+        }
+//       4.监理与工程审核不通过
+        List<Stastisprojectidandcount> jianliandgongchengbustastisprojectidandcounts = statisticalanalysisRepository.getjianliandgongchengbuunpassorpassList(result);
+        Set<String> jianliandgongchengbuSet = new HashSet<>();
+        for ( Stastisprojectidandcount stastisprojectidandcount : jianliandgongchengbustastisprojectidandcounts) {
+            jianliandgongchengbuSet.add(stastisprojectidandcount.getJianliandgongchengbuProjectId());
+        }
+        Map<String, Integer> jianliandgongchengbumap = new HashMap<>();
+        for (String projectid : jianliandgongchengbuSet) {
+            Integer jianliandgongchengbuunpasscount = statisticalanalysisRepository.getjianliandgongchengbuunpassorpassCount(projectid, 2);
+            jianliandgongchengbumap.put(projectid, jianliandgongchengbuunpasscount);
+        }
+
+
+//        对designmap zongbaomap jianlimap jianliandgongchengbumap 中string相同的进行合并
+        Map<String, Integer> mergedMap = new HashMap<>();
+        mergeMaps(mergedMap, designmap);
+        mergeMaps(mergedMap, zongbaomap);
+        mergeMaps(mergedMap, jianlimap);
+        mergeMaps(mergedMap, jianliandgongchengbumap);
+        List<ProjectStatis> projectStatisList = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : mergedMap.entrySet()) {
+            ProjectStatis projectStatis = new ProjectStatis();
+            projectStatis.setProjectId(entry.getKey());
+            projectStatis.setCount(entry.getValue());
+            projectStatis.setProject(projectService.getById(entry.getKey()));
+            System.out.println(entry.getKey() + ":" + entry.getValue());
+            projectStatisList.add(projectStatis);
+        }
+
+        return projectStatisList;
+    }
+
+
 
     //    设计单位审核不通过
     @GetMapping("get_solomaterial_unpass_message")

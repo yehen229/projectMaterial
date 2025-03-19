@@ -20,14 +20,28 @@ public class CompanyRepositoryImpl implements ICompanyRepository {
     public CompanyRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+    @Override
+    public boolean ExistCompany(Company company){
+        Integer i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*) 
+                                                        FROM t_company
+                                                        WHERE name=? AND company_type=?
+                                                        """,
+                Integer.class,company.getName(),company.getCompanyType());
+        if( i > 0){
+            return true;
+        }
+        return false;
+    }
 
     /**
      * insert
      */
     @Override
     public String add(Company company) {
-
         String newId = GUID.getGUID();
+        if (ExistCompany(company))
+            return null;
         if (jdbcTemplate.update("""
                                         INSERT INTO t_company(id,
                                         name,
