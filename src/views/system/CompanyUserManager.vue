@@ -86,6 +86,7 @@ import { useActiveMenuStore } from "@/store/activeMenu";
 import NewCompanyUserDialog from "@/components/system/companyuser/NewCompanyUserDialog.vue";
 import UpdateCompanyUserDialog from "@/components/system/companyuser/UpdateCompanyUserDialog.vue";
 import UploadExcelCompanyUserDialog from "@/components/system/companyuser/UploadExcelCompanyUserDialog.vue";
+import { el } from "element-plus/es/locale";
 
 const router = useRouter();
 const activeMenuStore = useActiveMenuStore();
@@ -235,8 +236,20 @@ const onNewCompanyUserDialogCancel = async () => {
 const onNewCompanyUserDialogOk = async (form: IServerCompanyUserForm) => {
   loading.value = true;
   //添加公司用户
-  await serverCompanyUserAddByForm(form);
-
+  let ret = await serverCompanyUserAddByForm(form);
+  if (ret && ret.code == 500) {
+    ElMessage({
+    type: "error",
+    message: "此用户已经存在",
+  });
+  }else {
+    ElMessage({
+    type: "success",
+    message: "完成新增",
+  });
+  }
+  
+  // console.log("新增公司用户返回结果：", ret);
   //刷新表格
   await getCompanyUserPageViewFromSever();
 
@@ -258,8 +271,18 @@ const onUpdateCompanyUserDialogCancel = () => {
 const onUpdateCompanyUserDialogOk = async (form: IServerCompanyUserForm) => {
   loading.value = true;
   //添加公司用户
-  await serverCompanyUserUpdateByForm(form);
-
+  let ret = await serverCompanyUserUpdateByForm(form);
+  if (ret && ret.code == 500) {
+    ElMessage({
+    type: "error",
+    message: "用户信息修改失败",
+  });
+  }else {
+    ElMessage({
+    type: "success",
+    message: "用户信息修改成功",
+  });
+  }
   //刷新表格
   await getCompanyUserPageViewFromSever();
 

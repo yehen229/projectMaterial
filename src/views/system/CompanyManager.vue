@@ -155,7 +155,18 @@ const onNewCompanyDialogCancel = async () => {
  * 用户在“新增”对话框中点击了“确认”按钮
  */
 const onNewCompanyDialogOk = async (company: IServerCompany) => {
-  await serverCompanyAdd(company);
+  let ret = await serverCompanyAdd(company);
+  if (ret && ret.code == 500) {
+    ElMessage({
+    type: "error",
+    message: "此单位已经存在",
+  });
+  } else {
+    ElMessage({
+    type: "success",
+    message: "完成新增",
+  });
+  }
   await getCompanyFromSever();
   dialogFormNewVisible.value = false;
 };
@@ -176,7 +187,18 @@ const onUpdateCompanyDialogCancel = () => {
 
 const onUpdateCompanyDialogOk = async (company: IServerCompany) => {
   console.log(company);
-  await serverCompanyUpdate(company);
+  let ret = await serverCompanyUpdate(company);
+  if (ret && ret.code == 500) {
+    ElMessage({
+    type: "error",
+    message: "此单位已经存在",
+  });
+  } else {
+    ElMessage({
+    type: "success",
+    message: "完成新增",
+  });
+  }
   await getCompanyFromSever();
   dialogFormUpdateVisible.value = false;
 };
