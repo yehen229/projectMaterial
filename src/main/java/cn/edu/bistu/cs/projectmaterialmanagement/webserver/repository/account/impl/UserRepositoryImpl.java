@@ -2,6 +2,7 @@ package cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.account.i
 
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.account.User;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.CompanyUser;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.account.IUserRepository;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.utility.GUID;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,12 +22,23 @@ public class UserRepositoryImpl implements IUserRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public boolean ExistUser(User user){
+        Integer i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*)
+                                                        FROM t_user
+                                                        WHERE user_name=? AND real_name=?
+                                                        """,
+                Integer.class,user.getUserName(),user.getRealName());
+        if( i > 0){
+            return true;
+        }
+        return false;
+    }
     /**
      * insert
      */
     @Override
     public String add(User user) {
-
         String newId = GUID.getGUID();
         if (jdbcTemplate.update("""
                                         INSERT INTO t_user(
@@ -57,13 +69,22 @@ public class UserRepositoryImpl implements IUserRepository {
     @Override
     public int delete(User user) {
         if (user == null) return 0;
+        Integer i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*) 
+                                                        FROM t_user
+                                                        WHERE id=? AND user_name = ? AND real_name = ?
+                                                        """,
+                Integer.class,user.getId(),user.getUserName(),user.getRealName());
+        if( i == 0){
+            return 0;
+        }
         return jdbcTemplate.update("""
                                            UPDATE t_user
                                            SET deleted_at=? 
-                                           WHERE id=?
+                                           WHERE id=? AND user_name = ? AND real_name = ?
                                            """,
                                    new Date(),
-                                   user.getId());
+                                   user.getId(),user.getUserName(),user.getRealName());
     }
 
     /**
@@ -71,6 +92,15 @@ public class UserRepositoryImpl implements IUserRepository {
      */
     @Override
     public int update(User user) {
+        Integer i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*) 
+                                                        FROM t_user
+                                                        WHERE user_name=? AND real_name=?
+                                                        """,
+                Integer.class,user.getUserName(),user.getRealName());
+        if( i == 0){
+            return 0;
+        }
         return jdbcTemplate.update("""
                                            UPDATE t_user
                                            SET user_name=?,
@@ -94,7 +124,16 @@ public class UserRepositoryImpl implements IUserRepository {
      */
     @Override
     public int deleteById(String id) {
-
+        if (id == null) return 0;
+        Integer i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*) 
+                                                        FROM t_user
+                                                        WHERE id=?
+                                                        """,
+                Integer.class,id);
+        if( i == 0){
+            return 0;
+        }
         return jdbcTemplate.update("""
                                            UPDATE t_user
                                            SET deleted_at=? 
@@ -102,8 +141,6 @@ public class UserRepositoryImpl implements IUserRepository {
                                            """,
                                    new Date(),
                                    id);
-
-
     }
 
     @Override

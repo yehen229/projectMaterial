@@ -1126,7 +1126,7 @@ public class UseMaterialRepositoryImpl implements IUseMaterialRepository {
            											LEFT JOIN t_company_user tu ON tu.t_user_id = mt.t_user_id
            											LEFT JOIN t_company tc ON tu.t_company_id = tc.id
                	                WHERE rt.review_result =1
-           											  AND ((mt.affect_appearance = 0 AND tc.name = '工程部') OR (mt.affect_appearance = 1 AND tc.name = '设计部')) \s
+           											  AND ((mt.affect_appearance = 0 AND tc.name = '工程部') OR (mt.affect_appearance = 1 AND tc.name = '设计部')) 
                		                AND st.t_project_id=?
                                        AND rt.deleted_at IS NULL
                                        AND st.deleted_at IS NULL
