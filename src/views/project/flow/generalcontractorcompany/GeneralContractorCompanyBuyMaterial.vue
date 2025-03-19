@@ -456,7 +456,7 @@ const textElipsisValue = ref(false);
             <template #default="scope"> </template>
           </el-table-column>
         </el-table>
-
+        <el-alert title="提交后可扫码确认详情，总包单位可填报材料" type="info" show-icon style="margin-top: 5px"/>
         <div style="margin: 10px; display: flex; justify-content: center">
           <el-button type="primary" @click="submitProcess">确定</el-button>
           <el-button type="primary" @click="cancelProcess">取消</el-button>

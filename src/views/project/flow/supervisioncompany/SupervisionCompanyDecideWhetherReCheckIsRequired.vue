@@ -812,7 +812,7 @@ console.log(buyMaterialViewList)
             </el-form-item>
           </el-form>
         </div>
-
+        <el-alert title="通过后施工使用，需要总包单位验收。不通过总包公司重新订购" type="info" show-icon style="margin-top: 5px"/>
         <div style="margin: 10px; display: flex; justify-content: center">
           <el-button type="primary" @click="submitProcess">确定</el-button>
           <el-button type="primary" @click="cancelProcess">取消</el-button>

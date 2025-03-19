@@ -263,6 +263,7 @@ const cancelProcess = async () => {};
             </el-form-item>
           </el-form>
         </div>
+        <el-alert title="提交后请联系管理员设置监理单位员工、总包单位员工" type="info" show-icon/>
         <div style="margin: 10px; display: flex; justify-content: center">
           <el-button type="primary" @click="submitProcess">确定</el-button>
           <el-button type="primary" @click="cancelProcess">取消</el-button>

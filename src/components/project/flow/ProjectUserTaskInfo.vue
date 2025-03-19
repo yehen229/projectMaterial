@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, Ref } from "vue";
+import { computed, onBeforeMount, onMounted, reactive, ref, Ref } from "vue";
 
 import { useRouter } from "vue-router/dist/vue-router";
 
@@ -15,11 +15,16 @@ import {
   IServerProjectView,
   IServerProjectUser,
   IServerProjectUserView,
+  IServerProjectAllUserView,
 } from "@/server/types/project/project";
 import {
   serverGetProjectPageView,
   serverGetProjectPageViewByKeyword,
 } from "@/server/project/project";
+
+import {
+  serverGetProjectAllUserViewByProjectId
+} from  "@/server/project/projectuser"
 
 import {
   serverStartProcess,
@@ -29,13 +34,37 @@ import {
 import { IServerProjectUserTask } from "@/server/types/project/flow";
 import { getTaskName, getTaskProjectName, getTaskTitle } from "./index";
 import { formatDate } from "@/utils/utils";
+import { IServerPage } from "@/server/types/System";
 const router = useRouter();
 const { projectUserTask } = defineProps(["projectUserTask"]);
+let projectAllUserPageViewData = ref();
+const isShow = ref(false);
 const onProjectClick = (projectUserTask: IServerProjectUserTask) => {
   router.push({
     path: `/project-details/${projectUserTask.projectView.project.id}`,
   });
 };
+
+onMounted(async () => {
+  await getProjectUsersPageViewFromSever();
+});
+
+const showUsers = async () => {
+  if (isShow.value) {
+    isShow.value = false;
+  } else {
+    await getProjectUsersPageViewFromSever();
+    isShow.value = true;
+  }
+}
+
+const getProjectUsersPageViewFromSever = async () => {
+  const ret = await serverGetProjectAllUserViewByProjectId(projectUserTask.projectView.project.id);
+  if (ret && ret.code == 200) {
+    projectAllUserPageViewData = JSON.parse(JSON.stringify(ret.data));    
+  }
+};
+
 const collapsed = ref(false);
 </script>
 
@@ -108,6 +137,36 @@ const collapsed = ref(false);
               : formatDate(projectUserTask.projectView.project.endDatetime)
           }}
         </div>
+      </div>
+      <el-button @click="showUsers">显示项目成员 </el-button>
+      <div style="display: flex" >
+        <el-collapse width="100%" v-if="isShow">
+          <el-collapse-item title="设计单位" width="100%">
+            <div v-for="user in projectAllUserPageViewData.projectUserViewListDesignCompany[0].projectUserViewList">
+              {{ user.user.realName }}({{ user.user.tel }})
+            </div>
+          </el-collapse-item>
+          <el-collapse-item title="设计部人员" width="100%">
+            <div v-for="user in projectAllUserPageViewData.projectUserViewListDesignDepartment">
+              {{ user.user.realName }}({{ user.user.tel }})
+            </div>
+          </el-collapse-item>
+          <el-collapse-item title="工程部人员" width="100%">
+            <div v-for="user in projectAllUserPageViewData.projectUserViewListEngineeringDepartment">
+              {{ user.user.realName }}({{ user.user.tel }})
+            </div>
+          </el-collapse-item>
+          <el-collapse-item title="监理单位人员" width="100%">
+            <div v-for="user in projectAllUserPageViewData.projectUserViewListSupervisionCompany">
+              {{ user.user.realName }}({{ user.user.tel }})
+            </div>
+          </el-collapse-item>
+          <el-collapse-item title="总包单位人员" width="100%">
+            <div v-for="user in projectAllUserPageViewData.projectUserViewListConstructionCompany">
+              {{ user.user.realName }}({{ user.user.tel }})
+            </div>
+          </el-collapse-item>
+        </el-collapse>
       </div>
     </div>
   </div>

@@ -545,7 +545,8 @@ const selectReverse = () => {
             </el-form-item>
           </el-form>
         </div>
-
+        <el-alert title="影响外观-通过后需要 '设计单位' 审核，不通过需要 '总包单位' 重新申请" type="info" show-icon style="margin-top: 5px"/>
+        <el-alert title="不影响外观-通过后总包公司可订购" type="info" show-icon style="margin-top: 5px"/>
         <div style="margin: 10px; display: flex; justify-content: center">
           <el-button type="primary" @click="submitProcess">确定</el-button>
           <el-button type="primary" @click="cancelProcess">取消</el-button>

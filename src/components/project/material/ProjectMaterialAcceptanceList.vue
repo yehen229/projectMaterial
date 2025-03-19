@@ -459,7 +459,7 @@ const textElipsisValue = ref(false);
           </template>
         </el-table-column>
 
-        <el-table-column label="技术要求" show-overflow-tooltip>
+        <el-table-column label="技术要求"  width="180" show-overflow-tooltip>
           <template #default="scope">
             <div :class="{ textEllipsis: textElipsisValue }">
               {{ scope.row.projectMaterialView.material.technology }}
@@ -467,7 +467,7 @@ const textElipsisValue = ref(false);
           </template>
         </el-table-column>
 
-        <el-table-column label="施工要求" show-overflow-tooltip>
+        <el-table-column label="施工要求"  width="180" show-overflow-tooltip>
           <template #default="scope">
             <div :class="{ textEllipsis: textElipsisValue }">
               {{ scope.row.projectMaterialView.material.installation }}
@@ -475,7 +475,7 @@ const textElipsisValue = ref(false);
           </template>
         </el-table-column>
 
-        <el-table-column label="品牌" width="300px">
+        <el-table-column label="品牌" width="100">
           <template #default="scope">
             <div :class="{ textEllipsis: textElipsisValue }">
               <div v-if="scope.row.projectMaterialBrandPrivateView != null">
