@@ -763,13 +763,14 @@ const onUpdateProjectBrandDialogOk = (brand: IServerBrand) => {
         </el-form-item>
 
         <el-form-item label="编号" prop="item_mark">
-          <el-input v-model="form.itemMark" placeholder="请输入材料编号" />
+          <el-input disabled v-model="form.itemMark" placeholder="请输入材料编号" />
         </el-form-item>
 
         <el-form-item label="位置" prop="location">
           <el-input
             v-model="form.location"
             type="textarea"
+            disabled
             placeholder="请输入材料位置"
           />
         </el-form-item>
@@ -778,30 +779,32 @@ const onUpdateProjectBrandDialogOk = (brand: IServerBrand) => {
           <el-input
             v-model="form.technology"
             type="textarea"
+            disabled
             placeholder="请输入技术要求"
           />
         </el-form-item>
 
         <el-form-item label="材料材质" prop="material">
-          <el-input v-model="form.material" placeholder="请输入材料属性" />
+          <el-input disabled  v-model="form.material" placeholder="请输入材料属性" />
         </el-form-item>
 
         <el-form-item label="颜色" prop="color">
-          <el-input v-model="form.color" placeholder="请输入颜色" />
+          <el-input disabled v-model="form.color" placeholder="请输入颜色" />
         </el-form-item>
 
         <el-form-item label="规格" prop="dimension">
-          <el-input v-model="form.dimension" placeholder="请输入规格" />
+          <el-input disabled v-model="form.dimension" placeholder="请输入规格" />
         </el-form-item>
 
         <el-form-item label="防火等级" prop="fire_rating">
-          <el-input v-model="form.fireRating" placeholder="请输入防火等级" />
+          <el-input disabled v-model="form.fireRating" placeholder="请输入防火等级" />
         </el-form-item>
 
         <el-form-item label="施工要求" prop="installation">
           <el-input
             v-model="form.installation"
             type="textarea"
+            disabled
             placeholder="请输入施工要求"
           />
         </el-form-item>
@@ -809,10 +812,12 @@ const onUpdateProjectBrandDialogOk = (brand: IServerBrand) => {
         <el-form-item label="样本图片">
           <div>
             <el-upload
+            
               ref="upload"
               v-model:file-list="fileList"
               action=""
               :limit="10"
+              disabled
               multiple
               :auto-upload="true"
               accept=".png, .jpg, .jpeg, .gif"

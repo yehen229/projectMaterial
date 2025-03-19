@@ -133,7 +133,7 @@ export const getTaskName = (
     case "Activity_Affect_Appearance_Design_Department_Remain_Employee_Reivew":
       if (projectUserTask.designDepartmentManager)
         return "设计部项目经理对于影响外观（总包单位的）品牌和物料进行汇总审核";
-      else if (projectUserTask.designCompanyEmployee)
+      else if (projectUserTask.designDepartmentEmployee)
         return "设计部项目员工填写审核意见，对于影响外观（总包单位的）品牌和物料进行审核";
       break;
 
