@@ -589,8 +589,10 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
 
         projectAppearanceReviewMode.setUseMaterialBrandSelectId(useMaterialBrandSelectId);
         projectAppearanceReviewMode.setMode(
-                projectAppearanceReviewMode.getMode() == 0 ? IProjectReviewModeService.PROJECT_REVIEW_MODE_DISPATCH :
+                projectAppearanceReviewMode.getMode() == 1 ? IProjectReviewModeService.PROJECT_REVIEW_MODE_DISPATCH :
                         IProjectReviewModeService.PROJECT_REVIEW_MODE_MANAGER_REVIEW);
+        projectAppearanceReviewMode.setAffectAppearance(
+                getAppearanceByUseMaterialBrandSelectId(useMaterialBrandSelectId));
         String projectAppearanceReviewModeId = projectAppearanceReviewModeService.add(projectAppearanceReviewMode);
         if (projectAppearanceReviewModeId == null)
             throw new BusinessException("将数据添加到数据库时发生错误");

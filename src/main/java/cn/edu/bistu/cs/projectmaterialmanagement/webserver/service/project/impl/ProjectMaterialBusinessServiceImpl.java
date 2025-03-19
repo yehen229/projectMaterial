@@ -306,6 +306,7 @@ public class ProjectMaterialBusinessServiceImpl implements IProjectMaterialBusin
             throw new BusinessException("参数错误，修改失败");
 
         int ret = projectMaterialService.update(projectMaterialForm.getProjectMaterial());
+
         if (ret == 0)
             throw new BusinessException("发生错误，修改失败");
 
@@ -318,14 +319,35 @@ public class ProjectMaterialBusinessServiceImpl implements IProjectMaterialBusin
             if (projectMaterialBrandPrivateService.add(projectMaterialBrandPrivate) == null)
                 throw new BusinessException("项目物料品牌添加失败");
         }
+        for(ProjectBrandView projectBrandView : projectMaterialForm.getProjectBrandViewList()){
+            BrandView brandView = projectBrandView.getBrandView();
+            if(brandView == null)
+                continue;
+            Brand brand = brandView.getBrand();
+            ProjectBrand projectBrand = projectBrandView.getProjectBrand();
+
+            if(brand == null)
+                continue;
+
+            if(brand.getId() == null|| brand.getId().isEmpty()){
+                projectMaterialBrandPrivateService.add(brand.getName(),brand.getPosition(),brand.getMaterialClassifySectionId(),projectMaterialId,projectMaterial.getProjectId());
+            }else if(projectBrand!=null && projectBrand.getId()!=null && !projectBrand.getId().isEmpty() && projectBrand.getProjectId()!=null && projectBrand.getBrandId()!=null){
+                projectMaterialBrandPrivateService.add(projectBrand,projectMaterialId);
+            }
+            else {
+                projectMaterialBrandPrivateService.add(brand.getId(),projectMaterialId,projectMaterial.getProjectId());
+
+            }
+
+        }
 
         projectMaterialBrandPublicService.deleteByProjectMaterialId(projectMaterialId);
         for (String projectBrandId : projectMaterialForm.getPublicBrandIds()) {
             ProjectMaterialBrandPublic projectMaterialBrandPublic = new ProjectMaterialBrandPublic();
             projectMaterialBrandPublic.setProjectMaterialId(projectMaterialId);
             projectMaterialBrandPublic.setBrandPublicId(projectBrandId);
-            if (projectMaterialBrandPublicService.add(projectMaterialBrandPublic) == null)
-                throw new BusinessException("项目物料品牌添加失败");
+            projectMaterialBrandPublicService.add(projectMaterialBrandPublic);
+
         }
         return ret;
     }
