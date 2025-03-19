@@ -50,9 +50,9 @@ public class UserServiceImpl implements IUserService {
             return null;
 
         //如果存在该用户，则不需要增加
-        User sysUserTemp = getByUserName(user.getUserName());
-        if (sysUserTemp != null)
-            return sysUserTemp.getId();
+        boolean exist = userRepository.ExistUser(user);
+        if (exist != false)
+            return null;
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         //bcrypt加密

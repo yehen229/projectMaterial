@@ -1,8 +1,10 @@
 package cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.camunda.supervision;
 
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.account.User;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.log.Log;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectUser;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.account.IUserService;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.log.ILogService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IProjectBusinessService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IProjectOpHistoryBusiness;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IProjectUserService;
@@ -13,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -25,13 +28,16 @@ public class NoticeOfProhibitedUse implements JavaDelegate {
     private final IProjectOpHistoryBusiness projectHistoryBusiness;
     private final IProjectUserService projectUserService;
     private final IUserService userService;
+    private final ILogService logService;
 
     public NoticeOfProhibitedUse(IProjectOpHistoryBusiness projectHistoryBusiness,
                                  IUserService userService,
-                                 IProjectUserService projectUserService) {
+                                 IProjectUserService projectUserService,
+                                 ILogService logService) {
         this.projectHistoryBusiness = projectHistoryBusiness;
         this.userService = userService;
         this.projectUserService = projectUserService;
+        this.logService = logService;
     }
 
     @Override
@@ -62,5 +68,7 @@ public class NoticeOfProhibitedUse implements JavaDelegate {
         projectHistoryBusiness.addSupervisionCompanyNotificationProhibition(businessId, user.getId(),
                                                                             "通知禁止使用",
                                                                             "通知禁止使用");
+        Log log = new Log(user.getId(), businessId, "监理审核不通过，通知禁止使用", 0 , new Date());
+        logService.add(log);
     }
 }

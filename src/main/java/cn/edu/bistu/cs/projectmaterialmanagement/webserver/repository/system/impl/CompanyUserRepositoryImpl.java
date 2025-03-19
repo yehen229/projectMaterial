@@ -21,12 +21,23 @@ public class CompanyUserRepositoryImpl implements ICompanyUserRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public boolean ExistCompanyUser(CompanyUser companyUser){
+                Integer i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*)
+                                                        FROM t_company_user
+                                                        WHERE t_user_id=?
+                                                        """,
+                Integer.class,companyUser.getUserId());
+        if( i != null){
+            return true;
+        }
+        return false;
+    }
     /**
      * insert
      */
     @Override
     public String add(CompanyUser companyUser) {
-
         String newId = GUID.getGUID();
         if (jdbcTemplate.update("""
                                         INSERT INTO t_company_user(id,
