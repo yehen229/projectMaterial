@@ -422,6 +422,4 @@ public class ProjectUserController {
         pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
         return projectUserService.getPageAllUserViewByProjectName(projectName, pageNo, pageSize);
     }
-
-
 }

@@ -197,6 +197,7 @@ public interface IProjectUserService {
 
     Page<ProjectAllUserView> getPageAllUserViewByProjectName(String projectName, Integer pageNo, Integer pageSize);
 
+
     Page<ProjectAllUserView> getPageAllUserViewByCompanyName(String companyName, Integer pageNo, Integer pageSize);
 
     Page<ProjectAllUserView> getPageAllUserViewByUserName(String userName, Integer pageNo, Integer pageSize);
