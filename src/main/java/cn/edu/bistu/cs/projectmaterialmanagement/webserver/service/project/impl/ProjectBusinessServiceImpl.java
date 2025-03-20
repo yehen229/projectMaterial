@@ -1452,14 +1452,9 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
             throw new BusinessException("不存在记录");
 
         //将审核结果添加到数据库
-        if (projectMaterialAcceptanceReviewUser.getReviewResult() != 1)
-            projectMaterialAcceptanceReviewUserTemp.setReviewResult(
-                    IProjectReviewService.PROJECT_REVIEW_RESULT_REJECTED);
-        else
-            projectMaterialAcceptanceReviewUserTemp.setReviewResult(
-                    IProjectReviewService.PROJECT_REVIEW_RESULT_REJECTED);
-        projectMaterialAcceptanceReviewUserTemp.setReviewContent(
-                projectMaterialAcceptanceReviewUser.getReviewContent());
+        projectMaterialAcceptanceReviewUserTemp.setReviewResult(projectMaterialAcceptanceReviewUser.getReviewResult());
+        projectMaterialAcceptanceReviewUserTemp.setReviewContent(projectMaterialAcceptanceReviewUser.getReviewContent());
+        projectMaterialAcceptanceReviewUserTemp.setReviewDatetime(new Date());
         projectMaterialAcceptanceReviewUserService.update(projectMaterialAcceptanceReviewUserTemp);
 
         //添加文件
