@@ -467,6 +467,7 @@ const onDeleteDesignCompany = (id: string) => {
         />
       </el-form-item>
     </el-form>
+    <el-alert title="提交后请管理员设置项目员工" type="info" show-icon />
 
     <template #footer>
       <span class="dialog-footer">

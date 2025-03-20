@@ -293,6 +293,8 @@ const onSelectProjectMaterialDialogOk = async (
   }
 
   _projectMaterialViewList.forEach(async (item: IServerUseMaterialView) => {
+    console.log(item,"ietememtmet");
+    
     if (
       !useProjectMaterialViewList.value.some(
         (item2) =>
@@ -331,7 +333,7 @@ const onSelectProjectMaterialDialogOk = async (
           projectMaterialBrandPrivateId: privateBrandId, //t_project_material_brand_private_id,外键,	t_project_material_brand_private_id<-表t_project_material_brand_private.id,私有品牌私有品牌
           projectMaterialBrandPublicId: publicBrandId, //t_project_material_brand_public_id,外键,	t_project_material_brand_public_id<-表t_project_material_brand_public.id,公有品牌公有品牌
           materialCount: 0, //material_count,材料数量材料数量
-          materialUnit: "", //material_unit,数量单位数量单位
+          materialUnit: item.useMaterial.materialUnit, //material_unit,数量单位数量单位
           batch: 0, //batch,批次批次
           qrcode: "", //qrcode,二维码二维码
           createDatetime: new Date(), //create_datetime,创建时间创建时间
@@ -429,7 +431,14 @@ const textElipsisValue = ref(false);
 
           <el-table-column label="数量单位" show-overflow-tooltip>
             <template #default="scope">
-              <el-input v-model="scope.row.buyMaterial.materialUnit" />
+              <el-tooltip
+                  class="box-item"
+                  effect="dark"
+                  content="请尽量保持数量单位和初始一致"
+                  placement="top-start"
+                >
+                <el-input v-model="scope.row.buyMaterial.materialUnit" />
+              </el-tooltip>
             </template>
           </el-table-column>
 
@@ -456,7 +465,7 @@ const textElipsisValue = ref(false);
             <template #default="scope"> </template>
           </el-table-column>
         </el-table>
-
+        <el-alert title="提交后可扫码确认详情，总包单位可填报材料" type="info" show-icon style="margin-top: 5px"/>
         <div style="margin: 10px; display: flex; justify-content: center">
           <el-button type="primary" @click="submitProcess">确定</el-button>
           <el-button type="primary" @click="cancelProcess">取消</el-button>

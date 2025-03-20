@@ -494,7 +494,7 @@ const onUploadDocument1Success = async (
             </template>
           </el-table-column>
         </el-table>
-
+        <el-alert title="提交后需要监理单位复查" type="info" show-icon style="margin-top: 5px"/>
         <div style="margin: 10px; display: flex; justify-content: center">
           <el-button type="primary" @click="submitProcess">确定</el-button>
           <el-button type="primary" @click="cancelProcess">取消</el-button>

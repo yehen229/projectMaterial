@@ -618,6 +618,7 @@ const textElipsisValue = ref(false);
 
       <!--显示内容-->
       <div class="project-container">
+        <el-alert title="提交后请联系设计部审核" type="info" show-icon style="margin-top: 5px"/>
         <el-row
           style="
             width: 100%;

@@ -390,7 +390,7 @@ const httpRequest = async (options: UploadRequestOptions) => {
             </el-upload>
           </el-form-item>
         </el-form>
-
+        <el-alert title="提交后需要工程部经理审核" type="info" show-icon style="margin-top: 5px"/>
         <div style="margin: 10px; display: flex; justify-content: center">
           <el-button type="primary" @click="submitProcess">确定</el-button>
           <el-button type="primary" @click="cancelProcess">取消</el-button>

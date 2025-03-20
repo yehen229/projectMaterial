@@ -814,7 +814,7 @@ const textElipsisValue = ref(false);
             </div>
           </el-col>
         </el-row>
-
+        <el-alert title="提交后需要监理审核" type="info" show-icon style="margin-top: 5px"/>
         <div style="margin: 10px; display: flex; justify-content: center">
           <el-button type="primary" @click="submitProcess">确定</el-button>
           <el-button type="primary" @click="cancelProcess">取消</el-button>

@@ -604,7 +604,7 @@ const selectReverse = () => {
             </el-form-item>
           </el-form>
         </div>
-
+        <el-alert title="通过后请联系工程部项目经理分发施工，监理。不通过请联系设计单位重新提交项目材料参数" type="info" show-icon style="margin-top: 5px"/>
         <div style="margin: 10px; display: flex; justify-content: center">
           <el-button type="primary" @click="submitProcess">确定</el-button>
           <el-button type="primary" @click="cancelProcess">取消</el-button>

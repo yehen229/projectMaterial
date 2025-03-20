@@ -414,7 +414,7 @@ const onSubmitProjectUserTask = async () => {
         @onDelete="onDeleteProjectUserButtonClick"
       >
       </ProjectUserItem>-->
-
+      <el-alert title="提交后请联系设计单位提交项目材料参数" type="info" show-icon style="margin-top: 5px"/>
       <div style="margin: 10px; display: flex; justify-content: center">
         <el-button type="primary" @click="onSubmitProjectUserTask"
           >确定</el-button

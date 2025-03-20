@@ -227,9 +227,7 @@ const goBack = () => {
  * 总包单位品牌选择（从备选品牌选择或新品牌并提供说明）,物料使用申请
  */
 const submitProcess = async () => {
-  console.log(fileList.value);
   const userId = getUserID();
-  console.log(userId);
   if (!userId) {
     ElMessageBox.alert("用户信息异常，请重新登录", "提示", {
       confirmButtonText: "确定",
@@ -241,7 +239,7 @@ const submitProcess = async () => {
 
   //每种材料可能有多个品牌，但要求该材料至少有一个品牌的数量和数量单位都不能为空
   for (let i = 0; i < useProjectMaterialViewList.value.length; i++) {
-    let item = useProjectMaterialViewList.value[i];
+    let item = useProjectMaterialViewList.value[i];    
     let tempcount = 0;
     for (let item2 of item.batchAcceptanceItemList) {
       if (item2.materialCount <= 0 || item2.materialUnit == "") {
@@ -259,8 +257,7 @@ const submitProcess = async () => {
 
   let projectMaterialAcceptanceList: IServerProjectMaterialAcceptance[] = [];
   useProjectMaterialViewList.value.forEach((item) => {
-    //每个物料有多个品牌，每个品牌有数量和数量单位
-
+    //每个物料有多个品牌，每个品牌有数量和数量单位    
     item.batchAcceptanceItemList.forEach((item2) => {
       let privateBrandId = "";
       if (
@@ -316,10 +313,8 @@ const submitProcess = async () => {
     await serverSubmitGeneralContractorProjectMaterialBatchAcceptancet(
       batchForm
     );
-  console.log(response);
   if (response && response.code === 200) {
     // Debug: 查看创建结果
-    console.log(response.data);
     ElMessage.success("验收成功");
   } else {
     console.error("订购失败");
@@ -343,7 +338,6 @@ const onSelectProjectMaterialDialogCancel = () => {
 const onSelectProjectMaterialDialogOk = async (
   _projectMaterialViewList: IServerProjectMaterialView[]
 ) => {
-  console.log(_projectMaterialViewList);
   dialogSelectProjectMaterialDialogVisible.value = false;
 
   const userId = getUserID();
@@ -368,10 +362,10 @@ const onSelectProjectMaterialDialogOk = async (
         item.projectMaterialBrandPrivateViewList &&
         item.projectMaterialBrandPrivateViewList.length > 0
       ) {
-        item.projectMaterialBrandPrivateViewList.forEach((itemBrand) => {
+        item.projectMaterialBrandPrivateViewList.forEach((itemBrand) => {          
           let batchAcceptanceItem: IBatchAcceptanceItem = {
             materialCount: 0,
-            materialUnit: "",
+            materialUnit: itemBrand.projectMaterial.materialUnit,
             projectMaterialBrandPrivateView: itemBrand,
             projectMaterialBrandPublicView: null,
             position: "",
@@ -388,7 +382,7 @@ const onSelectProjectMaterialDialogOk = async (
         item.projectMaterialBrandPublicViewList.forEach((itemBrand) => {
           let batchAcceptanceItem: IBatchAcceptanceItem = {
             materialCount: 0,
-            materialUnit: "",
+            materialUnit: itemBrand.projectMaterial.materialUnit,
             projectMaterialBrandPrivateView: null,
             projectMaterialBrandPublicView: itemBrand,
             position: "",
@@ -514,7 +508,14 @@ const onSelectProjectMaterialDialogOk = async (
                     },
                   ]"
                 >
-                  <el-input v-model="item.materialUnit" />
+                  <el-tooltip
+                    class="box-item"
+                    effect="dark"
+                    content="请尽量和初始数量单位一致"
+                    placement="top-start"
+                  >
+                    <el-input v-model="item.materialUnit" />
+                  </el-tooltip>
                 </el-form-item>
 
                 <!--验收位置-->
@@ -543,7 +544,7 @@ const onSelectProjectMaterialDialogOk = async (
             <template #default="scope"> </template>
           </el-table-column>
         </el-table>
-
+        <el-alert title="提交后需要监理审核" type="info" show-icon style="margin-top: 5px"/>
         <div style="margin: 10px; display: flex; justify-content: center">
           <el-button type="primary" @click="submitProcess">确定</el-button>
           <el-button type="primary" @click="cancelProcess">取消</el-button>

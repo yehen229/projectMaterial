@@ -111,7 +111,7 @@ const projectUserTask: Ref<IServerProjectUserTask | undefined> = ref();
 const projectId = ref("");
 const taskId = ref("");
 const radio = ref(0);
-
+const dialogVisible = ref(false)
 const checkList = ref([]);
 const employeeList: Ref<IServerUser[]> = ref([]);
 
@@ -349,7 +349,6 @@ const httpRequest = async (options: UploadRequestOptions) => {
               @change="handleRadioReviewChange"
             >
               <el-radio :value="1">项目验收通过</el-radio>
-              <el-radio :value="0">项目验收不通过</el-radio>
             </el-radio-group>
           </el-form-item>
 
@@ -380,10 +379,21 @@ const httpRequest = async (options: UploadRequestOptions) => {
           </el-form-item>
         </el-form>
 
-        <div style="margin: 10px; display: flex; justify-content: center">
+        <div>
+    <!-- 按钮 -->
+    <el-button type="primary" color="red" @click="dialogVisible = true">项目结束</el-button>
+
+    <!-- 弹窗 -->
+    <el-dialog v-model="dialogVisible" title="确认结束项目">
+      <span>结束项目后，此项目所有的流程将会被删除，确定结束吗？</span>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogVisible = false">取消</el-button>
           <el-button type="primary" @click="submitProcess">确定</el-button>
-          <el-button type="primary" @click="cancelProcess">取消</el-button>
-        </div>
+        </span>
+      </template>
+    </el-dialog>
+  </div>
       </div>
       <ProjectMaterialAcceptanceList
         :projectId="projectId"

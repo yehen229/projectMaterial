@@ -543,7 +543,7 @@ const selectReverse = () => {
             </el-form-item>
           </el-form>
         </div>
-
+        <el-alert title="审核后可确定是否结束项目" type="info" show-icon style="margin-top: 5px"/>
         <div style="margin: 10px; display: flex; justify-content: center">
           <el-button type="primary" @click="submitProcess">确定</el-button>
           <el-button type="primary" @click="cancelProcess">取消</el-button>
