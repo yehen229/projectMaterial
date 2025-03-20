@@ -14,7 +14,7 @@ import {BarChart} from 'echarts/charts';
 import {TitleComponent, TooltipComponent, GridComponent} from 'echarts/components';
 import {CanvasRenderer} from 'echarts/renderers';
 import {
-  byprojectname_getList, getAllList_agree, getAllList_disagree, getchart_projectname_totalReviewResulDisagree,
+  byprojectname_getList, getchart_projectname_totalReviewResulDisagree,
   serverGetProjectListPageView
 } from "@/server/project/statisticalanalysis";
 import {byprojectname_Search, serverGetlogListPageView} from "@/server/project/logManage";
