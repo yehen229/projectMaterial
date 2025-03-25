@@ -114,6 +114,7 @@ const employeeList: Ref<IServerUser[]> = ref([]);
 const fileList = ref<UploadUserFile[]>([]);
 const upload = ref<UploadInstance>();
 const fileListUploadNum = ref(0);
+const designCompanyIndex = ref(0);
 
 const form = reactive({
   radioReviewResult: 1,
@@ -259,6 +260,7 @@ const submitToServerManagerDistributeToEmployees = async (userId: string) => {
     {
       projectId: projectId.value,
       taskId: projectUserTask.value?.taskId ?? "",
+      designCompanyIndex: designCompanyIndex.value,
       projectAppearanceReviewMode: {
         id: "", //id,主键
         useMaterialBrandSelectId: projectId.value, //t_project_id,外键,	t_project_id<-表t_project.id
@@ -319,6 +321,7 @@ const submitToServerManagerDirect = async (userId: string) => {
       },
       taskId:taskId.value,
       projectId: projectId.value,
+      designCompanyIndex: designCompanyIndex.value,
       reviewTempDir: uploadReviewFilesDir.value,
     };
 

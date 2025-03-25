@@ -233,7 +233,14 @@ const onProjectUserTaskClick = async (
           path: `/project-user-task/${projectUserTask.projectView.project.id}/engineering-department-appearance-employee-review/${projectUserTask.taskId}`,
         });
       break;
-    case "Activity_Affect_Appearance_Design_Company_Reivew":
+    case "Activity_Affect_Appearance_Design_Company_Reivew_0":
+    case "Activity_Affect_Appearance_Design_Company_Reivew_1":
+    case "Activity_Affect_Appearance_Design_Company_Reivew_2":
+    case "Activity_Affect_Appearance_Design_Company_Reivew_3":
+    case "Activity_Affect_Appearance_Design_Company_Reivew_4":
+    case "Activity_Affect_Appearance_Design_Company_Reivew_5":
+    case "Activity_Affect_Appearance_Design_Company_Reivew_6":
+    case "Activity_Affect_Appearance_Design_Company_Reivew_7":
       //设计单位对于影响外观（总包单位的）品牌和物料）进行审核
       router.push({
         path: `/project-user-task/${projectUserTask.projectView.project.id}/design-company-appearance-review/${projectUserTask.taskId}`,

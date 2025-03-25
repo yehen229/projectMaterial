@@ -1096,6 +1096,30 @@ export async function serverGetTaskUseMaterialBrandSelectViewByProjectIdAndTaskI
   }
 }
 
+export async function serverGetTaskUseMaterialBrandSelectViewByProjectIdAndTaskIdAndCompanyId(
+  projectId: string,
+  taskId: string
+): Promise<IServerResponseData<IServerUseMaterialBrandSelectView>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerUseMaterialBrandSelectView>
+    >(
+      BASEURL.projectmaterialflow +
+        "get-use-material-brand-select-view-by-current-login-user-and-project-id-and-task-id-and-design-company-id",
+      {
+        params: {
+          projectId: projectId,
+          taskId: taskId,
+        },
+      }
+    );
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
 export async function serverGetProjecMaterialAcceptancePageViewByTaskId(
   projectId: string,
   taskId: string,

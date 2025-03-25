@@ -102,7 +102,7 @@ export const getTaskName = (
       if (projectUserTask.designDepartmentEmployee)
         return "设计部该项目的项目员工对项目材料审核";
       else if (projectUserTask.designDepartmentManager)
-        return "设计部该项目项目经理及项目员工对项目材料审核,目前暂无项目员工填写审核意见，项目经理可以直接审核";
+        return "项目经理汇总员工意见，对项目材料审核";
       break;
     case "Activity_Project_Material_Design_Department_Remain_Employee_Reivew":
       //如果是设计部经理，总结员工审核意见；如果是项目员工，则填写审核意见
@@ -149,9 +149,9 @@ export const getTaskName = (
       return "工程部项目员工对于物料验收进行审核";
 
     case "Activity_Engineering_Department_Project_Material_Acceptance_Remain_Employee_Reivew":
-      if (projectUserTask.designDepartmentManager)
+      if (projectUserTask.engineeringDepartmentManager)
         return "工程部项目经理对于物料验收进行汇总审核";
-      else if (projectUserTask.designCompanyEmployee)
+      else if (projectUserTask.engineeringDepartmentEmployee)
         return "工程部项目员工填写审核意见，对于物料验收进行审核";
       break;
 
@@ -242,7 +242,7 @@ export const getTaskTitle = (projectUserTask: IServerProjectUserTask) => {
       // 设计部项目员工对于影响外观（总包单位的）品牌和物料）进行审核
       if (projectUserTask.designDepartmentManager)
         return "设计部项目经理对于影响外观（总包单位的）品牌和物料）进行审核";
-      else if (projectUserTask.designCompanyEmployee)
+      else if (projectUserTask.designDepartmentEmployee)
         return "设计部项目员工填写审核意见，对于影响外观（总包单位的）品牌和物料进行审核";
       break;
 
@@ -250,7 +250,7 @@ export const getTaskTitle = (projectUserTask: IServerProjectUserTask) => {
       //设计部经理对设计部项目员工审核结果进行汇总审核
       if (projectUserTask.designDepartmentManager)
         return "设计部项目经理对于影响外观（总包单位的）品牌和物料进行汇总审核";
-      else if (projectUserTask.designCompanyEmployee)
+      else if (projectUserTask.designDepartmentEmployee)
         return "设计部项目员工填写审核意见，对于影响外观（总包单位的）品牌和物料进行审核";
       break;
 
@@ -287,9 +287,9 @@ export const getTaskTitle = (projectUserTask: IServerProjectUserTask) => {
       return "工程部项目员工对于物料验收进行审核";
 
     case "Activity_Engineering_Department_Project_Material_Acceptance_Remain_Employee_Reivew":
-      if (projectUserTask.designDepartmentManager)
+      if (projectUserTask.engineeringDepartmentManager)
         return "工程部项目经理对于物料验收进行汇总审核";
-      else if (projectUserTask.designCompanyEmployee)
+      else if (projectUserTask.engineeringDepartmentEmployee)
         return "工程部项目员工填写审核意见，对于物料验收进行审核";
       break;
   }

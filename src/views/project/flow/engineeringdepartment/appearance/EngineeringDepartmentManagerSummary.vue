@@ -92,6 +92,7 @@ import ProjectUserTaskList from "@/components/project/flow/ProjectUserTaskList.v
 import ProjectMaterialList from "@/components/project/material/ProjectMaterialList.vue";
 import ProjectAppearanceReviewList from "@/components/project/review/ProjectAppearanceReviewList.vue";
 import ProjectAppearanceReviewHandOverToManagerList from "@/components/project/review/ProjectAppearanceReviewHandOverToManagerList.vue";
+import UseMaterialList from "@/components/project/material/UseMaterialList.vue";
 
 import { genUUID } from "@/utils/utils";
 import { getUserID, getUserPageSize } from "@/cookies/user";

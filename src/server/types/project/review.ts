@@ -299,6 +299,7 @@ export interface IServerProjectAppearanceReviewManagerDirectForm {
   projectAppearanceReviewUser: IServerProjectAppearanceReviewUser;
   projectId: string;
   taskId: string;
+  designCompanyIndex: number;
   reviewTempDir: string; //review_temp_dir,临时审核附件目录，项目审核附件放在此目录中
 }
 
@@ -313,6 +314,7 @@ export interface IServerProjectAppearanceReviewEmployeeForm {
 export interface IServerProjectAppearanceReviewDispatchForm {
   projectId: string;
   taskId: string;
+  designCompanyIndex: number;
   projectAppearanceReviewMode: IServerProjectAppearanceReviewMode;
   employeeIds: string[];
 }

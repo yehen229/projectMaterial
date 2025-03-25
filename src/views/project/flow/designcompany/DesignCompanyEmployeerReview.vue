@@ -87,6 +87,8 @@ import {
 import ProjectUserTaskList from "@/components/project/flow/ProjectUserTaskList.vue";
 import ProjectMaterialList from "@/components/project/material/ProjectMaterialList.vue";
 import UseMaterialList from "@/components/project/material/UseMaterialList.vue";
+import DesignCompanyUseMaterialList from "@/components/project/material/DesignCompanyUseMaterialList.vue";
+
 
 import { genUUID } from "@/utils/utils";
 import { getUserID, getUserPageSize } from "@/cookies/user";
@@ -402,10 +404,10 @@ const httpRequest = async (options: UploadRequestOptions) => {
       </div>
 
       <!--审核内容，总包单位提交的品牌、物料等信息，重点是品牌（选择已有的公共或私有的品牌，或者新品牌）-->
-      <UseMaterialList
+      <DesignCompanyUseMaterialList
         :projectId="projectId"
         :taskId="taskId"
-      ></UseMaterialList>
+      ></DesignCompanyUseMaterialList>
 
       <!--项目物料列表-->
       <ProjectMaterialList :projectId="projectId" />
