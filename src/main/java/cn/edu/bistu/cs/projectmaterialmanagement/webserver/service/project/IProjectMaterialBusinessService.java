@@ -1,6 +1,7 @@
 package cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project;
 
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectMaterial;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectMaterialForm;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectMaterialView;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.MaterialBrand;
@@ -21,6 +22,7 @@ public interface IProjectMaterialBusinessService {
     MaterialClassifySection getById(String id);
 
     ProjectMaterialView getViewById(String projectMaterialId);
+    ProjectMaterialView getViewByIdAndCompanyId(String companyId,String projectMaterialId);
 
     Page<ProjectMaterialView> getPageView(Integer pageNo,
                                           Integer pageSize);

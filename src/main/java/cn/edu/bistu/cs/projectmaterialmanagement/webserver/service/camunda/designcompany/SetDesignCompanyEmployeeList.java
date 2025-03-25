@@ -1,17 +1,21 @@
 package cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.camunda.designcompany;
 
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectUser;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.project.Project;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.project.ProjectDesignCompany;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.CompanyUser;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.camunda.admin.SetProjectAdministratorList;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IProjectDesignCompanyService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IProjectService;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IProjectUserService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.ICompanyUserService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,13 +27,16 @@ public class SetDesignCompanyEmployeeList implements ExecutionListener {
     private final ICompanyUserService companyUserService;
     private final IProjectService projectService;
     private final IProjectDesignCompanyService projectDesignCompanyService;
+    private final IProjectUserService projectUserService;
 
     public SetDesignCompanyEmployeeList(ICompanyUserService companyUserService,
                                         IProjectService projectService,
+                                        IProjectUserService IProjectUserService,
                                         IProjectDesignCompanyService projectDesignCompanyService) {
         this.companyUserService = companyUserService;
         this.projectService = projectService;
         this.projectDesignCompanyService = projectDesignCompanyService;
+        this.projectUserService = IProjectUserService;
     }
 
     @Override
@@ -59,7 +66,13 @@ public class SetDesignCompanyEmployeeList implements ExecutionListener {
 
 
             int index = 0;
+            List<ProjectUser> projectUserList = projectUserService.getDesignCompanyEmployees(projectId);
 
+
+            // 提取 projectUserList 中的 userId，放入 Set 加快查询效率
+            Set<String> projectUserIdSet = projectUserList.stream()
+                    .map(ProjectUser::getUserId)
+                    .collect(Collectors.toSet());
             for (ProjectDesignCompany projectDesignCompany : projectDesignCompanyList) {
 
                 List<String> assigneeList = new ArrayList<String>(); //分配任务的人员
@@ -70,11 +83,13 @@ public class SetDesignCompanyEmployeeList implements ExecutionListener {
                 if (companyUserList == null || companyUserList.isEmpty())
                     continue;
 
-                //设置总包人员，即总包公司的每个人（包括项目经理和项目员工均可以审批）
 
                 for (CompanyUser companyUser : companyUserList) {
-                    assigneeList.add(companyUser.getUserId());
+                    if (projectUserIdSet.contains(companyUser.getUserId())) {
+                        assigneeList.add(companyUser.getUserId());
+                    }
                 }
+
 
                 //对应流程图Collection
                 if (index == 0) {

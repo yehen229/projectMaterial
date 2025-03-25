@@ -162,6 +162,7 @@ public interface IProjectBusinessService {
 
     UseMaterialBrandSelectView getUseMaterialBrandSelectViewByCurrentLoginUser(String projectId,
                                                                                String useMaterialBrandSelectId);
+    UseMaterialBrandSelectView getUseMaterialBrandSelectViewByuseMaterialBrandSelectIdAndCompanyId(String companyId,String useMaterialBrandSelectId);
 
     List<UseMaterialView> getUseMaterialViewListByUseMaterialBrandSelectId(String useMaterialBrandSelectId);
 

@@ -105,6 +105,31 @@ public class UseMaterialBusinessServiceImpl implements IUseMaterialBusinessServi
                     getViewByUseMaterialNewBrandId(useMaterialNewBrandList.getFirst().getId()));
         return useMaterialView;
     }
+    @Override
+    public UseMaterialView getViewByUseMaterialIdAndCompanyId(String companyId,String useMaterialId){
+        UseMaterial useMaterial = useMaterialService.getById(useMaterialId);
+        if (useMaterial == null) return null;
+        UseMaterialView useMaterialView = new UseMaterialView();
+        useMaterialView.setUseMaterial(useMaterial);
+        useMaterialView.setUser(userService.getById(useMaterial.getUserId()));
+        useMaterialView.setProjectMaterialView(
+                projectMaterialBusinessService.getViewByIdAndCompanyId(companyId,useMaterial.getProjectMaterialId()));
+        useMaterialView.setProjectMaterialBrandPrivateView(
+                projectMaterialBrandPrivateService.getViewById(useMaterial.getProjectMaterialBrandPrivateId()));
+        useMaterialView.setProjectMaterialBrandPublicView(
+                projectMaterialBrandPublicService.getViewById(useMaterial.getProjectMaterialBrandPublicId()));
+        String materialId=useMaterial.getMaterialId();
+        if (materialId!=null && !materialId.isEmpty())
+            useMaterialView.setMaterial(materialService.getById(materialId));
+        List<UseMaterialNewBrand> useMaterialNewBrandList = useMaterialNewBrandService.getByUseMaterialId(
+                useMaterialId);
+        if (useMaterialNewBrandList != null && !useMaterialNewBrandList.isEmpty())
+            useMaterialView.setUseMaterialNewBrandView(
+                    getViewByUseMaterialNewBrandId(useMaterialNewBrandList.getFirst().getId()));
+        return useMaterialView;
+
+
+    }
 
     @Override
     public List<UseMaterialView> getViewListByUseMaterialBrandSelectId(String useMaterialBrandSelectId) {
@@ -112,6 +137,20 @@ public class UseMaterialBusinessServiceImpl implements IUseMaterialBusinessServi
         if (useMaterialList == null || useMaterialList.isEmpty()) return null;
         return useMaterialList.stream().map(useMaterial -> getViewByUseMaterialId(useMaterial.getId())).collect(
                 Collectors.toList());
+    }
+    @Override
+    public List<UseMaterialView> getViewListByUseMaterialBrandSelectIdAndCompanyId(String companyId,String useMaterialBrandSelectId){
+        List<UseMaterial> useMaterialList = useMaterialService.getByUseMaterialBrandSelectId(useMaterialBrandSelectId);
+        if (useMaterialList == null || useMaterialList.isEmpty()) return null;
+        List<UseMaterialView> result = new ArrayList<>();
+        for (UseMaterial useMaterial : useMaterialList) {
+            UseMaterialView view = getViewByUseMaterialIdAndCompanyId(companyId, useMaterial.getId());
+            if (view.getProjectMaterialView() != null) {
+                result.add(view);
+            }
+        }
+        return result;
+
     }
 
     @Override
@@ -123,6 +162,20 @@ public class UseMaterialBusinessServiceImpl implements IUseMaterialBusinessServi
         useMaterialBrandSelectView.setUseMaterialBrandSelect(useMaterialBrandSelect);
         useMaterialBrandSelectView.setUseMaterialViewList(
                 getViewListByUseMaterialBrandSelectId(useMaterialBrandSelectId));
+        useMaterialBrandSelectView.setUser(userService.getById(useMaterialBrandSelect.getUserId()));
+        return useMaterialBrandSelectView;
+
+    }
+    @Override
+    public UseMaterialBrandSelectView getViewByUseMaterialBrandSelectIdAndCompanyId(String companyId,
+                                                                                  String useMaterialBrandSelectId) {
+        UseMaterialBrandSelect useMaterialBrandSelect = useMaterialBrandSelectService.getById(useMaterialBrandSelectId);
+        if (useMaterialBrandSelect == null) return null;
+        UseMaterialBrandSelectView useMaterialBrandSelectView = new UseMaterialBrandSelectView();
+        useMaterialBrandSelectView.setProject(projectService.getById(useMaterialBrandSelect.getProjectId()));
+        useMaterialBrandSelectView.setUseMaterialBrandSelect(useMaterialBrandSelect);
+        useMaterialBrandSelectView.setUseMaterialViewList(
+                getViewListByUseMaterialBrandSelectIdAndCompanyId(companyId,useMaterialBrandSelectId));
         useMaterialBrandSelectView.setUser(userService.getById(useMaterialBrandSelect.getUserId()));
         return useMaterialBrandSelectView;
 

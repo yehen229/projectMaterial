@@ -379,6 +379,21 @@ public class ProjectMaterialBusinessServiceImpl implements IProjectMaterialBusin
                 projectMaterialBrandPublicService.getViewListByProjectMaterialId(projectMaterialId));
         return projectMaterialView;
     }
+    @Override
+    public ProjectMaterialView getViewByIdAndCompanyId(String companyId,String projectMaterialId){
+        ProjectMaterial projectMaterial = projectMaterialService.getByIdAndCompanyId(companyId,projectMaterialId);
+        if (projectMaterial == null) return null;
+        ProjectMaterialView projectMaterialView = new ProjectMaterialView();
+        projectMaterialView.setProjectMaterial(projectMaterial);
+        projectMaterialView.setMaterial(materialService.getById(projectMaterial.getMaterialId()));
+        projectMaterialView.setMaterialOrigin(materialService.getById(projectMaterial.getMaterialOriginId()));
+        projectMaterialView.setProject(projectService.getById(projectMaterial.getProjectId()));
+        projectMaterialView.setProjectMaterialBrandPrivateViewList(
+                projectMaterialBrandPrivateService.getViewListByProjectMaterialId(projectMaterialId));
+        projectMaterialView.setProjectMaterialBrandPublicViewList(
+                projectMaterialBrandPublicService.getViewListByProjectMaterialId(projectMaterialId));
+        return projectMaterialView;
+    }
 
     @Override
     public Page<ProjectMaterialView> getPageView(Integer pageNo,

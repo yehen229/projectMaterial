@@ -24,6 +24,7 @@ public interface IProjectMaterialService {
     List<ProjectMaterial> getByMaterialId(String materialId);
 
     ProjectMaterial getById(String id);
+    ProjectMaterial getByIdAndCompanyId(String companyId, String id);
     ProjectMaterial getByProjectIdAndMaterialOriginId(String projectId,String materialOriginId);
     ProjectMaterial getByProjectIdAndMaterialId(String projectId,String materialId);
 

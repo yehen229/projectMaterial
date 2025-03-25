@@ -54,6 +54,7 @@ public interface IProjectMaterialRepository {
     int getCountOfReviewedAndApprovedUseMaterialByProjectId(String projectId);
 
     ProjectMaterial getById(String id);
+    ProjectMaterial getByIdAndCompanyId(String companyId,String id);
     ProjectMaterial getByProjectIdAndMaterialOriginId(String projectId,String materialOriginId);
     ProjectMaterial getByProjectIdAndMaterialId(String projectId,String materialId);
 

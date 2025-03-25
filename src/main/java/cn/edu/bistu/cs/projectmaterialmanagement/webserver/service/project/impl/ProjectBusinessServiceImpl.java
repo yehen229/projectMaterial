@@ -1955,6 +1955,11 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
                                                                                       String useMaterialBrandSelectId) {
         return useMaterialBusinessService.getViewByUseMaterialBrandSelectId(useMaterialBrandSelectId);
     }
+    @Override
+    public UseMaterialBrandSelectView getUseMaterialBrandSelectViewByuseMaterialBrandSelectIdAndCompanyId(String companyId,
+                                                                                                          String useMaterialBrandSelectId) {
+        return useMaterialBusinessService.getViewByUseMaterialBrandSelectIdAndCompanyId(companyId,useMaterialBrandSelectId);
+    }
 
     @Override
     public List<UseMaterialView> getUseMaterialViewListByUseMaterialBrandSelectId(String useMaterialBrandSelectId) {

@@ -433,6 +433,22 @@ public class ProjectMaterialRepositoryImpl implements IProjectMaterialRepository
                                                    """,
                                            new ProjectMaterialMapper(), id);
     }
+    @Override
+    public ProjectMaterial getByIdAndCompanyId(String companyId,String id){
+        Integer i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*) 
+                                                        FROM t_project_material 
+                                                        WHERE id=? AND t_company_id=? AND deleted_at IS NULL
+                                                        """, Integer.class, id,companyId);
+        if (i != 1)
+            return null;
+        return jdbcTemplate.queryForObject("""
+                                                   SELECT * 
+                                                   FROM t_project_material
+                                                   WHERE id=? AND t_company_id=? AND deleted_at IS NULL
+                                                   """,
+                                           new ProjectMaterialMapper(), id,companyId);
+    }
 
     @Override
     public ProjectMaterial getByProjectIdAndMaterialOriginId(String projectId,

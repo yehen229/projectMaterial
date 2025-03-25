@@ -847,6 +847,38 @@ public class ProjectFlow {
 
 
     }
+    public UseMaterialBrandSelectView getUseMaterialBrandSelectViewByCurrentLoginUserAndDesignCompanyId(String projectId,String taskId){
+        User user = userService.getCurrentLoginUser();
+        if (user == null) {
+            throw new BusinessException("用户未登录");
+        }
+        String userId = user.getId();
+        String companyId = companyUserService.getByUserId(userId).getCompanyId();
+        Project project = projectService.getById(projectId);
+        if (project == null)
+            throw new BusinessException("项目不存在");
+
+        //得到项目号，根据项目号找到当前任务
+        String businessId = projectId;
+        String result = "";
+        Task task = getTaskByBusinessKey(businessId, user.getId(), taskId);
+        if (task == null) {
+            throw new BusinessException("未找到待办任务");
+        } else if (!task.getAssignee().equalsIgnoreCase(user.getId())) {
+            throw new BusinessException("没有审核权限，制单人不是当前待办任务，项目经理无法分发监理单位与总包单位");
+        } else {
+            String useMaterialBrandSelectId = taskService.getVariable(task.getId(),
+                    "useMaterialBrandSelectId").toString();
+            if (useMaterialBrandSelectId != null)
+                return projectBusinessService.getUseMaterialBrandSelectViewByuseMaterialBrandSelectIdAndCompanyId(companyId,
+                        useMaterialBrandSelectId);
+
+
+        }
+
+        return null;
+
+    }
 
     /**
      * 提交工程部经理分发监理单位与总包单位
@@ -1784,11 +1816,16 @@ public class ProjectFlow {
              * 4.完成任务
              */
 
+
+
             String useMaterialBrandSelectId = (String) taskService.getVariable(task.getId(),
                                                                                "useMaterialBrandSelectId");
 
             //获得当前设计单位序号
-
+            int designCompanyIndex = projectAppearanceReviewEmployeeForm.getDesignCompanyIndex();
+            if(designCompanyIndex < 0){
+                throw new BusinessException("设计单位序号错误");
+            }
             //项目员工审核项目
             String projectAppearanceReviewModeId = projectBusinessService.addFormOfDesignCompanyEmployee(
                     projectAppearanceReviewEmployeeForm,
@@ -1800,7 +1837,7 @@ public class ProjectFlow {
                 nAffectAppearanceDesignCompanyReviewResult = 0;
             else nAffectAppearanceDesignCompanyReviewResult = 1;
 
-            taskService.setVariable(task.getId(), "nAffectAppearanceDesignCompanyReviewResult",
+            taskService.setVariable(task.getId(), "nAffectAppearanceDesignCompanyReviewResult"+designCompanyIndex,
                                     nAffectAppearanceDesignCompanyReviewResult);
 
 
@@ -1862,7 +1899,6 @@ public class ProjectFlow {
              * 3.设置下一个阶段步骤，前端用来区分显示哪个页面
              * 4.完成任务
              */
-
             String useMaterialBrandSelectId = (String) taskService.getVariable(task.getId(),
                                                                                "useMaterialBrandSelectId");
 

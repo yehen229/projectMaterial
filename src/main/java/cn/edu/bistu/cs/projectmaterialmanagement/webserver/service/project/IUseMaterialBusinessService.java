@@ -12,10 +12,14 @@ public interface IUseMaterialBusinessService {
     UseMaterialNewBrandView getViewByUseMaterialNewBrandId(String useMaterialBrandId);
 
     UseMaterialView getViewByUseMaterialId(String useMaterialId);
+    UseMaterialView getViewByUseMaterialIdAndCompanyId(String companyId,String useMaterialId);
 
     List<UseMaterialView> getViewListByUseMaterialBrandSelectId(String useMaterialBrandSelectId);
+    List<UseMaterialView> getViewListByUseMaterialBrandSelectIdAndCompanyId(String companyId,String useMaterialBrandSelectId);
 
     UseMaterialBrandSelectView getViewByUseMaterialBrandSelectId(String useMaterialBrandSelectId);
+
+    UseMaterialBrandSelectView getViewByUseMaterialBrandSelectIdAndCompanyId(String companyId,String useMaterialBrandSelectId);
 
     Page<UseMaterialView> getPageView(int pageNo,
                                       int pageSize);

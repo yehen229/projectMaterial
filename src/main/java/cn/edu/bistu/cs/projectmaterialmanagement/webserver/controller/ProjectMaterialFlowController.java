@@ -836,7 +836,16 @@ public class ProjectMaterialFlowController {
 
         return projectMaterialFlow.getUseMaterialBrandSelectViewByCurrentLoginUser(projectId, taskId);
     }
+    @GetMapping(value = "get-use-material-brand-select-view-by-current-login-user-and-project-id-and-task-id-and-design-company-id")
+    @PreAuthorize("""
+            hasAnyRole('Admin') 
+            or  @ProjectPermission.isInProject(#projectId)
+            """)
+    public UseMaterialBrandSelectView getUseMaterialBrandSelectViewByCurrentLoginUserAndMaterialId(@RequestParam(value = "projectId") String projectId,
+                                                                                                    @RequestParam(value = "taskId") String taskId) {
 
+        return projectMaterialFlow.getUseMaterialBrandSelectViewByCurrentLoginUserAndDesignCompanyId(projectId, taskId);
+    }
     @GetMapping(value = "page-project-material-acceptance-view-by-current-login-user-and-project-id-and-task-id")
     @PreAuthorize("""
             hasAnyRole('Admin') 

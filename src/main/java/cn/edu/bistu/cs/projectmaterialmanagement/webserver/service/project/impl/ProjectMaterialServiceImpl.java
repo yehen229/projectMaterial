@@ -116,6 +116,10 @@ public class ProjectMaterialServiceImpl implements IProjectMaterialService {
     public ProjectMaterial getById(String id) {
         return projectMaterialRepository.getById(id);
     }
+    @Override
+    public ProjectMaterial getByIdAndCompanyId(String companyId,String id){
+        return projectMaterialRepository.getByIdAndCompanyId(companyId,id);
+    }
 
     @Override
     public ProjectMaterial getByProjectIdAndMaterialOriginId(String projectId,
