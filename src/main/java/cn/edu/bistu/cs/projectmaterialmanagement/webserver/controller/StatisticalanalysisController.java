@@ -274,6 +274,84 @@ public class StatisticalanalysisController {
         List<ProjectStatis> topTen = projectStatisList.subList(0, Math.min(10, projectStatisList.size()));
         return topTen;
     }
+
+    //获取所有审核不通过且未结束的项目
+    @GetMapping("getAllList_disagree_all")
+    public  List<ProjectStatis> test7() {
+        int result = 2;
+//        1.获取设计部审核不通过的项目列表 2为不通过
+        List<Stastisprojectidandcount> designstastisprojectidandcounts = statisticalanalysisRepository.getdesignunpassorpassList(result);
+        Set<String> designprojectSet = new HashSet<>();
+//        对获取的project进行去重
+        for (Stastisprojectidandcount stastisprojectidandcount : designstastisprojectidandcounts) {
+            designprojectSet.add(stastisprojectidandcount.getDesignProjectId());
+        }
+        Map<String, Integer> designmap = new HashMap<>();
+        for (String projectid : designprojectSet) {
+//            获取每个projectid下的审核不通过次数
+            Integer designunpasscount = statisticalanalysisRepository.getdesignunpassorpassCount(projectid, result);
+//            建立一个map
+            designmap.put(projectid, designunpasscount);
+        }
+
+//        2.总包公司订购之前审核
+        List<Stastisprojectidandcount> zongbaostastisprojectidandcounts = statisticalanalysisRepository.getzongbaounpassorpassList(result);
+        Set<String> zongbaoprojectSet = new HashSet<>();
+        for ( Stastisprojectidandcount stastisprojectidandcount : zongbaostastisprojectidandcounts) {
+            zongbaoprojectSet.add(stastisprojectidandcount.getZongbaoProjectId());
+        }
+        Map<String, Integer> zongbaomap = new HashMap<>();
+        for (String projectid : zongbaoprojectSet) {
+            Integer zongbaounpasscount = statisticalanalysisRepository.getzongbaounpassorpassCount(projectid, result);
+            zongbaomap.put(projectid, zongbaounpasscount);
+        }
+
+//        3.监理审核不通过
+        List<Stastisprojectidandcount> jianlistastisprojectidandcounts = statisticalanalysisRepository.getjianliunpassorpassList(result);
+        Set<String> jianliSet = new HashSet<>();
+        for ( Stastisprojectidandcount stastisprojectidandcount : jianlistastisprojectidandcounts) {
+            jianliSet.add(stastisprojectidandcount.getJianliProjectId());
+        }
+        Map<String, Integer> jianlimap = new HashMap<>();
+        for (String projectid : jianliSet) {
+            Integer jianliunpasscount = statisticalanalysisRepository.getjianliunpassorpassCount(projectid,result);
+            jianlimap.put(projectid, jianliunpasscount);
+        }
+//       4.监理与工程审核不通过
+        List<Stastisprojectidandcount> jianliandgongchengbustastisprojectidandcounts = statisticalanalysisRepository.getjianliandgongchengbuunpassorpassList(result);
+        Set<String> jianliandgongchengbuSet = new HashSet<>();
+        for ( Stastisprojectidandcount stastisprojectidandcount : jianliandgongchengbustastisprojectidandcounts) {
+            jianliandgongchengbuSet.add(stastisprojectidandcount.getJianliandgongchengbuProjectId());
+        }
+        Map<String, Integer> jianliandgongchengbumap = new HashMap<>();
+        for (String projectid : jianliandgongchengbuSet) {
+            Integer jianliandgongchengbuunpasscount = statisticalanalysisRepository.getjianliandgongchengbuunpassorpassCount(projectid, 2);
+            jianliandgongchengbumap.put(projectid, jianliandgongchengbuunpasscount);
+        }
+
+
+//        对designmap zongbaomap jianlimap jianliandgongchengbumap 中string相同的进行合并
+        Map<String, Integer> mergedMap = new HashMap<>();
+        mergeMaps(mergedMap, designmap);
+        mergeMaps(mergedMap, zongbaomap);
+        mergeMaps(mergedMap, jianlimap);
+        mergeMaps(mergedMap, jianliandgongchengbumap);
+        List<ProjectStatis> projectStatisList = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : mergedMap.entrySet()) {
+            ProjectStatis projectStatis = new ProjectStatis();
+            projectStatis.setProjectId(entry.getKey());
+            projectStatis.setCount(entry.getValue());
+            projectStatis.setProject(projectService.getById(entry.getKey()));
+            System.out.println(entry.getKey() + ":" + entry.getValue());
+            projectStatisList.add(projectStatis);
+        }
+
+
+//  根据projectStatisList中的count进行排序
+        projectStatisList.sort((o1, o2) -> Integer.compare(o2.getCount(), o1.getCount()));
+        return projectStatisList;
+    }
+
     private static void mergeMaps(Map<String, Integer> mergedMap, Map<String, Integer> sourceMap) {
         sourceMap.forEach((key,  value) ->
                 mergedMap.merge(key,  value, Integer::sum)
