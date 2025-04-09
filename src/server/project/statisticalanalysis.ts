@@ -269,3 +269,20 @@ export async function getchart_projectname_totalReviewResulDisagree(
         throw err;
     }
 }
+
+export async function getAllList_disagree_all(
+): Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
+    try {
+        let res = await axios.get<
+            any,
+            IServerResponseData<IServerPage<IServerProjectView>>
+        >(BASEURL.statisticalanalysis + "getAllList_disagree_all", {
+            params: {
+            },
+        });
+        return res;
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+}

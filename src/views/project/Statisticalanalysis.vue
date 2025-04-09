@@ -17,6 +17,7 @@ import {
   byprojectname_getList,
  getAllList_end, getAllList_processing,
   getchart_projectname_totalReviewResulDisagree,
+  getAllList_disagree_all,
   servergetdesignUnpassData,
   serverGetProjectListPageView
 } from "@/server/project/statisticalanalysis";
@@ -25,12 +26,15 @@ import BeforeZongBaoTable from "@/views/project/statisticalCompont/beforeZongBao
 import JianlireviewTable from "@/views/project/statisticalCompont/jianlireviewTable.vue";
 import JianliAndgongchengbureviewTable from "@/views/project/statisticalCompont/jianliAndgongchengbureviewTable.vue";
 
+const dialogDisagreecount = ref(5);
+
 onMounted(async () => {
   await fetchTableData();
   await getprocessingprojectcount();
   await getendprojectcount();
   await getchart();
   await getchart_bar();
+  await getDialogData();
 });
 const getBar_Chart_data = ref()
 const transformDataForChart = (data) => {
@@ -96,6 +100,37 @@ const pageNo = ref(1);
 // const pageSize = ref(getUserPageSize());
 const pageSize = ref(10);
 const loading = ref(false);
+const dialogVisible = ref(true);
+const allDisagreeData = ref();
+const dialogData = ref();
+
+const getDialogData = async () => {
+  let ret = await getAllList_disagree_all();
+  if (ret && ret.code == 200) {
+    allDisagreeData.value = ret.data;    
+    dialogData.value = [];
+    for (let i = 0; i < dialogDisagreecount.value; i++) {      
+      dialogData.value[i] = allDisagreeData.value[i];
+    }
+    console.log(dialogData.value);
+    
+  }
+};
+
+const onDialogCountChange = () => {
+  if (dialogDisagreecount.value > 0) {
+    dialogData.value = [];
+    for (let i = 0; i < dialogDisagreecount.value && i < allDisagreeData.value.length; i++) {
+      dialogData.value[i] = allDisagreeData.value[i];
+    }
+  } else {
+    dialogDisagreecount.value = 10;
+  }
+}
+
+const goProjectPage = (id: string) => {
+  router.push({path: '/project-details/' + id});
+}
 
 const onPagePrevClick = (value: number) => {
 };
@@ -210,12 +245,8 @@ const getchart_bar = async () => {
   try {
     // 调用 API 获取项目列表
     const ret = await getchart_projectname_totalReviewResulDisagree();
-    console.log("rey:");
-    console.log(ret);
     if (ret && ret.code == 200) {
       getBar_Chart_data.value = transformDataForChart(ret.data)
-      console.log('11111111111');
-      console.log(getBar_Chart_data.value)
     }
   } catch (error) {
     ElMessage.error("获取信息失败");
@@ -273,7 +304,33 @@ const getchart_bar = async () => {
 
   <div>
 
-
+    <el-dialog
+      v-model="dialogVisible"
+      title="请注意审核驳回较多的项目"
+      width="500"
+    >
+      审核不通过次数前<el-input v-model="dialogDisagreecount" @change="onDialogCountChange()" style="width: 50px"/>个
+      <el-table :data="dialogData" style="width: 100%">
+        <el-table-column label="项目名">
+          <template #default="scope">
+            <el-button @click="goProjectPage(scope.row.projectId)">{{ scope.row.project.name }}</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="审核不通过次数">
+          <template #default="scope">
+            <div>{{ scope.row.count }}</div>
+          </template>
+        </el-table-column>
+      </el-table>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="dialogVisible = false">Cancel</el-button>
+          <el-button type="primary" @click="dialogVisible = false">
+            Confirm
+          </el-button>
+        </div>
+      </template>
+    </el-dialog>
     <el-card>
       <h2>设计单位审核不通过</h2>
       <DesignUnpaaTable/>
