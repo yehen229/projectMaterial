@@ -484,9 +484,9 @@ public class ProjectRepositoryImpl implements IProjectRepository {
                         SELECT * 
                         FROM t_project
                         WHERE location like ? AND deleted_at IS NULL
-                        LIMIT ?,?
+                        LIMIT ? offset  ?
                         """,
-                new ProjectMapper(), likeProjectLocation, pageNo * pageSize, pageSize);
+                new ProjectMapper(), likeProjectLocation,pageNo * pageSize,  pageSize);
     }
 
     //
@@ -747,9 +747,9 @@ public class ProjectRepositoryImpl implements IProjectRepository {
                         SELECT * 
                         FROM t_project
                         WHERE deleted_at IS NULL
-                        LIMIT ?,?
+                        LIMIT ? offset ?
                         """,
-                new ProjectMapper(), pageNo * pageSize, pageSize);
+                new ProjectMapper(), pageSize,pageNo * pageSize);
     }
 
     /**
@@ -766,9 +766,9 @@ public class ProjectRepositoryImpl implements IProjectRepository {
                         SELECT * 
                         FROM t_project
                         WHERE t_user_id=? AND deleted_at IS NULL
-                        LIMIT ?,?
+                        LIMIT ? offset ?
                         """,
-                new ProjectMapper(), userId, pageNo * pageSize, pageSize);
+                new ProjectMapper(), userId, pageSize,pageNo * pageSize);
     }
 
     /**
@@ -785,9 +785,9 @@ public class ProjectRepositoryImpl implements IProjectRepository {
                         SELECT * 
                         FROM t_project
                         WHERE t_company_construction_id=? AND deleted_at IS NULL
-                        LIMIT ?,?
+                        LIMIT ? offset  ?
                         """,
-                new ProjectMapper(), companyConstructionId, pageNo * pageSize, pageSize);
+                new ProjectMapper(), companyConstructionId,  pageSize,pageNo * pageSize);
     }
 
     //
@@ -805,9 +805,9 @@ public class ProjectRepositoryImpl implements IProjectRepository {
                          SELECT *
                          FROM t_project
                         where deleted_at IS NULL
-                         LIMIT ?,?
+                         LIMIT ? offset  ?
                          """,
-                new ProjectMapper(), pageNo * pageSize, pageSize);
+                new ProjectMapper() ,pageSize,pageNo * pageSize);
     }
 
     private List<Project> getPageQueryByProjectId(String projectId,
@@ -817,9 +817,9 @@ public class ProjectRepositoryImpl implements IProjectRepository {
                         SELECT * 
                         FROM t_project
                         WHERE id=? AND deleted_at IS NULL
-                        LIMIT ?,?
+                        LIMIT ? offset  ?
                         """,
-                new ProjectMapper(), projectId, pageNo * pageSize, pageSize);
+                new ProjectMapper(), projectId, pageSize, pageNo * pageSize);
     }
 
     private List<Project> getPageQueryByProjectName(String projectName,
@@ -830,9 +830,9 @@ public class ProjectRepositoryImpl implements IProjectRepository {
                         SELECT * 
                         FROM t_project
                         WHERE name LIKE ? AND deleted_at IS NULL
-                        LIMIT ?,?
+                        LIMIT ? offset  ?
                         """,
-                new ProjectMapper(), projectName, pageNo * pageSize, pageSize);
+                new ProjectMapper(), projectName, pageSize,pageNo * pageSize);
     }
 
     private List<Project> getPageQueryByKeyword(String keyword,
@@ -843,9 +843,9 @@ public class ProjectRepositoryImpl implements IProjectRepository {
                         SELECT * 
                         FROM t_project
                         WHERE name like ? AND deleted_at IS NULL
-                        LIMIT ?,?
+                        LIMIT ? offset  ?
                         """,
-                new ProjectMapper(), likeKeyword, pageNo * pageSize, pageSize);
+                new ProjectMapper(), likeKeyword, pageSize, pageNo * pageSize);
     }
 
     /**

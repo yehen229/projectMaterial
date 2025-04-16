@@ -105,11 +105,25 @@ spring:
   application:
     name: webserver
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+
 #    url: jdbc:mysql://74.48.81.138:3306/material?serverTimezone=Asia/Shanghai
-    url: jdbc:mysql://localhost:3306/project_material?serverTimezone=Asia/Shanghai
-    username: root
-    password: 12345
+#    url: jdbc:mysql://47.95.6.3:3306/material?serverTimezone=Asia/Shanghai
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/project_material?serverTimezone=Asia/Shanghai
+#    username: root
+#    password: 3327326
+#    username: dyz
+#    password: biticai_404
+
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://10.146.58.74:5866/db0414?currentSchema=project_material,public
+    username: sysdba
+    password: Hello@12345
+
+#    driver-class-name: org.postgresql.Driver
+#    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=project_material,public
+#    username: postgres
+#    password: 3327326
 #    password: yehen229
 
   servlet:
@@ -137,10 +151,10 @@ spring:
 server:
   address: 127.0.0.1
   port: 9000
-#  ssl:
-#    protocol: TLS
+#
+  #    protocol: TLS
 #    key-store: classpath:_.zhengdddddyyyyyy.store.pfx
-#    key-store-password: 5103fde6
+#    key-store-password: c73a5dc8
   tomcat:
     remoteip:
       remote-ip-header: x-forwarded-for
@@ -163,13 +177,11 @@ camunda.bpm:
   generic-properties.properties:
     javaSerializationFormatEnabled: true
 
-
-
   filter:
     create: All tasks
 
   database:
-    type: mysql
+    type: postgres
     schema-update: true
 
 

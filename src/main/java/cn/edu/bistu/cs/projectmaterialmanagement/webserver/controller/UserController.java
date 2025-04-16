@@ -144,9 +144,10 @@ public class UserController {
         //前端传输过来的密码是加密的(采用RSA加密算法)，需要解密。注意，这个加密和数据库中存放的密码加密不是一回事
         //现在password字段变成了原始密码（明文）
         String rawPassword = ijwtTokenService.decodePwd(sysUserLogin.getPassword());
-
+        // 创建用户名和密码认证令牌
         UsernamePasswordAuthenticationToken token =
                 new UsernamePasswordAuthenticationToken(sysUserLogin.getUserName(), rawPassword);
+        // 执行身份认证
         Authentication authenticate = authenticationManager.authenticate(token);
 
 
@@ -199,7 +200,7 @@ public class UserController {
         sysUserLoginResult.setUserRealName(sysUser.getRealName());
         sysUserLoginResult.setUserId(sysUser.getId());
 
-        Log log = new Log(sysUser.getId(), "123", "用户登录", 1 , new Date());
+        Log log = new Log(sysUser.getId(), "123", "用户登录", 1, new Date());
         logService.add(log);
         return sysUserLoginResult;
     }
@@ -223,7 +224,7 @@ public class UserController {
     @PreAuthorize("hasRole('Admin')")
     public String add(@RequestBody User user) {
         User user1 = userService.getByUserName("admin");
-        Log log = new Log(user1.getId(), "123", "添加用户：" + user.getRealName() , 1 , new Date());
+        Log log = new Log(user1.getId(), "123", "添加用户：" + user.getRealName(), 1, new Date());
         logService.add(log);
         return userService.add(user);
     }
@@ -232,7 +233,7 @@ public class UserController {
     @PreAuthorize("hasRole('Admin')")
     public int delete(@RequestBody User user) {
         User user1 = userService.getByUserName("admin");
-        Log log = new Log(user1.getId(), "123", "删除用户：" + user.getRealName() , 1 , new Date());
+        Log log = new Log(user1.getId(), "123", "删除用户：" + user.getRealName(), 1, new Date());
         logService.add(log);
         return userService.delete(user);
     }
@@ -241,21 +242,21 @@ public class UserController {
     @PreAuthorize("hasRole('Admin')")
     public int update(@RequestBody User user) {
         User user1 = userService.getByUserName("admin");
-        Log log = new Log(user1.getId(), "123", "更新用户信息：" + user.getRealName() , 1 , new Date());
+        Log log = new Log(user1.getId(), "123", "更新用户信息：" + user.getRealName(), 1, new Date());
         logService.add(log);
         return userService.update(user);
     }
 
     @PostMapping(value = "update-own-info")
     public int updateOwnInfo(@RequestBody User user) {
-        Log log = new Log(user.getId(), "123", "更新用户信息：" + user.getRealName() , 1 , new Date());
+        Log log = new Log(user.getId(), "123", "更新用户信息：" + user.getRealName(), 1, new Date());
         logService.add(log);
         return userService.updateOwnInfo(user);
     }
 
     @PostMapping(value = "update-own-pwd")
     public int updateOwnPwd(@RequestBody User user) {
-        Log log = new Log(user.getId(), "123", "更改用户密码：" + user.getRealName() , 1 , new Date());
+        Log log = new Log(user.getId(), "123", "更改用户密码：" + user.getRealName(), 1, new Date());
         logService.add(log);
         return userService.updateOwnPwd(user);
     }
@@ -263,7 +264,7 @@ public class UserController {
     @PostMapping(value = "reset-pwd")
     @PreAuthorize("hasAnyRole('Admin','Teacher')")
     public int resetPassword(@RequestBody User user) {
-        Log log = new Log(user.getId(), "123", "重置用户密码：" + user.getRealName() , 1 , new Date());
+        Log log = new Log(user.getId(), "123", "重置用户密码：" + user.getRealName(), 1, new Date());
         logService.add(log);
         return userService.resetPassword(user);
     }
