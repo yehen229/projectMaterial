@@ -6,9 +6,9 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import java.util.List;
 
 public interface IRoleService {
-    String ROLE_ADMIN = "admin";
-    String ROLE_MANAGER = "manager";
-    String ROLE_EMPLOYEE = "employee";
+    String ROLE_ADMIN = "Admin";
+    String ROLE_MANAGER = "Manager";
+    String ROLE_EMPLOYEE = "Employee";
 
     String add(Role role);
 
