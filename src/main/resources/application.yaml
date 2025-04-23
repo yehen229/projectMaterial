@@ -117,6 +117,7 @@ spring:
 
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://10.146.58.74:5866/db0414?currentSchema=project_material,public
+#    url: jdbc:postgresql://localhost:5866/db0414?currentSchema=project_material,public
     username: sysdba
     password: Hello@12345
 #
@@ -133,6 +134,7 @@ spring:
       enabled: true
       max-file-size: 50MB
       max-request-size: 50MB
+
 
   profiles:
     active: dev
@@ -164,7 +166,7 @@ server:
   servlet:
     session:
       timeout: PT3H
-
+#    context-path: /houduan
 
 
 #logging.level.root=warn
