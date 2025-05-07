@@ -23,6 +23,7 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.mater
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.ICompanyService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.ICompanyUserService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IMaterialService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,7 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.controller.ProjectMat
 
 import java.util.*;
 
+@Slf4j
 @RestController
 @RequestMapping("statisticalanalysis/v1")
 @EnableMethodSecurity
@@ -353,9 +355,9 @@ public class StatisticalanalysisController {
     }
 
     private static void mergeMaps(Map<String, Integer> mergedMap, Map<String, Integer> sourceMap) {
-        sourceMap.forEach((key,  value) ->
-                mergedMap.merge(key,  value, Integer::sum)
-        );
+            sourceMap.forEach((key,  value) ->
+                    mergedMap.merge(key,  value, Integer::sum)
+            );
     }
 
 //    获取已经完成的项目的数量
@@ -497,8 +499,10 @@ public class StatisticalanalysisController {
         for (String projectid : designprojectSet) {
 //            获取每个projectid下的审核不通过次数
             Integer designunpasscount = statisticalanalysisRepository.getdesignunpassorpassCount(projectid, result);
+            if(designunpasscount != null) {
+                designmap.put(projectid, designunpasscount);
+            }
 //            建立一个map
-            designmap.put(projectid, designunpasscount);
         }
 
 //        2.总包公司订购之前审核
@@ -510,7 +514,9 @@ public class StatisticalanalysisController {
         Map<String, Integer> zongbaomap = new HashMap<>();
         for (String projectid : zongbaoprojectSet) {
             Integer zongbaounpasscount = statisticalanalysisRepository.getzongbaounpassorpassCount(projectid, result);
-            zongbaomap.put(projectid, zongbaounpasscount);
+            if(zongbaounpasscount != null) {
+                zongbaomap.put(projectid, zongbaounpasscount);
+            }
         }
 
 //        3.监理审核不通过
@@ -522,7 +528,9 @@ public class StatisticalanalysisController {
         Map<String, Integer> jianlimap = new HashMap<>();
         for (String projectid : jianliSet) {
             Integer jianliunpasscount = statisticalanalysisRepository.getjianliunpassorpassCount(projectid,result);
-            jianlimap.put(projectid, jianliunpasscount);
+            if(jianliunpasscount != null) {
+                jianlimap.put(projectid, jianliunpasscount);
+            }
         }
 //       4.监理与工程审核不通过
         List<Stastisprojectidandcount> jianliandgongchengbustastisprojectidandcounts = statisticalanalysisRepository.getjianliandgongchengbuunpassorpassList(result);
@@ -533,7 +541,9 @@ public class StatisticalanalysisController {
         Map<String, Integer> jianliandgongchengbumap = new HashMap<>();
         for (String projectid : jianliandgongchengbuSet) {
             Integer jianliandgongchengbuunpasscount = statisticalanalysisRepository.getjianliandgongchengbuunpassorpassCount(projectid, 2);
-            jianliandgongchengbumap.put(projectid, jianliandgongchengbuunpasscount);
+            if(jianliandgongchengbuunpasscount != null) {
+                jianliandgongchengbumap.put(projectid, jianliandgongchengbuunpasscount);
+            }
         }
 
 
