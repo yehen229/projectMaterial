@@ -1,6 +1,7 @@
 package cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project;
 
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.OnematerialUnpass;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectMaterial;
 
 import java.math.BigDecimal;
@@ -106,4 +107,6 @@ public interface IProjectMaterialRepository {
 
 
     List<ProjectMaterial> getByProjectIdandCompanyId(String projectId, String companyId);
+
+    List<OnematerialUnpass> getunpassreviewbyprojectidmaterialid_companyid(String projectid, String companyid);
 }

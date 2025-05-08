@@ -2,11 +2,16 @@ package cn.edu.bistu.cs.projectmaterialmanagement.webserver.controller;
 
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.DownloadFile;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.OnematerialUnpass;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectMaterial;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectMaterialForm;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectMaterialView;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.IProjectMaterialRepository;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.IStatisticalanalysisRepository;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.account.IUserService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IProjectMaterialBusinessService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IProjectMaterialService;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.materialreview.IProjectReviewUserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,6 +19,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -22,13 +28,18 @@ import java.util.List;
 public class ProjectMaterialController {
     private final IProjectMaterialService projectMaterialService;
     private final IProjectMaterialBusinessService projectMaterialBusinessService;
-
+    private final IUserService userService;
+    private final IProjectReviewUserService projectReviewUserService;
+    private IProjectMaterialRepository projectMaterialRepository;
 
     ProjectMaterialController(IProjectMaterialService projectMaterialService,
-                              IProjectMaterialBusinessService projectMaterialBusinessService) {
+                              IProjectMaterialBusinessService projectMaterialBusinessService, IUserService userService, IProjectReviewUserService projectReviewUserService,
+                              IProjectMaterialRepository projectMaterialRepository) {
         this.projectMaterialService = projectMaterialService;
         this.projectMaterialBusinessService = projectMaterialBusinessService;
-
+        this.userService = userService;
+        this.projectReviewUserService = projectReviewUserService;
+        this.projectMaterialRepository = projectMaterialRepository;
     }
 
     @GetMapping(value = "get-by-id")
@@ -167,6 +178,22 @@ public class ProjectMaterialController {
             MultipartFile multipartFile)
             throws Exception {
         return projectMaterialBusinessService.addProjectMaterialExcel(multipartFile);
+    }
+
+    @GetMapping("get_unpass_review_by_projectid_materialid_companyid")    //    获取评论
+    public List<OnematerialUnpass> getunpassreviewbyprojectidmaterialid_companyid(@RequestParam(value = "projectid") String projectid,
+                                                                                  @RequestParam(value = "companyid") String companyid) {
+        List<OnematerialUnpass> unpassmaterialmessage = projectMaterialRepository.getunpassreviewbyprojectidmaterialid_companyid(projectid, companyid);
+        if(unpassmaterialmessage != null) {
+            for (OnematerialUnpass onematerialUnpass : unpassmaterialmessage) {
+                onematerialUnpass.setUser(userService.getById(onematerialUnpass.getUserid()));
+                onematerialUnpass.setProjectReviewUser(projectReviewUserService.getById(onematerialUnpass.getId()));
+            }
+            return unpassmaterialmessage;
+        } else {
+            List<OnematerialUnpass> empty = new ArrayList<>();
+            return empty;
+        }
     }
 
 }

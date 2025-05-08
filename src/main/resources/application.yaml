@@ -112,7 +112,8 @@ spring:
 #    url: jdbc:mysql://localhost:3306/project_material?serverTimezone=Asia/Shanghai
 #    username: root
 #    password: 3327326
-#    username: dyz
+
+  #    username: dyz
 #    password: biticai_404
 
     driver-class-name: org.postgresql.Driver
