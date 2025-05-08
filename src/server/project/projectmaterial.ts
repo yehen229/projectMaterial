@@ -34,6 +34,7 @@ import {
   IServerProjectMaterial,
   IServerProjectMaterialView,
   IServerProjectMaterialForm,
+  IServerProjectView,
 } from "@/server/types/project/project";
 
 import { IServerProjectMaterialVerificationDocumentView } from "@/server/types/project/review";
@@ -250,8 +251,8 @@ export async function serverGetProjectMaterialPageViewByCurrentUserProject(
     let res;
     if (name == "" && location == "" && itemMark == "" && technology == "" && installation == "" && brand == "" && brandPrivate == "") {
       res = await axios.get<
-      any,
-      IServerResponseData<IServerPage<IServerProjectMaterialView>>
+        any,
+        IServerResponseData<IServerPage<IServerProjectMaterialView>>
       >(
         BASEURL.projectmaterial +
         "page-view-by-design-company-of-current-user-and-project-id",
@@ -265,8 +266,8 @@ export async function serverGetProjectMaterialPageViewByCurrentUserProject(
       );
     } else {
       res = await axios.get<
-      any,
-      IServerResponseData<IServerPage<IServerProjectMaterialView>>
+        any,
+        IServerResponseData<IServerPage<IServerProjectMaterialView>>
       >(
         BASEURL.projectmaterial +
         "page-view-by-search",
@@ -307,28 +308,28 @@ export async function serverGetProjectMaterialPageViewForDesignDepartmentManager
 ): Promise<IServerResponseData<IServerPage<IServerProjectMaterialView>>> {
   try {
     let res;
-      res = await axios.get<
+    res = await axios.get<
       any,
       IServerResponseData<IServerPage<IServerProjectMaterialView>>
-      >(
-        BASEURL.projectmaterial +
-        "page-view-by-search",
-        {
-          params: {
-            projectId: projectId,
-            name: name,
-            location: location,
-            itemMark: itemMark,
-            technology: technology,
-            installation: installation,
-            brand: brand,
-            brandPrivate: brandPrivate,
-            pageNo: pageNo,
-            pageSize: pageSize,
-          },
-        }
-      );
-    
+    >(
+      BASEURL.projectmaterial +
+      "page-view-by-search",
+      {
+        params: {
+          projectId: projectId,
+          name: name,
+          location: location,
+          itemMark: itemMark,
+          technology: technology,
+          installation: installation,
+          brand: brand,
+          brandPrivate: brandPrivate,
+          pageNo: pageNo,
+          pageSize: pageSize,
+        },
+      }
+    );
+
     return res;
   } catch (err) {
     console.log(err);
@@ -417,3 +418,23 @@ export async function serverProjectMaterialAddFromExcel(
   }
 }
 
+export async function servergetunpassreviewbyprojectidmaterialid_companyid(
+  projectid: string,
+  companyid: string
+) {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerProjectView>>
+    >(BASEURL.projectmaterial + "get_unpass_review_by_projectid_materialid_companyid", {
+      params: {
+        projectid: projectid,
+        companyid: companyid,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}

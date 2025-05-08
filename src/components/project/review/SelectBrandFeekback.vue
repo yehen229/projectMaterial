@@ -125,16 +125,22 @@ const radioUserType = ref(0);
 
 const { projectUserTask } = defineProps(["projectUserTask"]);
 
-const emit = defineEmits<{
-  (
-    e: "setAllEmployeeFilesAsManagerFiles",
-    projectReviewUserViewList: IServerProjectReviewUserView[]
-  ): void;
-}>();
+// const emit = defineEmits<{
+//   (
+//     e: "setAllEmployeeFilesAsManagerFiles",
+//     projectReviewUserViewList: IServerProjectReviewUserView[]
+//   ): void;
+// }>();
 
 onMounted(async () => {
   await getProjectReviewUserViewPageFromServer();
 });
+
+const emit = defineEmits(['showWarningDialog'])
+
+const showWarning = async () => {
+  emit('showWarningDialog', true)
+}
 
 const getProjectReviewUserViewPageFromServer = async () => {
   console.log(projectUserTask);
@@ -153,6 +159,7 @@ const getProjectReviewUserViewPageFromServer = async () => {
     console.log(ret);
     if (ret && ret.code == 200) {
       projectReviewUserViewData.value = ret.data;
+      showWarning();
     }
   }
 };

@@ -324,9 +324,9 @@ const getchart_bar = async () => {
       </el-table>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="dialogVisible = false">Cancel</el-button>
+          <el-button @click="dialogVisible = false">关闭</el-button>
           <el-button type="primary" @click="dialogVisible = false">
-            Confirm
+            确定
           </el-button>
         </div>
       </template>

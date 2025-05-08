@@ -152,7 +152,7 @@ const employeeList: Ref<IServerUser[]> = ref([]);
 
 const notPassedUseMaterialBrandSelectView =
   ref<IServerUseMaterialBrandSelectView>();
-
+const isWarning = ref(false);
 const fileList = ref<UploadUserFile[]>([]);
 const upload = ref<UploadInstance>();
 const fileListUploadNum = ref(0);
@@ -207,6 +207,16 @@ onMounted(async () => {
   await getUserTaskFromServerByProjectId(projectId.value, taskId.value);
   await getNotPassedBrandFromServer();
 });
+
+const showWarning = (val: boolean) => {
+  console.log(val,"sfawer");
+  
+  if (val) {
+    isWarning.value = true;
+  } else {
+    isWarning.value = false;
+  }
+}
 
 const getNotPassedBrandFromServer = async () => {
   const ret =
@@ -642,6 +652,19 @@ const textElipsisValue = ref(false);
     @onDilalogOk="onUpdateProjectMaterialByGeneralContractorCompanyDialogOk"
   ></UpdateProjectMaterialByGeneralContractorCompanyDialog>
 
+  <el-dialog
+    v-model="isWarning"
+    title="Tips"
+    width="500"
+  >
+    <span>有退回，请注意审核内容</span>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="isWarning = false">关闭</el-button>
+      </div>
+    </template>
+  </el-dialog>
+
   <!--显示项目列表、当前能够执行的操作（例如审核等）-->
   <div class="tab-container">
     <ProjectUserTaskInfo
@@ -823,6 +846,7 @@ const textElipsisValue = ref(false);
 
       <!--反馈意见-->
       <SelectBrandFeekback
+        @showWarningDialog="showWarning"
         :projectUserTask="projectUserTask"
       ></SelectBrandFeekback>
 
