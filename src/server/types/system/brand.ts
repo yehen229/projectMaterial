@@ -3,6 +3,7 @@ export interface IServerBrand {
   id: string; //id,主键
   name: string; //name
   materialClassifySectionId: string; //t_material_classify_section_id
+  factory_id: string; //t_material_factory_id,null表示无厂家对应品牌，否则 品牌和厂家一一对应
   position: string; //position,定位：合资、国产等定位：合资、国产等
   deletedAt: Date; //deleted_at,null表示未删，否则 表示删除时间null表示未删，否则 表示删除时间
 }

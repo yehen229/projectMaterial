@@ -77,13 +77,12 @@ onMounted(async () => {
 
 const getBrandFromSever = async () => {
   let search = searchText.value.trim();
-
+  // brandPublicPageData.value = [];
   if (search) {
     console.log(searchSelect.value);
 
     if (searchSelect.value == "0") {
       //品牌名称
-      console.log(search);
       const ret = await serverGetBrandPublicPageViewByBrandName(
         searchText.value,
         pageNo.value,
@@ -113,6 +112,8 @@ const getBrandFromSever = async () => {
       brandPublicPageData.value = ret.data;
     }
   }
+  console.log(brandPublicPageData.value);
+  brandPublicPageData.value
 };
 
 const tableData = computed(() => {
@@ -363,8 +364,7 @@ const goBack = () => {
           <template #default="scope">
             <div style="display: flex; align-items: center">
               <span>{{
-                scope.row.brandView.materialClassifySectionView
-                  .materialClassifyDivision.name
+                scope.row.brandView.materialClassifySectionView?.materialClassifyDivision.name
               }}</span>
             </div>
           </template>
@@ -404,6 +404,14 @@ const goBack = () => {
           <template #default="scope">
             <div style="display: flex; align-items: center">
               <span>{{ scope.row.brandView.brand.name }}</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="厂家" width="200">
+          <template #default="scope">
+            <div style="display: flex; align-items: center">
+              <span v-if="scope.row.company != null">{{ scope.row.company.name }}</span>
+              <span v-if="scope.row.company == null">无</span>
             </div>
           </template>
         </el-table-column>

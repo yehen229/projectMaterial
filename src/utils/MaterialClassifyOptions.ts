@@ -57,6 +57,12 @@ export interface IMaterialClassifyOption {
   children: IMaterialClassifyOption[];
 }
 
+export interface IMaterialFactoryOption {
+  id: string;
+  value: string;
+  label: string;
+}
+
 const generateSectionTree = (
   groupTreeChildren: IServerMaterialClassifySectionView[]
 ) => {
@@ -115,6 +121,15 @@ const generateDivisitonOption = (tree: IServerMaterialClassifyTree) => {
 };
 
 export const generateMaterialClassifyOption = async () => {
+  const ret = await serverGetMaterialClassifyTree();
+
+  if (ret && ret.code == 200) {
+    return generateDivisitonOption(ret.data);
+  }
+  return [];
+};
+
+export const generateMaterialFactoryOption = async () => {
   const ret = await serverGetMaterialClassifyTree();
 
   if (ret && ret.code == 200) {

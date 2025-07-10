@@ -139,6 +139,7 @@ const onCancel = () => {
             <el-radio label="建设单位" value="建设单位" />
             <el-radio label="监理单位" value="监理单位" />
             <el-radio label="总包单位" value="总包单位" />
+            <el-radio label="厂家" value="厂家" />
           </el-radio-group>
         </el-form-item>
       </el-form>

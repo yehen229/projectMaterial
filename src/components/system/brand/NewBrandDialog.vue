@@ -34,8 +34,13 @@ import {
 
 import {
   IMaterialClassifyOption,
+  IMaterialFactoryOption,
   generateMaterialClassifyOption,
 } from "@/utils/MaterialClassifyOptions";
+
+import {
+  serverGetFactoryList
+} from "@/server/system/company";
 
 const router = useRouter();
 
@@ -51,6 +56,7 @@ const form = reactive<IServerBrand>({
   id: "", //id,主键
   name: "", //名称
   materialClassifySectionId: "", //
+  factory_id: "", //厂家
   position: "国产", //
   deletedAt: new Date(),
 });
@@ -81,10 +87,25 @@ const dialogFormVisible = computed({
 });
 
 const materialClassifyOption = ref<IMaterialClassifyOption[]>([]);
+const factoryOption = ref<IMaterialFactoryOption[]>([]);
 const onOpenDialog = async () => {
   materialClassifyOption.value = await generateMaterialClassifyOption();
-  console.log(materialClassifyOption.value);
+  const factoryResponse = await serverGetFactoryList();
+  factoryOption.value.splice(0, factoryOption.value.length);
+  factoryOption.value.push({
+        id: null,
+        value: null,
+        label: "无",
+      });
+  for (let i = 0; i < factoryResponse.data.length; i++) {
+    factoryOption.value.push({
+      id: factoryResponse.data[i].id,
+      value: factoryResponse.data[i].id,
+      label: factoryResponse.data[i].name,
+    });
+  }  
 };
+
 
 const handleClose = () => {
   emit("onDilalogCancel");
@@ -151,6 +172,15 @@ const cascaderProps = {
 
         <el-form-item label="品牌名称" prop="name">
           <el-input v-model="form.name" placeholder="请输入品牌名称" />
+        </el-form-item>
+
+        <el-form-item label="厂家" prop="factory">
+          <el-cascader
+            v-model="form.factory_id"
+            :options="factoryOption"
+            :props="cascaderProps"
+            style="width: 100%"
+          />
         </el-form-item>
 
         <el-form-item label="定位" prop="position">

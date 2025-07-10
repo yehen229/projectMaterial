@@ -123,6 +123,20 @@ export async function serverGetAllCompanyList(): Promise<
   }
 }
 
+export async function serverGetFactoryList(): Promise<
+  IServerResponseData<Array<IServerCompany>>
+> {
+  try {
+    let res = await axios.get<any, IServerResponseData<Array<IServerCompany>>>(
+      BASEURL.company + "get-factory-list"
+    );
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
 export async function serverGetAllCompanyListByCompanyType(
   companyType: string
 ): Promise<IServerResponseData<Array<IServerCompany>>> {
