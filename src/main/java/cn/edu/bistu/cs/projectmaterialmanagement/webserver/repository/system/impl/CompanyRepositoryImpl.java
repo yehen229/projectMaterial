@@ -235,6 +235,17 @@ public class CompanyRepositoryImpl implements ICompanyRepository {
     }
 
     @Override
+    public List<Company> getFactoryList() {
+        return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_company
+                                          WHERE deleted_at IS NULL
+                                          AND company_type="厂家"
+                                          """,
+                                  new CompanyMapper());
+    }
+
+    @Override
     public List<Company> getCompanyListByType(String companyType) {
         return jdbcTemplate.query("""
                                           SELECT * 

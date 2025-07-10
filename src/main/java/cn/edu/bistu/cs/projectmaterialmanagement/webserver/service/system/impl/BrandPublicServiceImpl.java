@@ -5,9 +5,12 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Brand;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.BrandPublic;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.BrandPublicView;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Company;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.system.IBrandPublicRepository;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.system.ICompanyRepository;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IBrandPublicService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IBrandService;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.ICompanyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,12 +24,13 @@ public class BrandPublicServiceImpl implements IBrandPublicService {
     private static final Logger log =
             LoggerFactory.getLogger(BrandPublicServiceImpl.class);
     private final IBrandService brandService;
-
     private final IBrandPublicRepository brandPublicRepository;
+    private final ICompanyRepository companyRepository;
 
-    public BrandPublicServiceImpl(IBrandService brandService, IBrandPublicRepository brandPublicRepository) {
+    public BrandPublicServiceImpl(IBrandService brandService, IBrandPublicRepository brandPublicRepository, ICompanyRepository companyRepository) {
         this.brandService = brandService;
         this.brandPublicRepository = brandPublicRepository;
+        this.companyRepository = companyRepository;
     }
 
     @Override
@@ -232,6 +236,12 @@ public class BrandPublicServiceImpl implements IBrandPublicService {
         BrandPublicView brandPublicView = new BrandPublicView();
         brandPublicView.setBrandPublic(brandPublic);
         brandPublicView.setBrandView(brandService.getViewById(brandPublic.getBrandId()));
+        if(brandPublicView.getBrandView().getBrand().getFactory_id() != null) {
+            Company company = companyRepository.getById(brandPublicView.getBrandView().getBrand().getFactory_id());
+            brandPublicView.setCompany(company);
+        } else {
+            brandPublicView.setCompany(null);
+        }
         return brandPublicView;
     }
 

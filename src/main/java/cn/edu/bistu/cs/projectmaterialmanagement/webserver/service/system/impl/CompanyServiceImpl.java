@@ -110,6 +110,11 @@ public class CompanyServiceImpl implements ICompanyService {
     }
 
     @Override
+    public List<Company> getFactoryList() {
+        return companyRepository.getFactoryList();
+    }
+
+    @Override
     public List<Company> getCompanyListByType(String companyType) {
         return companyRepository.getCompanyListByType(companyType);
     }

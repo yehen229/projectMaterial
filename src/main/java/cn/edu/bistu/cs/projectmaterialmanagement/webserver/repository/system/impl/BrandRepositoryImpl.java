@@ -26,19 +26,21 @@ public class BrandRepositoryImpl implements IBrandRepository {
      */
     @Override
     public String add(Brand brand) {
-
+        System.out.println(brand.getFactory_id());
         String newId = GUID.getGUID();
         if (jdbcTemplate.update("""
                                         INSERT INTO t_brand(id,
                                         name,
                                         t_material_classify_section_id,
-                                        position)
-                                        VALUES(?,?,?,?)
+                                        position,
+                                        factory_id)
+                                        VALUES(?,?,?,?,?)
                                         """,
                                 newId,
                                 brand.getName(),
                                 brand.getMaterialClassifySectionId(),
-                                brand.getPosition()) > 0)
+                                brand.getPosition(),
+                                brand.getFactory_id()) > 0)
             return newId;
         return null;
     }
@@ -52,12 +54,14 @@ public class BrandRepositoryImpl implements IBrandRepository {
                                            UPDATE t_brand
                                            SET name=?,
                                            t_material_classify_section_id=?,
-                                           position=?
+                                           position=?,
+                                           factory_id=?
                                            WHERE id=?
                                            """,
                                    brand.getName(),
                                    brand.getMaterialClassifySectionId(),
                                    brand.getPosition(),
+                                   brand.getFactory_id(),
                                    brand.getId());
     }
 
@@ -196,6 +200,7 @@ public class BrandRepositoryImpl implements IBrandRepository {
             brand.setMaterialClassifySectionId(rs.getString("t_material_classify_section_id"));
             brand.setPosition(rs.getString("position"));
             brand.setDeletedAt(rs.getTimestamp("deleted_at"));
+            brand.setFactory_id(rs.getString("factory_id"));
             return brand;
         }
     }

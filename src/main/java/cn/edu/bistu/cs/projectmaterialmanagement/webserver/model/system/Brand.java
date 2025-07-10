@@ -10,6 +10,7 @@ public class Brand {
     private String name;//name
     private String materialClassifySectionId;//t_material_classify_section_id
     private String position;//position,定位：合资、国产等定位：合资、国产等
+    private String factory_id;//factory_id,品牌对应厂家，可为空
     private Date deletedAt;//deleted_at,null表示未删，否则 表示删除时间null表示未删，否则 表示删除时间
 
 
@@ -44,6 +45,16 @@ public class Brand {
     public void setPosition(String position) {
         this.position = position;
     }
+
+    public String getFactory_id() {
+        return factory_id;
+    }
+
+    public void setFactory_id(String factory_id) {
+        this.factory_id = factory_id;
+    }
+
+
 
     public Date getDeletedAt() {
         return deletedAt;

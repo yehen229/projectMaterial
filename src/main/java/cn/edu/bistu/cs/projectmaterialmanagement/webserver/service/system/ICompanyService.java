@@ -11,7 +11,7 @@ public interface ICompanyService {
     String COMPANY_TYPE_DESIGN = "设计单位";
     String COMPANY_TYPE_SUPERVISION = "监理单位";
     String COMPANY_TYPE_GENERAL_CONSTRUCTION = "总包单位";
-
+    String COMPANY_TYPE_FACTORY = "厂家";
     String COMPANY_NAME_DESIGN_DEPARTMENT = "设计部";
     String COMPANY_NAME_ENGINEERING_DEPARTMENT = "工程部";
 
@@ -38,6 +38,7 @@ public interface ICompanyService {
 
     List<Company> getAllCompanyList();
 
+    List<Company> getFactoryList();
 
     List<Company> getCompanyListByType(String companyType);
 

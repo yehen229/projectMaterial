@@ -111,26 +111,30 @@ public class CompanyUserServiceImpl implements ICompanyUserService {
 
     @Override
     public int updateCompanyUserForm(CompanyUserForm companyUserForm) {
+        System.out.println(companyUserForm.getCompanyId());
+        System.out.println(companyUserForm.getEmail());
+        System.out.println(companyUserForm.getUserRealName());
+        System.out.println(companyUserForm.getTel());
+
         if (companyUserForm == null || companyUserForm.getCompanyUserId() == null || companyUserForm.getCompanyId() == null || companyUserForm.getUserRealName() == null || companyUserForm.getTel() == null)
-            throw new BusinessException("更新公司用户，发生参数错误");
+            throw new BusinessException("更新公司用户，发生参数错误1");
 
         String companyUserId = companyUserForm.getCompanyUserId();
         CompanyUser companyUser = companyUserRepository.getById(companyUserId);
         if (companyUser == null)
-            throw new BusinessException("更新公司用户，发生参数错误");
+            throw new BusinessException("更新公司用户，发生参数错误2");
 
         User user = userService.getById(companyUser.getUserId());
         if (user == null)
-            throw new BusinessException("更新公司用户，发生参数错误");
+            throw new BusinessException("更新公司用户，发生参数错误3");
 
 
         user.setEmail(companyUserForm.getEmail());
         user.setRealName(companyUserForm.getUserRealName());
         user.setTel(companyUserForm.getTel());
-        user.setEmail(companyUserForm.getEmail());
         int ret = userService.update(user);
         if (ret == 0)
-            throw new BusinessException("更新公司用户，发生参数错误");
+            throw new BusinessException("更新公司用户，发生参数错误4");
 
 
         companyUser.setCompanyId(companyUserForm.getCompanyId());

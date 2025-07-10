@@ -49,6 +49,12 @@ public class CompanyController {
         return companyService.getAllCompanyList();
     }
 
+    @GetMapping(value = "get-factory-list")
+    // @PreAuthorize("hasRole('Admin')")
+    public List<Company> getFactoryList() {
+        return companyService.getFactoryList();
+    }
+
     @GetMapping(value = "get-list-by-company-type")
     // @PreAuthorize("hasRole('Admin')")
     public List<Company> getCompanyListByType(@RequestParam(value = "companyType") String companyType) {

@@ -36,6 +36,7 @@ public interface ICompanyRepository {
     Page<Company> getPageByCompanyType(String companyType, int pageNo, int pageSize);
 
     List<Company> getAllCompanyList();
+    List<Company> getFactoryList();
 
     List<Company> getCompanyListByType(String companyType);
     boolean ExistCompany(Company company);
