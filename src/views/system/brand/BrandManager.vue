@@ -50,7 +50,7 @@ import {
 import NewBrandDialog from "@/components/system/brand/NewBrandDialog.vue";
 import UpdateBrandDialog from "@/components/system/brand/UpdateBrandDialog.vue";
 import UploadExcelBrandDialog from "@/components/system/brand/UploadExcelBrandDialog.vue";
-
+import axios from 'axios';
 const dialogFormNewVisible = ref(false); //控制“修改对话框”是否显示
 const dialogFormUpdateVisible = ref(false); //控制“修改对话框”是否显示
 const dialogFormExcelVisible = ref(false); //控制“上传Excel对话框”是否显示
@@ -70,7 +70,26 @@ const brandPublicPageData = ref<IServerPage<IServerBrandPublicView> | null>(
 );
 
 const radioUserType = ref(0);
+// const successUpload = (res) => {
+//   if (res.code === 0) {
+//     ElMessage.success('导入成功');
+//     // 重新加载表格
+//   } else {
 
+//   }
+// };
+// import { saveAs } from 'file-saver';
+
+// const exportExcel = async () => {
+//   const res = await axios.get(
+//     '/api/company-user/export',
+//     { responseType: 'blob' }
+//   );
+//   const blob = new Blob([res.data], {
+//     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+//   });
+//   saveAs(blob, '用户名单.xlsx');
+// };
 onMounted(async () => {
   await getBrandFromSever();
 });
@@ -233,50 +252,6 @@ const onExcelUploadDialogOk = () => {
   dialogFormExcelVisible.value = false;
 };
 
-// /**
-//  * 上传Excel文件，导入用户
-//  */
-// const onExcelUploadButtonClick = () => {
-//   dialogFormExcelVisible.value = true;
-// };
-
-// /**
-//  * 下载用户名单
-//  * @param index
-//  * @param row
-//  */
-// const onDownloadExcelButtonClick = async () => {
-//   const downloadFilename = "用户名单";
-
-//   loading.value = true;
-//   let search = searchText.value.trim();
-
-//   if (search) {
-//     if (searchSelect.value == "用户名称") {
-//       //用户名称
-//       const ret = await serverDownloadCompanyUserByUserNamer(
-//         searchText.value,
-//         downloadFilename
-//       );
-//     } else if (searchSelect.value == "项目名称") {
-//       //项目名称
-//       const ret = await serverDownloadCompanyUserByProjectName(
-//         searchText.value,
-//         downloadFilename
-//       );
-//     } else if (searchSelect.value == "单位名称") {
-//       //单位名称
-//       const ret = await serverDownloadCompanyUserByCompanyName(
-//         searchText.value,
-//         downloadFilename
-//       );
-//     }
-//   } else {
-//     await serverDownloadAllCompanyUser(downloadFilename);
-//   }
-
-//   loading.value = false;
-// };
 
 const goBack = () => {
   history.back();
@@ -316,18 +291,22 @@ const goBack = () => {
   <div class="tab-container">
     <div class="top-toolbar">
       <!--新增按钮-->
-      <div>
-        <el-button :icon="Plus" type="primary" @click="onNewButtonClick">
+      <div style="padding: 0 10px;">
+        <el-button-group style="display: flex; gap: 15px;">
+        <el-button  type="primary"  style="width: 80px;"@click="onNewButtonClick">
           新增品牌
         </el-button>
-        <!-- <el-button :icon="Upload" @click="onExcelUploadButtonClick">
-          导入品牌（Excel）
-        </el-button>
-        <el-button :icon="Download" @click="onDownloadExcelButtonClick">
-          导出品牌（Excel）
-        </el-button> -->
-      </div>
-
+     <el-upload  class="upload-demo"
+    :http-request="handleUpload"
+    :show-file-list="false"
+    :on-success="successUpload"
+    accept=".xlsx,.xls"
+  >
+    <el-button type="primary" style="width: 80px;">批量导入</el-button>
+  </el-upload>
+         <el-button type="danger" style="width: 80px;" @click="exportExcel">批量导出</el-button>
+         </el-button-group>
+    </div>
       <!--搜索框-->
       <div class="input-with-select">
         <el-input v-model="searchText" placeholder="输入搜索内容">
@@ -454,6 +433,30 @@ const goBack = () => {
   </div>
 </template>
 
+<script lang="ts">
+import { serverBrandExcelAdd } from '@/server/system/brandpublic';
+
+export default {
+  methods: {
+    async handleUpload(params: any) {
+      const file = params.file;
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const res = await serverBrandExcelAdd(formData);
+        console.log('上传成功', res);
+        this.$message.success('文件上传成功');
+        params.onSuccess?.(res);
+      } catch (err) {
+        console.error('上传失败', err);
+        this.$message.error('文件上传失败');
+        params.onError?.(err);
+      }
+    },
+  },
+};
+</script>
 <style scoped>
 @import url("@/assets/css/basic.css");
 .page-class {

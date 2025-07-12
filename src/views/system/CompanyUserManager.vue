@@ -262,6 +262,8 @@ const onNewCompanyUserDialogOk = async (form: IServerCompanyUserForm) => {
  * 用户在“修改”对话框中点击了“取消”按钮
  */
 const onUpdateCompanyUserDialogCancel = () => {
+  
+  
   dialogFormUpdateVisible.value = false;
 };
 
@@ -269,6 +271,7 @@ const onUpdateCompanyUserDialogCancel = () => {
  * 用户在“修改”对话框中点击了“确认”按钮
  */
 const onUpdateCompanyUserDialogOk = async (form: IServerCompanyUserForm) => {
+  console.log("这是添加吗");
   loading.value = true;
   //添加公司用户
   let ret = await serverCompanyUserUpdateByForm(form);
@@ -395,34 +398,9 @@ const tableIndex = (index: number) => {
  */
 const onDownloadExcelButtonClick = async () => {
   const downloadFilename = "用户名单";
-
   loading.value = true;
   let search = searchText.value.trim();
-
-  // if (search) {
-  //   if (searchSelect.value == "0") {
-  //     //用户名称
-  //     const ret = await serverDownloadCompanyUserByUserNamer(
-  //       searchText.value,
-  //       downloadFilename
-  //     );
-  //   } else if (searchSelect.value == "1") {
-  //     //项目名称
-  //     const ret = await serverDownloadCompanyUserByProjectName(
-  //       searchText.value,
-  //       downloadFilename
-  //     );
-  //   } else if (searchSelect.value == "2") {
-  //     //单位名称
-  //     const ret = await serverDownloadCompanyUserByCompanyName(
-  //       searchText.value,
-  //       downloadFilename
-  //     );
-  //   }
-  // } else {
     await serverDownloadAllCompanyUser(downloadFilename);
-  // }
-
   loading.value = false;
 };
 

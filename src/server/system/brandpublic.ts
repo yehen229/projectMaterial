@@ -86,6 +86,27 @@ export async function serverBrandPublicUpdate(
   }
 }
 
+
+export async function serverBrandExcelAdd(
+  formData: FormData
+): Promise<IServerResponseData<number>> {
+  try {
+    let res = await axios.post<any,IServerResponseData<number>>(
+      BASEURL.brandpublic + "Exceladd",
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    return res;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
 export async function serverGetBrandPublicById(
   id: string
 ): Promise<IServerResponseData<IServerBrandPublic>> {
