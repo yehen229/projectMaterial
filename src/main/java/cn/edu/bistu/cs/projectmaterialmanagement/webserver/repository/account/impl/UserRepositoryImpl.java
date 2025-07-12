@@ -93,11 +93,11 @@ public class UserRepositoryImpl implements IUserRepository {
     @Override
     public int update(User user) {
         Integer i = jdbcTemplate.queryForObject("""
-                                                        SELECT count(*) 
+                                                        SELECT count(*)
                                                         FROM t_user
-                                                        WHERE user_name=? AND real_name=?
+                                                        WHERE user_name=? 
                                                         """,
-                Integer.class,user.getUserName(),user.getRealName());
+                Integer.class,user.getUserName());
         if( i == 0){
             return 0;
         }
