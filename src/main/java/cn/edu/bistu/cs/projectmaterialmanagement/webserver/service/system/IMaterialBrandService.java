@@ -3,6 +3,7 @@ package cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.MaterialBrand;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.MaterialBrandView;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -47,4 +48,5 @@ public interface IMaterialBrandService {
 
     Page<MaterialBrandView> getPageViewByBrandId(String brandId, int pageNo, int pageSize);
 
+    void importExcel(MultipartFile file);
 }

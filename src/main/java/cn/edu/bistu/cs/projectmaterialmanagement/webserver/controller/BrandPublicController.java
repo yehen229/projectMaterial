@@ -4,10 +4,16 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Brand;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.BrandPublic;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.BrandPublicView;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.system.IBrandPublicRepository;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IBrandPublicService;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -42,7 +48,34 @@ public class BrandPublicController {
     public String add(@RequestBody Brand brand) {
         return brandPublicService.add(brand);
     }
-
+    @PostMapping(value = "Exceladd")
+   // @PreAuthorize("hasRole('Admin')")
+    public String Exceladd(@RequestParam("file") MultipartFile file) {
+        try {
+            Workbook wb = WorkbookFactory.create(file.getInputStream());
+            Sheet sheet = wb.getSheetAt(0);
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                Brand brand = new Brand();
+                String name = row.getCell(4).getStringCellValue().trim();
+                String classname = row.getCell(2).getStringCellValue().trim();
+                String position = row.getCell(3).getStringCellValue().trim();
+                String value = row.getCell(5) != null ? row.getCell(5).toString().trim() : "";
+                if (!value.isEmpty()) {
+                    value=brandPublicService.FId(value);
+                    brand.setFactory_id(value);
+                }
+                brand.setName(name);
+                brand.setMaterialClassifySectionId(brandPublicService.MId(classname));
+                brand.setPosition(position);
+                brandPublicService.add(brand);
+            }
+            wb.close();
+            return "ok";
+        } catch (Exception e) {
+            return "faill";
+        }
+    }
     @PostMapping(value = "delete")
     @PreAuthorize("hasRole('Admin')")
     public int delete(@RequestBody BrandPublic brandPublic) {

@@ -109,10 +109,10 @@ spring:
 #    url: jdbc:mysql://74.48.81.138:3306/material?serverTimezone=Asia/Shanghai
 #    url: jdbc:mysql://47.95.6.3:3306/material?serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/project_material_aliyun?serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://127.0.0.1:3306/material?useSSL=false&useUnicode=true&characterEncoding=utf8
     username: root
 #    password: 3327326
-    password: yehen229
+    password: root
   #    username: dyz
 #    password: biticai_404
 

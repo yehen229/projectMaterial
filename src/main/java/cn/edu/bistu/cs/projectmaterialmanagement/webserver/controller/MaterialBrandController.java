@@ -4,9 +4,11 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.MaterialBrand;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IMaterialBrandService;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -62,6 +64,16 @@ public class MaterialBrandController {
         pageNo = pageNo == null ? 1 : pageNo;
         pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
         return materialBrandService.getPage(pageNo, pageSize);
+    }
+    @PostMapping("/import")
+    @PreAuthorize("hasRole('Admin')")
+    public ResponseEntity<String> importData(@RequestParam("file") MultipartFile file) {
+        try {
+            materialBrandService.importExcel(file);
+            return ResponseEntity.ok("导入成功");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("导入失败：" + e.getMessage());
+        }
     }
 
 }

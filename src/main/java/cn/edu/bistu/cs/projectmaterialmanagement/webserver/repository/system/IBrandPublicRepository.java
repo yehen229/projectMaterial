@@ -14,6 +14,8 @@ public interface IBrandPublicRepository {
 
     int update(BrandPublic brandPublic);
 
+    String findIdByClassName(String className);
+
     int deleteById(String id);
 
     int deleteByBrandId(String brandId);
@@ -42,4 +44,5 @@ public interface IBrandPublicRepository {
 
     Page<BrandPublic> getPageByBrandPosition(String brandPosition, int pageNo, int pageSize);
 
+    String findIdByfname(String fname);
 }

@@ -52,6 +52,14 @@ public class BrandPublicRepositoryImpl implements IBrandPublicRepository {
                                    brandPublic.getBrandId(),
                                    brandPublic.getId());
     }
+    @Override
+    public String findIdByClassName(String className) {
+        return jdbcTemplate.queryForObject(
+                "SELECT id FROM t_material_classify_section WHERE name = ?",
+                String.class, // 指定返回类型
+                className // 查询参数
+        );
+    }
 
     /**
      * 根据id删除记录
@@ -276,6 +284,16 @@ public class BrandPublicRepositoryImpl implements IBrandPublicRepository {
         int startIndex = Page.getStartOfPage(pageNo, pageSize);
         List<BrandPublic> resultData = getPageQueryByBrandPosition(brandPosition, pageNo - 1, pageSize);
         return new Page<>(0, totalCount, (int) totalCount, resultData);
+    }
+
+    @Override
+    public String findIdByfname(String fname) {
+       String companyId = jdbcTemplate.queryForObject(
+                "SELECT id FROM t_company WHERE name = ?",
+                String.class,
+                fname
+        );
+        return companyId != null ? companyId.toString() : "null"; // 如果 companyId 为 null，返回字符串 "null"
     }
 
     private List<BrandPublic> getPageQueryByBrandName(String brandName,

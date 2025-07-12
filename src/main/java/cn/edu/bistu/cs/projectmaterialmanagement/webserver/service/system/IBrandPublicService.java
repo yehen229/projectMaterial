@@ -9,9 +9,8 @@ import java.util.List;
 
 public interface IBrandPublicService {
     String add(Brand brand);
-
     String add(BrandPublic brandPublic);
-
+    String MId(String classname);
     int delete(BrandPublic brandPublic);
 
     int update(BrandPublic brandPublic);
@@ -50,4 +49,5 @@ public interface IBrandPublicService {
 
     Page<BrandPublicView> getPageViewByBrandPosition(String brandPosition, Integer pageNo, Integer pageSize);
 
+    String FId(String fname);
 }

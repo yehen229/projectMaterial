@@ -7,9 +7,14 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.system.IMa
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IBrandService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IMaterialBrandService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IMaterialService;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -241,6 +246,38 @@ public class MaterialBrandServiceImpl implements IMaterialBrandService {
         return convertMaterialBrandPage2PageView(materialBrandPage, pageNo, pageSize);
     }
 
+    @Override
+    public void importExcel(MultipartFile file) {}
+//        // 1. 打开 Excel
+//        Workbook wb = WorkbookFactory.create(file.getInputStream());
+//        Sheet sheet = wb.getSheetAt(0);          // 读第一个 sheet
+//        int lastRowNum = sheet.getLastRowNum();
+//
+//        // 2. 逐行解析
+//        List<MaterialBrand> list = new ArrayList<>();
+//        for (int i = 1; i <= lastRowNum; i++) {  // 跳过表头
+//            Row row = sheet.getRow(i);
+//            if (row == null) continue;           // 空行跳过
+//
+//            MaterialBrand brand = new MaterialBrand();
+//            brand.setName(getCellStr(row, 0));   // 第 1 列：品牌名
+//            brand.setCode(getCellStr(row, 1));   // 第 2 列：品牌编码
+//            brand.setPosition(getCellStr(row, 2));// 第 3 列：定位
+//            list.add(brand);
+//        }
+//        wb.close();
+//
+//        // 3. 批量入库
+//        if (!list.isEmpty()) {
+//            materialBrandMapper.insertBatch(list);
+//        }
+//    }
+//    private String getCellStr(Row row, int col) {
+//        Cell cell = row.getCell(col);
+//        if (cell == null) return "";
+//        cell.setCellType(CellType.STRING);
+//        return cell.getStringCellValue().trim();
+//    }
     /**
      * 根据主键获得视图对象
      *

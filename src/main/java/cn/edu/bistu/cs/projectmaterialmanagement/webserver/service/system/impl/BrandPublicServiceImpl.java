@@ -58,6 +58,11 @@ public class BrandPublicServiceImpl implements IBrandPublicService {
         return brandPublicRepository.add(brandPublic);
     }
 
+    @Override
+    public String MId(String classname) {
+        return brandPublicRepository.findIdByClassName(classname);
+    }
+
     /**
      * 删除
      */
@@ -223,6 +228,11 @@ public class BrandPublicServiceImpl implements IBrandPublicService {
     public Page<BrandPublicView> getPageViewByBrandPosition(String brandPosition, Integer pageNo, Integer pageSize) {
         Page<BrandPublic> brandPublicPage = getPageByBrandPosition(brandPosition, pageNo, pageSize);
         return convertBrandPublicPage2PageView(brandPublicPage, pageNo, pageSize);
+    }
+
+    @Override
+    public String FId(String fname) {
+        return brandPublicRepository.findIdByfname(fname);
     }
 
     /**
