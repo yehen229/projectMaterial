@@ -26,7 +26,6 @@ public class MaterialBrandRepositoryImpl implements IMaterialBrandRepository {
      */
     @Override
     public String add(MaterialBrand materialBrand) {
-
         String newId = GUID.getGUID();
         if (jdbcTemplate.update("""
                                         INSERT INTO t_material_brand(id,

@@ -2,6 +2,7 @@ package cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.system;
 
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.BrandPublic;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Brandexcel;
 
 import java.util.List;
 
@@ -13,6 +14,8 @@ public interface IBrandPublicRepository {
     String add(BrandPublic brandPublic);
 
     int update(BrandPublic brandPublic);
+
+    String findIdByClassName(String className);
 
     int deleteById(String id);
 
@@ -42,4 +45,7 @@ public interface IBrandPublicRepository {
 
     Page<BrandPublic> getPageByBrandPosition(String brandPosition, int pageNo, int pageSize);
 
+    String findIdByfname(String fname);
+
+    List<Brandexcel> getExcelList();
 }
