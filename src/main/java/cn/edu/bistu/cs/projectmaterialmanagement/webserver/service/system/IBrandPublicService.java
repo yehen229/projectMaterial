@@ -4,7 +4,10 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Brand;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.BrandPublic;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.BrandPublicView;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Brandexcel;
+import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface IBrandPublicService {
@@ -50,4 +53,8 @@ public interface IBrandPublicService {
     Page<BrandPublicView> getPageViewByBrandPosition(String brandPosition, Integer pageNo, Integer pageSize);
 
     String FId(String fname);
+
+    List<Brandexcel> getExcelList();
+
+    void Exceldown(HttpServletResponse response) throws IOException;
 }

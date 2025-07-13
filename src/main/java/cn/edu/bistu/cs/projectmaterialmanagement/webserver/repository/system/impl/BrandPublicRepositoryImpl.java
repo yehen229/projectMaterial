@@ -2,6 +2,7 @@ package cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.system.im
 
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.BrandPublic;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Brandexcel;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.system.IBrandPublicRepository;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.utility.GUID;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -296,6 +297,27 @@ public class BrandPublicRepositoryImpl implements IBrandPublicRepository {
         return companyId != null ? companyId.toString() : "null"; // 如果 companyId 为 null，返回字符串 "null"
     }
 
+    @Override
+    public List<Brandexcel> getExcelList() {
+
+        return jdbcTemplate.query("""
+                                SELECT
+                mcd.name                                  AS division_name,
+                mcg.name                                  AS group_name,
+                mcs.name                                  AS section_name,
+                b.position,
+                b.name                                    AS brand_name,
+                c.name                                    AS company_name
+                FROM t_brand AS b
+                LEFT JOIN t_company               AS c   ON b.factory_id = c.id
+                LEFT JOIN t_material_classify_section AS mcs ON b.t_material_classify_section_id = mcs.id
+                LEFT JOIN t_material_classify_group   AS mcg ON mcs.t_material_classify_group_id = mcg.id
+                LEFT JOIN t_material_classify_division AS mcd ON mcg.t_material_classify_division_id = mcd.id
+                WHERE b.deleted_at IS NULL
+          """,
+                new BrandExcelMapper());
+    }
+
     private List<BrandPublic> getPageQueryByBrandName(String brandName,
                                                       int pageNo,
                                                       int pageSize) {
@@ -373,6 +395,19 @@ public class BrandPublicRepositoryImpl implements IBrandPublicRepository {
             brandPublic.setDeletedAt(rs.getTimestamp("deleted_at"));
             return brandPublic;
         }
-    }
 
-}
+    }
+    private static final class BrandExcelMapper implements RowMapper<Brandexcel> {
+        @Override
+        public Brandexcel mapRow(ResultSet rs,
+                                 int rowNum) throws SQLException {
+            Brandexcel brandexcel = new Brandexcel();
+            brandexcel.setMaterialsdiv(rs.getString("division_name"));
+            brandexcel.setMaterialsgroup(rs.getString("group_name"));
+            brandexcel.setMaterialssection(rs.getString("section_name"));
+            brandexcel.setPosition(rs.getString("position"));
+            brandexcel.setName(rs.getString("brand_name"));
+            brandexcel.setFactory_id(rs.getString("company_name"));
+            return brandexcel;
+        }
+}}

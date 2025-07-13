@@ -2,19 +2,27 @@ package cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.impl;
 
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.common.exception.BusinessException;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Brand;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.BrandPublic;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.BrandPublicView;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Company;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.*;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.system.IBrandPublicRepository;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.system.ICompanyRepository;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IBrandPublicService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IBrandService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.ICompanyService;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.HttpHeaders;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -233,6 +241,62 @@ public class BrandPublicServiceImpl implements IBrandPublicService {
     @Override
     public String FId(String fname) {
         return brandPublicRepository.findIdByfname(fname);
+    }
+
+    @Override
+    public List<Brandexcel> getExcelList() {
+
+        return brandPublicRepository.getExcelList();
+    }
+
+    @Override
+    public void Exceldown(HttpServletResponse response) throws IOException {
+        System.out.println("进服务了------------------");
+        response.reset();
+        List<Brandexcel> list=getExcelList();
+        Workbook wb = new XSSFWorkbook();
+        Sheet sheet = wb.createSheet("品牌");
+        // 表头
+        String[] headers = {
+                "大类-专业",
+                "中类-材料分类",
+                "小类-材料名称",
+                "定位",
+                "品牌",
+                "厂家"
+        };
+        Row headRow = sheet.createRow(0);
+        for (int i = 0; i < headers.length; i++) {
+            headRow.createCell(i).setCellValue(headers[i]);
+        }
+        System.out.println("开空间了------------------");
+        int rowIdx = 1;
+        for (Brandexcel be : list) {
+            Row row = sheet.createRow(rowIdx++);
+            row.createCell(0).setCellValue(be.getMaterialsdiv());
+            row.createCell(1).setCellValue(be.getMaterialsgroup());
+            row.createCell(2).setCellValue(be.getMaterialssection());
+            row.createCell(3).setCellValue(be.getPosition());
+            row.createCell(4).setCellValue(be.getName());
+            row.createCell(5).setCellValue(
+                    be.getFactory_id() == null ? "无" : be.getFactory_id());
+        }
+        System.out.println("添加完了了------------------");
+        String fileName = URLEncoder.encode("品牌列表.xlsx", StandardCharsets.UTF_8);
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename*=UTF-8''" + fileName);
+
+        // 5) 写出 & 关闭
+// Spring Boot 示例
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:5173"); // 允许的前端域名
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET"); // 允许的HTTP方法
+       // 允许的请求头
+        wb.write(response.getOutputStream());
+        System.out.println("写完了------------------");
+
+        wb.close();
+
     }
 
     /**

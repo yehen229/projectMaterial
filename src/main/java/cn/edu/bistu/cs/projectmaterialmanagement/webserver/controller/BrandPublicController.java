@@ -4,8 +4,10 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Brand;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.BrandPublic;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.BrandPublicView;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Brandexcel;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.system.IBrandPublicRepository;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IBrandPublicService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -15,6 +17,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -49,7 +52,7 @@ public class BrandPublicController {
         return brandPublicService.add(brand);
     }
     @PostMapping(value = "Exceladd")
-   // @PreAuthorize("hasRole('Admin')")
+    @PreAuthorize("hasRole('Admin')")
     public String Exceladd(@RequestParam("file") MultipartFile file) {
         try {
             Workbook wb = WorkbookFactory.create(file.getInputStream());
@@ -76,6 +79,14 @@ public class BrandPublicController {
             return "faill";
         }
     }
+
+    @PostMapping(value = "Exceldown")
+    @PreAuthorize("hasRole('Admin')")
+    public void Exceldown(HttpServletResponse response) throws IOException {
+
+        brandPublicService.Exceldown(response);
+    }
+
     @PostMapping(value = "delete")
     @PreAuthorize("hasRole('Admin')")
     public int delete(@RequestBody BrandPublic brandPublic) {
