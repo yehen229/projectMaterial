@@ -20,6 +20,9 @@ export default defineConfig({
       store: resolve(__dirname, 'src/store'),
     },
   },
+  // server: {
+  //   host: '0.0.0.0'
+  // },
   // server:{
   //   https: true,
   // }

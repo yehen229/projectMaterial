@@ -87,8 +87,8 @@ import {
     getUserPageSize,
 } from "@/cookies/user";
 
-const apiUrl = "http://127.0.0.1:8000/project/v1/page";
-
+const apiUrl = "https://10.146.58.74:8000/project/v1/page";
+// const apiUrl = "http://127.0.0.1:8000/project/v1/page";
 // 状态变量
 const tableData = ref<any[]>([]);
 const totalCount = ref<number>(0);

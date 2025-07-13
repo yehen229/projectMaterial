@@ -21,6 +21,7 @@ spring:
   data:
     redis:
       client-name: project
+      # host: 10.146.58.74
       host: 127.0.0.1
       port: 6379
       password:
@@ -30,6 +31,7 @@ spring:
 
 
 server:
+  # address: 10.146.58.74
   address: 127.0.0.1
   port: 9000
   tomcat:
