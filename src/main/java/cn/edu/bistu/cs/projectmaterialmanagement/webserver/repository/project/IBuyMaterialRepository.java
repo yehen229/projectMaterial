@@ -3,6 +3,7 @@ package cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project;
 
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.BuyMaterial;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Factory;
 
 import java.util.List;
 
@@ -127,4 +128,6 @@ public interface IBuyMaterialRepository {
                                                                                        String materialId);
 
     List<BuyMaterial> getByBuyMaterialBatchId(String buyMaterialBatchId);
+
+    List<Factory> getBrandAllFactory();
 }

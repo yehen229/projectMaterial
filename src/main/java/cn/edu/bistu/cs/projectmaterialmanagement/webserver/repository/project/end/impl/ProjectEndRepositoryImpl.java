@@ -29,18 +29,28 @@ public class ProjectEndRepositoryImpl implements IProjectEndRepository {
     public String add(ProjectEnd projectEnd) {
 
         String newId = GUID.getGUID();
+        Date now = new Date();
         if (jdbcTemplate.update("""
-                                        INSERT INTO t_project_end(id,
-                                        t_project_id,
-                                        t_user_id,
-                                        create_datetime)
-                                        VALUES(?,?,?,?)
-                                        """,
-                                newId,
-                                projectEnd.getProjectId(),
-                                projectEnd.getUserId(),
-                                new Date()) > 0)
-            return newId;
+                    INSERT INTO t_project_end(id,
+                    t_project_id,
+                    t_user_id,
+                    create_datetime)
+                    VALUES(?,?,?,?)
+                    """,
+                newId,
+                projectEnd.getProjectId(),
+                projectEnd.getUserId(),
+                now) > 0)
+            if (jdbcTemplate.update("""
+                        UPDATE t_project
+                        SET end_datetime = ?
+                        WHERE id = ?
+                                    """,
+                    now,
+                    projectEnd.getProjectId()
+            ) > 0)
+
+                return newId;
         return null;
     }
 

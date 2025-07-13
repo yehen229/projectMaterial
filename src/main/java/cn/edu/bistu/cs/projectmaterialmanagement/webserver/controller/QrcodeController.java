@@ -1,28 +1,24 @@
 package cn.edu.bistu.cs.projectmaterialmanagement.webserver.controller;
 
 
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.account.Role;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.account.User;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.account.UserRole;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.*;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.project.Project;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.project.ProjectView;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Brand;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.BrandPublic;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Material;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.MaterialPhoto;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.*;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.account.IUserService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.*;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IBrandPublicService;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IBrandService;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IMaterialPhotoService;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IMaterialService;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.*;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -50,9 +46,14 @@ public class QrcodeController {
     private final IBrandPublicService brandPublicService;
 
     private final IMaterialPhotoService materialPhotoService;
+    private final ICompanyUserService iCompanyUserService;
+    private final Company company;
+    private final Role role;
+    private final UserRole userRole;
+    private final CompanyUser companyUser;
 
 
-    QrcodeController( IBuyMaterialService buyMaterialService, IUserService userService, IUseMaterialService useMaterialService, IProjectMaterialService projectMaterialService, IMaterialService materialService, IProjectService projectService, IProjectBusinessService projectBusinessService, IProjectMaterialBrandPrivateService projectMaterialBrandPrivateService, IProjectMaterialBrandPublicService projectMaterialBrandPublicService, IProjectBrandService projectBrandService, IBrandService brandService, IBrandPublicService brandPublicService, IMaterialPhotoService materialPhotoService) {
+    QrcodeController(IBuyMaterialService buyMaterialService, IUserService userService, IUseMaterialService useMaterialService, IProjectMaterialService projectMaterialService, IMaterialService materialService, IProjectService projectService, IProjectBusinessService projectBusinessService, IProjectMaterialBrandPrivateService projectMaterialBrandPrivateService, IProjectMaterialBrandPublicService projectMaterialBrandPublicService, IProjectBrandService projectBrandService, IBrandService brandService, IBrandPublicService brandPublicService, IMaterialPhotoService materialPhotoService, ICompanyUserService iCompanyUserService, Company company, Role role, UserRole userRole, CompanyUser companyUser) {
 
         this.buyMaterialService = buyMaterialService;
         this.userService = userService;
@@ -67,12 +68,45 @@ public class QrcodeController {
         this.brandService = brandService;
         this.brandPublicService = brandPublicService;
         this.materialPhotoService = materialPhotoService;
+        this.iCompanyUserService = iCompanyUserService;
+        this.company = company;
+        this.role = role;
+        this.userRole = userRole;
+        this.companyUser = companyUser;
     }
 
 
     @GetMapping("/kk")
     public Page<BuyMaterialView> getPageView(@RequestParam(value = "pageNo", required = false) Integer pageNo,
                                              @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        if (role.isAdmin()|| role.isManager()){
+            pageNo = pageNo == null ? 1 : pageNo;
+            pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+            return buyMaterialService.getPageView(pageNo, pageSize);
+        }
+
+        List<Factory> brandAllFactory = buyMaterialService.getBrandAllFactory();
+        List<String> material_id = new ArrayList<String>();
+        //如果是厂家
+        if (iCompanyUserService.isFactoryByUserId(userService.getCurrentLoginUser().getId())){
+            for (Factory factory : brandAllFactory) {
+                //如果厂家的id不为空并且和二维码主表的t_use_material的factory_id一样时
+                if (factory.getFactory_id()!=null && company.getId() == factory.getFactory_id()){
+                    //把主键id记录
+                    material_id.add(factory.getUse_material_id());
+                }
+            }
+        }
+        //如果总包单位
+        else if (iCompanyUserService.isGeneralContractorCompanyByUserId(userService.getCurrentLoginUser().getId())){
+            for (Factory factory : brandAllFactory) {
+                //如果厂家的为空才记录
+                if (factory.getFactory_id()==null){
+                    //把主键id记录
+                    material_id.add(factory.getUse_material_id());
+                }
+            }
+        }
         pageNo = pageNo == null ? 1 : pageNo;
         pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 10 ? pageSize : Page.DEFAULT_PAGE_SIZE);
         return buyMaterialService.getPageView(pageNo, pageSize);
@@ -184,14 +218,24 @@ public class QrcodeController {
 //
 //    }
 //
+    @GetMapping("new_getQrcodeImage")
+    public Page<BuyMaterialQrcodeShowView> test3_new(@RequestParam(value = "pageNo", required = false) Integer pageNo) {
+
+        pageNo = pageNo == null ? 1 : pageNo;
+        return buyMaterialService.getQrcodePageView(pageNo, buyMaterialService.getCount());
+    }
+
+
 //    获取
     @GetMapping("getQrcodeImage")
     public Page<BuyMaterialQrcodeShowView> test3(@RequestParam(value = "pageNo", required = false) Integer pageNo,
                                                  @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        pageNo = pageNo == null ? 1 : pageNo;
-        pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 4 ? pageSize : Page.DEFAULT_PAGE_SIZE);
-        return buyMaterialService.getQrcodePageView(pageNo, pageSize);
-    }
+            pageNo = pageNo == null ? 1 : pageNo;
+            pageSize = pageSize == null ? Page.DEFAULT_PAGE_SIZE : (pageSize > 4 ? pageSize : Page.DEFAULT_PAGE_SIZE);
+            Page<BuyMaterialQrcodeShowView> buyMaterialQrcodeShowViewPage = test3_new(null);
+
+        return buyMaterialService.FinalConvertBuyMaterialPage2QrCodePageVie(buyMaterialQrcodeShowViewPage, pageNo, pageSize);
+        }
 
     @GetMapping(value = "page-view-by-key")
     Page<BuyMaterialQrcodeShowView> getPageViewByKeyword(

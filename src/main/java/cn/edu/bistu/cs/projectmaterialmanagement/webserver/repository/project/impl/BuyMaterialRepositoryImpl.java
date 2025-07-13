@@ -3,6 +3,7 @@ package cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.i
 
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.BuyMaterial;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Factory;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.IBuyMaterialRepository;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.utility.GUID;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -787,6 +788,14 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
                                   new BuyMaterialMapper(), buyMaterialBatchId);
     }
 
+    @Override
+    public List<Factory> getBrandAllFactory() {
+        return jdbcTemplate.query("""
+select use_material_id,t_brand.id as brand_id,factory_id from t_brand RIGHT JOIN (select use_material_id,t_material_brand.id as material_brand_id,t_material_brand.t_material_id,t_material_brand.t_brand_id  from t_material_brand RIGHT JOIN (select t_use_material.id as use_material_id,t_project_material.id as project_material_id,t_project_material.t_material_id  from t_use_material left JOIN t_project_material on t_use_material.t_project_material_id=t_project_material.id) as A on A.t_material_id=t_material_brand.t_material_id) as B on t_brand.id = B.t_brand_id
+""",
+                new FactoryMapper());
+    }
+
     private int getCountBoughtMaterialIdPageByProjectId(String projectId) {
         Integer i = jdbcTemplate.queryForObject("""
                         SELECT count(distinct (t_project_material_id)) 
@@ -1319,6 +1328,18 @@ public class BuyMaterialRepositoryImpl implements IBuyMaterialRepository {
             buyMaterial.setCreateDatetime(rs.getTimestamp("create_datetime"));
             buyMaterial.setDeletedAt(rs.getTimestamp("deleted_at"));
             return buyMaterial;
+        }
+    }
+
+    private static final class FactoryMapper implements RowMapper<Factory> {
+        @Override
+        public Factory mapRow(ResultSet rs,
+                              int rowNum) throws SQLException {
+            Factory factory = new Factory();
+            factory.setUse_material_id(rs.getString("use_material_id"));
+            factory.setFactory_id(rs.getString("factory_id"));
+            factory.setBrand_id(rs.getString("brand_id"));
+            return factory;
         }
     }
 

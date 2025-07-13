@@ -1,6 +1,7 @@
 package cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project;
 
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.project.Project;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Brand;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Material;
 
 public class BuyMaterialQrcodeShowView {
@@ -10,6 +11,7 @@ public class BuyMaterialQrcodeShowView {
 
     private Material material;
 
+    private Brand brand;//获取对应的品牌数据
     public BuyMaterial getBuyMaterial() {
         return buyMaterial;
     }
@@ -33,4 +35,7 @@ public class BuyMaterialQrcodeShowView {
     public void setMaterial(Material material) {
         this.material = material;
     }
+
+    public Brand getBrand(){ return brand;}
+    public void setBrand(Brand brand){ this.brand = brand;}
 }

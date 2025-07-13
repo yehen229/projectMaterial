@@ -4,13 +4,12 @@ package cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.impl
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.*;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.project.Project;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Material;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.*;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.IBuyMaterialRepository;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IBuyMaterialService;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IProjectMaterialService;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IProjectService;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IUseMaterialService;
-import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IMaterialService;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.impl.ProjectMaterialBrandHistoryRepositoryImpl;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.account.IUserService;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.*;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.*;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -24,13 +23,31 @@ public class BuyMaterialServiceImpl implements IBuyMaterialService {
     private final IProjectMaterialService projectMaterialService;
     private final IProjectService projectService;
     private final IMaterialService materialService;
+    private final IMaterialBrandService materialBrandService;
+    private final IBrandService brandService;
+    private final IProjectMaterialBrandPrivateService projectMaterialBrandPrivateService;
+    private final IProjectMaterialBrandPublicService projectMaterialBrandPublicService;
+    private final IProjectBrandService projectBrandService;
+    private final IBrandPublicService brandPublicService;
+    private final IUserService userService;
+    private final ICompanyUserService iCompanyUserService;
+    private final CompanyUser companyUser;
 
-    public BuyMaterialServiceImpl(IBuyMaterialRepository buyMaterialRepository, IUseMaterialService useMaterialService, IProjectMaterialService projectMaterialService, IProjectService projectService, IMaterialService materialService) {
+    public BuyMaterialServiceImpl(IBuyMaterialRepository buyMaterialRepository, IUseMaterialService useMaterialService, IProjectMaterialService projectMaterialService, IProjectService projectService, IMaterialService materialService, IMaterialBrandService materialBrandService, IBrandService brandService, IProjectMaterialBrandPrivateService projectMaterialBrandPrivateService, IProjectMaterialBrandPublicService projectMaterialBrandPublicService, IProjectBrandService projectBrandService, IBrandPublicService brandPublicService, IUserService userService, ICompanyUserService iCompanyUserService, CompanyUser companyUser) {
         this.buyMaterialRepository = buyMaterialRepository;
         this.useMaterialService = useMaterialService;
         this.projectMaterialService = projectMaterialService;
         this.projectService = projectService;
         this.materialService = materialService;
+        this.materialBrandService = materialBrandService;
+        this.brandService = brandService;
+        this.projectMaterialBrandPrivateService = projectMaterialBrandPrivateService;
+        this.projectMaterialBrandPublicService = projectMaterialBrandPublicService;
+        this.projectBrandService = projectBrandService;
+        this.brandPublicService = brandPublicService;
+        this.userService = userService;
+        this.iCompanyUserService = iCompanyUserService;
+        this.companyUser = companyUser;
     }
 
     /**
@@ -294,8 +311,8 @@ public class BuyMaterialServiceImpl implements IBuyMaterialService {
     /**
      * 获得指定页面视图数据
      *
-     * @param pageNo   页号，从1开始
-     * @param pageSize 每页的记录数
+     * @param pageNo      页号，从1开始
+     * @param pageSize    每页的记录数
      */
     @Override
     public Page<BuyMaterialView> getPageView(int pageNo,
@@ -416,30 +433,111 @@ public class BuyMaterialServiceImpl implements IBuyMaterialService {
         int startIndex = Page.getStartOfPage(pageNo, pageSize);
 
         List<BuyMaterialQrcodeShowView> list = new ArrayList<>();
-
         for (BuyMaterial buyMaterial : buyMaterialPage.getResult()) {
-//            获取每一个id
+                //            获取每一个id
             BuyMaterialQrcodeShowView buyQrcodeMaterialView = getQrcodeBuyMaterialViewByBuyMaterialId(buyMaterial.getId());
-
             if (buyQrcodeMaterialView != null) list.add(buyQrcodeMaterialView);
         }
-        return new Page<>(startIndex, buyMaterialPage.getTotalCount(), pageSize, list);
-
+        System.out.println("列表大小为："+list.size());
+        return new Page<>(startIndex, list.size(), pageSize, list);
     }
+    public Page<BuyMaterialQrcodeShowView> FinalConvertBuyMaterialPage2QrCodePageVie(Page<BuyMaterialQrcodeShowView> viewPage, int pageNo, int pageSize) {
+        //包左不包右
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        if (startIndex + pageSize >= viewPage.getResult().size()){
+            List<BuyMaterialQrcodeShowView> buyMaterialQrcodeShowViews = viewPage.getResult().subList(startIndex, viewPage.getResult().size());
+            return new Page<>(startIndex, viewPage.getTotalCount(), viewPage.getResult().size()-startIndex, buyMaterialQrcodeShowViews);
+        }
+        List<BuyMaterialQrcodeShowView> buyMaterialQrcodeShowViews = viewPage.getResult().subList(startIndex, startIndex + pageSize);
+        return new Page<>(startIndex, viewPage.getTotalCount(), pageSize, buyMaterialQrcodeShowViews);
+    }
+
 
     //通过id将 BuyMaterialQrcodeShowView 中数据查找出来
     private BuyMaterialQrcodeShowView getQrcodeBuyMaterialViewByBuyMaterialId(String id) {
         BuyMaterial buyMaterial = getById(id);
         if (buyMaterial == null) return null;
-
         BuyMaterialQrcodeShowView buyMaterialQrcodeShowView = new BuyMaterialQrcodeShowView();
-//        将buymaterial表注入数据
-        buyMaterialQrcodeShowView.setBuyMaterial(buyMaterial);
-//        将Project表注入数据
-        buyMaterialQrcodeShowView.setProject(getProject(id));
-//        将material表注入数据
-        buyMaterialQrcodeShowView.setMaterial(getMaterial(id));
-        return buyMaterialQrcodeShowView;
+
+//        //如果是厂家
+        if (iCompanyUserService.isFactoryByUserId(userService.getCurrentLoginUser().getId())){
+            //如果厂家的id不为空并厂家ID并且和当前登录的ID一样时则只显示当前厂家ID的二维码
+            String factory_id = getBrand(buyMaterial).getFactory_id();
+            String company_id = iCompanyUserService.getCompanyByUserId(userService.getCurrentLoginUser().getId()).getId();
+            if (factory_id != null && factory_id.equals(company_id)){
+        //        将buymaterial表注入数据
+                buyMaterialQrcodeShowView.setBuyMaterial(buyMaterial);
+        //        将Project表注入数据
+                buyMaterialQrcodeShowView.setProject(getProject(id));
+        //        将material表注入数据
+                buyMaterialQrcodeShowView.setMaterial(getMaterial(id));
+        //        将brand表注入数据
+                buyMaterialQrcodeShowView.setBrand(getBrand(buyMaterial));
+            }
+        }
+        // 如果时总包单位的话则只能看见没有厂家的品牌
+        else if (iCompanyUserService.isGeneralContractorCompanyByUserId(userService.getCurrentLoginUser().getId())){
+            String factory_id = getBrand(buyMaterial).getFactory_id();
+            if (factory_id == null){
+                //        将buymaterial表注入数据
+                buyMaterialQrcodeShowView.setBuyMaterial(buyMaterial);
+                //        将Project表注入数据
+                buyMaterialQrcodeShowView.setProject(getProject(id));
+                //        将material表注入数据
+                buyMaterialQrcodeShowView.setMaterial(getMaterial(id));
+                //        将brand表注入数据
+                buyMaterialQrcodeShowView.setBrand(getBrand(buyMaterial));
+            }
+        }
+        // 是管理员的话则都能看见
+        else if (userService.isAdmin(userService.getCurrentLoginUser().getId())){
+            //        将buymaterial表注入数据
+            buyMaterialQrcodeShowView.setBuyMaterial(buyMaterial);
+            //        将Project表注入数据
+            buyMaterialQrcodeShowView.setProject(getProject(id));
+            //        将material表注入数据
+            buyMaterialQrcodeShowView.setMaterial(getMaterial(id));
+            //        将brand表注入数据
+            buyMaterialQrcodeShowView.setBrand(getBrand(buyMaterial));
+        }
+        if (buyMaterialQrcodeShowView.getBuyMaterial()!=null
+                &&buyMaterialQrcodeShowView.getMaterial()!=null
+                &&buyMaterialQrcodeShowView.getBrand()!=null
+                &&buyMaterialQrcodeShowView.getProject()!=null){
+            return buyMaterialQrcodeShowView;
+        }
+        return null;
+    }
+    //提供qrcode获取品牌信息
+    private Brand getBrand(BuyMaterial buyMaterial){
+        Brand brandInfo = new Brand();
+        //        私有品牌不为空则从私有品牌入手
+        if (buyMaterial.getProjectMaterialBrandPrivateId() != null) {
+//            获取私有品牌id
+            String privateId = buyMaterial.getProjectMaterialBrandPrivateId();
+//           2. 私有品牌 根据id到 t_project_material_brand_private获取t_project_brand_id
+            ProjectMaterialBrandPrivate brandPrivateServiceById = projectMaterialBrandPrivateService.getById(privateId);
+            String projectBrandId = brandPrivateServiceById.getProjectBrandId();
+            //            3.根据id 到t_project_brand获取t_brand_id
+            ProjectBrand projectBrandServiceById = projectBrandService.getById(projectBrandId);
+            String brandId = projectBrandServiceById.getBrandId();
+//            4.根据id到t_brand表获取name与position
+            brandInfo = brandService.getById(brandId);
+        }
+        //        公有品牌不为空则从私有品牌入手
+        if (buyMaterial.getProjectMaterialBrandPublicId() != null) {
+//            获取私有品牌id
+            String publicId = buyMaterial.getProjectMaterialBrandPublicId();
+//           2. 公有品牌 根据id到 t_project_material_brand_public获取t_brand_public_id
+            ProjectMaterialBrandPublic projectMaterialBrandPublicServiceById = projectMaterialBrandPublicService.getById(publicId);
+            String projectBrandId = projectMaterialBrandPublicServiceById.getBrandPublicId();
+//            3.根据id 到t_brand_public获取t_brand_id
+            BrandPublic brandPublicServiceById = brandPublicService.getById(projectBrandId);
+            String brandId = brandPublicServiceById.getBrandId();
+//            4.根据id到t_brand表获取name与position
+            brandInfo = brandService.getById(brandId);
+        }
+        return brandInfo;
     }
 
     //    通过buymaterial的id获取项目表的数据
@@ -458,7 +556,6 @@ public class BuyMaterialServiceImpl implements IBuyMaterialService {
 
         return projectinfo;
     }
-
     //    通过buymaterial中的id获取材料表中的数据
     private Material getMaterial(String id) {
         // 1.       qrcode来找到t_buy_material表的相应数据
@@ -643,6 +740,11 @@ public class BuyMaterialServiceImpl implements IBuyMaterialService {
     }
 
     @Override
+    public List<Factory> getBrandAllFactory() {
+        return buyMaterialRepository.getBrandAllFactory();
+    }
+
+    @Override
     public List<BuyMaterial> getByBuyMaterialBatchId(String buyMaterialBatchId) {
         return buyMaterialRepository.getByBuyMaterialBatchId(buyMaterialBatchId);
     }
@@ -675,11 +777,22 @@ public class BuyMaterialServiceImpl implements IBuyMaterialService {
         int startIndex = Page.getStartOfPage(pageNo, pageSize);
 
         List<BuyMaterialView> list = new ArrayList<>();
+//        if (material_id!=null) {
+//            for (BuyMaterial buyMaterial : buyMaterialPage.getResult()) {
+//                BuyMaterialView buyMaterialView = getBuyMaterialViewByBuyMaterialId(buyMaterial.getId());
+//                //需要只加入在对应存在的material_id
+//                    //存在才加入，不存在则不加入
+//                if (buyMaterialView != null && material_id.contains(buyMaterial.getId())) list.add(buyMaterialView);
+//
+//            }
+//        }
+//        else {
+            for (BuyMaterial buyMaterial : buyMaterialPage.getResult()) {
+                BuyMaterialView buyMaterialView = getBuyMaterialViewByBuyMaterialId(buyMaterial.getId());
+                if (buyMaterialView != null) list.add(buyMaterialView);
+            }
+//        }
 
-        for (BuyMaterial buyMaterial : buyMaterialPage.getResult()) {
-            BuyMaterialView buyMaterialView = getBuyMaterialViewByBuyMaterialId(buyMaterial.getId());
-            if (buyMaterialView != null) list.add(buyMaterialView);
-        }
         return new Page<>(startIndex, buyMaterialPage.getTotalCount(), pageSize, list);
     }
 

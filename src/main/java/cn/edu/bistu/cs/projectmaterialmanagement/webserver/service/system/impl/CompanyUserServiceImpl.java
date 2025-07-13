@@ -283,6 +283,19 @@ public class CompanyUserServiceImpl implements ICompanyUserService {
             return (company.getCompanyType().equals(ICompanyService.COMPANY_TYPE_SUPERVISION));
         return false;
     }
+    /**
+     * 判断是否是品牌厂家
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public boolean isFactoryByUserId(String userId) {
+        Company company = getCompanyByUserId(userId);
+        if (company != null)
+            return (company.getCompanyType().equals(ICompanyService.COMPANY_TYPE_FACTORY));
+        return false;
+    }
 
     /**
      * 判断是否是建设单位员工

@@ -181,7 +181,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public boolean isAdmin(String id) {
-        return false;
+        return userRepository.isAdmin(id);
     }
 
     @Override

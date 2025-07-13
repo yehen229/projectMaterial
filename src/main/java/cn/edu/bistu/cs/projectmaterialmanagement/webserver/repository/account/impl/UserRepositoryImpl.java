@@ -34,6 +34,21 @@ public class UserRepositoryImpl implements IUserRepository {
         }
         return false;
     }
+
+    @Override
+    public boolean isAdmin(String id) {
+        Integer i = jdbcTemplate.queryForObject("""
+                                                        select count(*) from t_user_role LEFT JOIN
+                                                        t_role on t_user_role.t_role_id = t_role.id
+                                                        where t_user_role.t_user_id = ?
+                                                        """,
+                Integer.class,id);
+        if( i > 0){
+            return true;
+        }
+        return false;
+    }
+
     /**
      * insert
      */

@@ -8,7 +8,7 @@ import java.util.Date;
 public class Company{
 	private String id;//id,主键
 	private String name;//name,单位名称单位名称
-	private String companyType;//company_type,单位类型：设计单位、设计部、工程部、监理单位、总包单位等单位类型：设计单位、设计部、工程部、监理单位、总包单位等
+	private String companyType;//company_type,单位类型：品牌厂家、设计单位、设计部、工程部、监理单位、总包单位等单位类型：设计单位、设计部、工程部、监理单位、总包单位等
 	private String note;//note,备注备注
 	private Date deletedAt;//deleted_at,null表示未删，否则 表示删除时间null表示未删，否则 表示删除时间
 

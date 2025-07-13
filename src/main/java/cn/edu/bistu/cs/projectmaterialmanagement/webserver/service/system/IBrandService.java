@@ -16,7 +16,6 @@ public interface IBrandService {
     int getCount();
 
     Brand getById(String id);
-
     Brand getByNameAndMaterialClassifySectionIdAndPosition(String brandName,
                                                            String materialClassifySectionId,
                                                            String position);

@@ -1,12 +1,11 @@
 package cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project;
 
 
-import camundajar.impl.scala.Int;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.BuyMaterial;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.BuyMaterialQrcodeShowView;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.BuyMaterialView;
-import org.camunda.feel.syntaxtree.In;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Factory;
 
 import java.util.List;
 
@@ -51,6 +50,7 @@ public interface IBuyMaterialService {
     List<BuyMaterial> getByProjectMaterialBrandPrivateId(String projectMaterialBrandPrivateId);
 
     List<BuyMaterial> getByProjectMaterialBrandPublicId(String projectMaterialBrandPublicId);
+    Page<BuyMaterialQrcodeShowView> FinalConvertBuyMaterialPage2QrCodePageVie(Page<BuyMaterialQrcodeShowView> viewPage, int pageNo, int pageSize);
 
     List<BuyMaterial> getByQrcodeId(String qrcode);
     List<BuyMaterial> getByBuyMaterialBatchId(String buyMaterialBatchId);
@@ -147,4 +147,5 @@ public interface IBuyMaterialService {
     List<String> getBoughtProjectMaterialBrandPublicIdListPageByProjectIdAndMaterialId(
             String projectId,
             String materialId);
+    List<Factory> getBrandAllFactory();
 }

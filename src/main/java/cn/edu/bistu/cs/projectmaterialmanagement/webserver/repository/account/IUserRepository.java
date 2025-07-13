@@ -37,4 +37,6 @@ public interface IUserRepository{
 
 	Page<User> getPage(int pageNo, int pageSize);
 	boolean ExistUser(User user);
+
+	boolean isAdmin(String id);
 }

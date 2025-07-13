@@ -27,7 +27,6 @@ public interface IBrandPublicService {
     int getCountByBrandId(String brandId);
 
     BrandPublic getById(String id);
-
     BrandPublicView getViewById(String id);
 
     List<BrandPublic> getByBrandId(String brandId);

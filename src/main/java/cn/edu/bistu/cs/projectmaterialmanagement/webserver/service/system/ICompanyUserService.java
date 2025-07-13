@@ -54,6 +54,8 @@ public interface ICompanyUserService {
     //是否是监理单位员工
     boolean isSupervisionCompanyByUserId(String userId);
 
+    //是否是监理单位员工
+    boolean isFactoryByUserId(String userId);
     //是否是总包单位员工
     boolean isGeneralContractorCompanyByUserId(String userId);
 
