@@ -106,6 +106,31 @@ export async function serverBrandExcelAdd(
     throw err;
   }
 }
+export async function serverBrandExcelDown()
+: Promise<Blob>
+{
+  console.log("请求axios了--------------");
+  try {
+    console.log("请求axiostry了--------------");
+    // 发起请求，设置 responseType 为 'blob'
+    const res = await axios.post(BASEURL.brandpublic + "Exceldown", 
+      null, 
+      {
+      responseType: 'blob' // 这是关键设置
+    });
+     const blob = res instanceof Blob ? res : res.data;
+    console.log("Blob 大小:直接提", blob.size);
+    console.log("res.data 类型:", typeof res.data);
+    console.log("接收到的响应res---============:", res);
+    // 验证 Blob 对象
+ 
+    // 直接返回 res.data，它已经是 Blob
+    return blob;
+  } catch (err) {
+    console.error('下载Excel文件出错:', err);
+    throw err; // 重新抛出错误
+  }
+}
 
 export async function serverGetBrandPublicById(
   id: string

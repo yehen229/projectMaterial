@@ -70,26 +70,6 @@ const brandPublicPageData = ref<IServerPage<IServerBrandPublicView> | null>(
 );
 
 const radioUserType = ref(0);
-// const successUpload = (res) => {
-//   if (res.code === 0) {
-//     ElMessage.success('导入成功');
-//     // 重新加载表格
-//   } else {
-
-//   }
-// };
-// import { saveAs } from 'file-saver';
-
-// const exportExcel = async () => {
-//   const res = await axios.get(
-//     '/api/company-user/export',
-//     { responseType: 'blob' }
-//   );
-//   const blob = new Blob([res.data], {
-//     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-//   });
-//   saveAs(blob, '用户名单.xlsx');
-// };
 onMounted(async () => {
   await getBrandFromSever();
 });
@@ -108,6 +88,7 @@ const getBrandFromSever = async () => {
         pageSize.value
       );
       if (ret && ret.code == 200) {
+        console.log("这是我要打印的东西"+JSON.stringify(ret.data, null, 2));
         brandPublicPageData.value = ret.data;
       }
     } else if (searchSelect.value == "1") {
@@ -304,7 +285,7 @@ const goBack = () => {
   >
     <el-button type="primary" style="width: 80px;">批量导入</el-button>
   </el-upload>
-         <el-button type="danger" style="width: 80px;" @click="exportExcel">批量导出</el-button>
+         <el-button type="danger" style="width: 80px;" @click="handledownload">批量导出</el-button>
          </el-button-group>
     </div>
       <!--搜索框-->
@@ -435,7 +416,7 @@ const goBack = () => {
 
 <script lang="ts">
 import { serverBrandExcelAdd } from '@/server/system/brandpublic';
-
+import { serverBrandExcelDown } from '@/server/system/brandpublic';
 export default {
   methods: {
     async handleUpload(params: any) {
@@ -445,14 +426,46 @@ export default {
 
       try {
         const res = await serverBrandExcelAdd(formData);
-        console.log('上传成功', res);
         this.$message.success('文件上传成功');
         params.onSuccess?.(res);
       } catch (err) {
-        console.error('上传失败', err);
         this.$message.error('文件上传失败');
         params.onError?.(err);
       }
+    },
+    
+     async handledownload(params: any) {
+      try {
+        console.log("开始try了")
+        const blob = await serverBrandExcelDown();
+if (!(blob instanceof Blob)) {
+    console.log('获取到的对象不是Blob类型');
+    
+}
+    // 创建一个隐藏的<a>元素
+    const a = document.createElement('a');
+    console.log("这是bobl"+blob);
+    a.href = URL.createObjectURL(blob); // 创建一个指向blob数据的URL
+    a.download = '品牌列表.xlsx'; // 设置下载文件的名称
+    a.style.display = 'none'; // 隐藏<a>元素，不显示在页面上
+
+    // 将<a>元素添加到body中
+    document.body.appendChild(a);
+
+    // 触发<a>元素的点击事件来开始下载
+    a.click();
+console.log("触发下载了========")
+    // 下载完成后移除<a>元素
+    window.setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href); // 释放创建的URL对象
+      params?.onSuccess?.(blob); // 调用成功回调
+    }, 0);
+  } catch (err) {
+    console.error("下载失败:", err);
+    params?.onError?.(err); // 调用错误回调
+  }
+
     },
   },
 };
