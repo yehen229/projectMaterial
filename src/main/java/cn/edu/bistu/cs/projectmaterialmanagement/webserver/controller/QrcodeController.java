@@ -250,6 +250,15 @@ public class QrcodeController {
         return buyMaterialService.getQrcodePageViewbyinputkey(projectname, batch, materialname, pageNo, pageSize);
     }
 
+    // 用于后续材料详细的时候厂家不显示详细文件信息和项目信息
+    @GetMapping(value = "getISFactory")
+    public boolean ShowLoginCompanyTypeIsFactory(){
+        if (iCompanyUserService.isFactoryByUserId(userService.getCurrentLoginUser().getId())){
+            return true;
+        }
+        else
+            return false;
+    }
 
     //通过qrcode获取材料照片信息
     @GetMapping("getbranandpositon")
