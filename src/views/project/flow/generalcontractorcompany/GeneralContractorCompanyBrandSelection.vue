@@ -205,7 +205,7 @@ onMounted(async () => {
   }
 
   await getUserTaskFromServerByProjectId(projectId.value, taskId.value);
-  await getNotPassedBrandFromServer();
+  await getNotPassedBrandFromServer();    
 });
 
 const showWarning = (val: boolean) => {
@@ -242,6 +242,8 @@ const getNotPassedBrandFromServer = async () => {
               projectMaterialBrandPrivateId: "", //t_project_material_brand_private_id,外键,	t_project_material_brand_private_id<-表t_project_material_brand_private.id,品牌品牌
               projectMaterialBrandPublicId: "", //t_project_material_brand_public_id,外键,	t_project_material_brand_public_id<-表t_project_material_brand_public.id
               isAppearance: 0, //is_appearance,是否影响外观是否影响外观
+              materialCount: item.useMaterial.materialCount,
+              materialUnit: item.useMaterial.materialUnit,
               createDatetime: new Date(), //create_datetime,创建时间创建时间
               deletedAt: new Date(), //deleted_at,null表示未删，否则 表示删除时间null表示未删，否则 表示删除时间
             },
@@ -584,7 +586,6 @@ const onEditMaterialSelected = (index: number, row: IUseMaterial) => {
   updateUseMaterialIndex.value = index;
   dialogUpdateProjectMaterialByGeneralContractorCompanyDialogVisible.value =
     true;
-  console.log(updateUseMaterial.value);
 };
 const onUpdateProjectMaterialByGeneralContractorCompanyDialogCancel = () => {
   dialogUpdateProjectMaterialByGeneralContractorCompanyDialogVisible.value =
@@ -595,8 +596,6 @@ const onUpdateProjectMaterialByGeneralContractorCompanyDialogCancel = () => {
 const onUpdateProjectMaterialByGeneralContractorCompanyDialogOk = async (
   projectMaterialForm: IServerProjectMaterialForm
 ) => {
-  console.log(projectMaterialForm);
-  console.log(updateUseMaterialIndex.value);
   if (updateUseMaterialIndex.value >= 0) {
     useProjectMaterialViewList.value[
       updateUseMaterialIndex.value
@@ -618,9 +617,10 @@ const onUpdateProjectMaterialByGeneralContractorCompanyDialogOk = async (
     ].photoFileDir = projectMaterialForm.photoTempDir;
     useProjectMaterialViewList.value[updateUseMaterialIndex.value].photoIds =
       projectMaterialForm.photoIds;
-  }
+    let isEdit = true;
+    useProjectMaterialViewList.value[updateUseMaterialIndex.value].isEdit = true;
 
-  console.log(useProjectMaterialViewList.value);
+  }
   dialogUpdateProjectMaterialByGeneralContractorCompanyDialogVisible.value =
     false;
   // internalInstance?.proxy?.$forceUpdate();
@@ -643,6 +643,7 @@ const textElipsisValue = ref(false);
     :dialogVisible="
       dialogUpdateProjectMaterialByGeneralContractorCompanyDialogVisible
     "
+    :materialData="updateUseMaterial"
     :material="updateUseMaterial?.material"
     :project="updateUseMaterial?.projectMaterialView.project"
     :projectMaterial="updateUseMaterial?.projectMaterialView.projectMaterial"

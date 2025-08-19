@@ -112,6 +112,7 @@ const projectBrandList = ref<IServerProjectBrandView[]>();
 
 interface Props {
   dialogVisible: boolean; //对话框是否可见
+  materialData;
   material: IServerMaterial | undefined;
   project: IServerProject | undefined;
   projectMaterial: IServerProjectMaterial | undefined;
@@ -178,11 +179,9 @@ const onOpenDialog = async () => {
   if (!props.material || !props.project || !props.projectMaterial) return;
   if (props.material.id !== props.projectMaterial.materialId) return;
 
-  console.log(props.material);
 
   materialClassifyOption.value = await generateMaterialClassifyOption();
   await getProjectBrandListFromSever();
-  console.log(materialClassifyOption.value);
 
   form.materialId = props.material.id;
   form.materialClassifySectionId = props.material.materialClassifySectionId;
@@ -197,18 +196,25 @@ const onOpenDialog = async () => {
   form.installation = props.material.installation;
   form.materialCount = props.projectMaterial.materialCount;
   form.materialUnit = props.projectMaterial.materialUnit;
-
+  if (props.materialData && props.materialData.isEdit != true) {
+    form.materialCount = props.materialData.useMaterial.materialCount;
+    form.materialUnit = props.materialData.useMaterial.materialUnit;
+  }
+  if (props.materialData.isEdit == true) {
+    form.materialCount = props.materialData.projectMaterial.materialCount;
+    form.materialUnit = props.materialData.projectMaterial.materialUnit;
+   }
   await getMaterialViewListFromSever();
   await getbrandPublicViewListFromSever();
 
   //样本照片
   await getMaterialViewListFromSever();
   const retView = await serverGetMaterialViewById(form.materialId);
+  
   if (retView && retView.code == 200) {
     form.materialPhotoViewList = retView.data.materialPhotoViewList;
   }
 
-  console.log(form);
 };
 
 const handleClose = () => {
@@ -268,9 +274,6 @@ const onOk = () => {
     return;
   }*/
 
-  console.log("form", form);
-  console.log("props", props);
-
   let projectMaterialForm: IServerProjectMaterialForm = {
     projectMaterial: {
       id: props.projectMaterial.id,
@@ -306,7 +309,6 @@ const onOk = () => {
     photoIds: [], //照片ID
   };
 
-  console.log("projectMaterialForm", projectMaterialForm);
 
   emit("onDilalogOk", projectMaterialForm);
 };

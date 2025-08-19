@@ -193,8 +193,7 @@ const materialClassifyOption = ref<IMaterialClassifyOption[]>([]);
 const onOpenDialog = async () => {
   materialClassifyOption.value = await generateMaterialClassifyOption();
   await getProjectBrandListFromSever();
-  console.log(materialClassifyOption.value);
-
+  
   form.materialId = props.showDiffProjectMaterialView.material.id;
   form.materialClassifySectionId =
     props.showDiffProjectMaterialView.material.materialClassifySectionId;
@@ -208,10 +207,10 @@ const onOpenDialog = async () => {
   form.fireRating = props.showDiffProjectMaterialView.material.fireRating;
   form.installation = props.showDiffProjectMaterialView.material.installation;
   form.materialCount =
-    props.showDiffProjectMaterialView.projectMaterialView.projectMaterial.materialCount;
+    props.showDiffProjectMaterialView.useMaterial.materialCount;
   form.materialUnit =
-    props.showDiffProjectMaterialView.projectMaterialView.projectMaterial.materialUnit;
-
+    props.showDiffProjectMaterialView.useMaterial.materialUnit;
+  
   await getMaterialViewListFromSever();
   await getbrandPublicViewListFromSever();
 
@@ -805,7 +804,12 @@ const onMaterialChanged = (materialView: IServerMaterialView) => {
           <el-col :span="4">
             <div class="title">材料数量</div>
           </el-col>
-          <el-col :span="20">
+          <el-col v-if="props.showDiffProjectMaterialView.useMaterial" :span="20">
+            {{
+              props.showDiffProjectMaterialView.useMaterial.materialCount
+            }}
+          </el-col>
+          <el-col v-else :span="20">
             {{
               props.showDiffProjectMaterialView.projectMaterialView
                 .projectMaterial.materialCount
@@ -817,6 +821,11 @@ const onMaterialChanged = (materialView: IServerMaterialView) => {
         <el-row :gutter="20">
           <el-col :span="4">
             <div class="title">数量单位</div>
+          </el-col>
+          <el-col v-if="props.showDiffProjectMaterialView.useMaterial" :span="20">
+            {{
+              props.showDiffProjectMaterialView.useMaterial.materialUnit
+            }}
           </el-col>
           <el-col :span="20">
             {{
