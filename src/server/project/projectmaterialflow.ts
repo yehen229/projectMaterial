@@ -1470,6 +1470,31 @@ export async function serverGetProjectAppearanceReviewUserViewListByTaskId(
   }
 }
 
+export async function serverGetProjectMaterialAcceptanceReviewUserViewListByTaskId(
+  projectId: string,
+  taskId: string
+): Promise<IServerResponseData<IServerProjectMaterialAcceptanceReviewUserView[]>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerProjectMaterialAcceptanceReviewUserView[]>
+    >(
+      BASEURL.projectmaterialflow +
+        "list-appearance-review-user-view-by-task-id",
+      {
+        params: {
+          projectId: projectId,
+          taskId: taskId,
+        },
+      }
+    );
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
 export async function serverGetBuyMaterialRecheckIsRequiredByProjectIdAndTaskId(
   projectId: string,
   taskId: string

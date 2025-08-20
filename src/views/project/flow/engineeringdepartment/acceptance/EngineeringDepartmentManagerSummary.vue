@@ -97,7 +97,8 @@ import ProjectUserTaskList from "@/components/project/flow/ProjectUserTaskList.v
 import ProjectMaterialList from "@/components/project/material/ProjectMaterialList.vue";
 import ProjectAppearanceReviewList from "@/components/project/review/ProjectAppearanceReviewList.vue";
 import ProjectMaterialAcceptanceReviewList from "@/components/project/review/ProjectMaterialAcceptanceReviewList.vue"
-import ProjectAppearanceReviewHandOverToManagerList from "@/components/project/review/ProjectAppearanceReviewHandOverToManagerList.vue";
+// import ProjectAppearanceReviewHandOverToManagerList from "@/components/project/review/ProjectAppearanceReviewHandOverToManagerList.vue";
+import ProjectMaterialAcceptanceReviewHandOverToManagerList from "@/components/project/review/ProjectMaterialAcceptanceReviewHandOverToManagerList.vue";
 import ProjectMaterialAcceptanceList from "@/components/project/material/ProjectMaterialAcceptanceList.vue";
 
 import { genUUID } from "@/utils/utils";
@@ -322,7 +323,7 @@ const getEmployeeReviewFileIds = () => {
   const temp: string[] = [];
 
   employeeProjectReviewUserViewList.value.forEach((item) => {
-    item.projectAppearanceReviewUserFileList.forEach((itemFile) =>
+    item.projectMaterialAcceptanceReviewUserFileList.forEach((itemFile) =>
       temp.push(itemFile.id)
     );
   });
@@ -574,7 +575,7 @@ const onEmployeeFilesAsManagerFilesChanged = (
 
           <!--可以将员工审核的附件，作为项目经理的附件-->
           <el-form-item label="员工已审附件" style="width: 100%">
-            <ProjectAppearanceReviewHandOverToManagerList
+            <ProjectMaterialAcceptanceReviewHandOverToManagerList
               :projectUserTask="projectUserTask"
               @onEmployeeFilesAsManagerFilesChanged="
                 onEmployeeFilesAsManagerFilesChanged

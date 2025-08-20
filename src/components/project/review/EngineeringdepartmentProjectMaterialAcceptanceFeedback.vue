@@ -241,24 +241,24 @@ const downloadProjectMaterialAcceptanceFileById = async (
   );
   console.log(ret);
 };
-const reviewResult = computed(() => {
-  if (
-    projectReviewUserViewData &&
-    projectReviewUserViewData.value &&
-    projectReviewUserViewData.value.projectAppearanceReviewUser
-  ) {
-    if (
-      projectReviewUserViewData.value.projectAppearanceReviewUser
-        .reviewResult == 2
-    )
-      return "不通过";
-    if (
-      projectReviewUserViewData.value.projectAppearanceReviewUser
-        .reviewResult == 1
-    )
-      return "通过";
-  }
-});
+// const reviewResult = computed(() => {
+//   if (
+//     projectReviewUserViewData &&
+//     projectReviewUserViewData.value &&
+//     projectReviewUserViewData.value.projectMaterialAcceptanceReviewUser
+//   ) {
+//     if (
+//       projectReviewUserViewData.value.projectMaterialAcceptanceReviewUser
+//         .reviewResult == 2
+//     )
+//       return "不通过";
+//     if (
+//       projectReviewUserViewData.value.projectMaterialAcceptanceReviewUser
+//         .reviewResult == 1
+//     )
+//       return "通过";
+//   }
+// });
 const collapsed = ref(false);
 </script>
 
@@ -292,7 +292,7 @@ const collapsed = ref(false);
         <div>审核结果：</div>
         <div
           v-if="
-            projectReviewUserViewData?.projectMaterialAcceptanceReview.reviewResult == 1
+            projectReviewUserViewData?.projectMaterialAcceptanceReview.reviewResult == 2
           "
           style="color: red"
         >
@@ -300,7 +300,7 @@ const collapsed = ref(false);
         </div>
         <div
           v-else-if="
-            projectReviewUserViewData?.projectMaterialAcceptanceReview.reviewResult == 2
+            projectReviewUserViewData?.projectMaterialAcceptanceReview.reviewResult == 1
           "
           style="color: green"
         >
