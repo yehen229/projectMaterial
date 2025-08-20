@@ -252,6 +252,12 @@ public class ProjectMaterialAcceptanceReviewUserServiceImpl implements IProjectM
       return projectMaterialAcceptanceReviewUserRepository.getViewPageByProjectMaterialAcceptanceReviewModeId(projectMaterialAcceptanceReviewModeId, pageNo, pageSize);
     }
 
+    @Override
+    public List<ProjectMaterialAcceptanceReviewUser> getByAcceptanceModeId(String projectAcceptanceReviewModeId) {
+        return projectMaterialAcceptanceReviewUserRepository.getByAcceptanceModeId(projectAcceptanceReviewModeId);
+    }
+
+
     /**
      * 根据主键获得视图对象
      *

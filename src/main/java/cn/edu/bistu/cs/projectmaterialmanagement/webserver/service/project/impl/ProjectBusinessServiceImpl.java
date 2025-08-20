@@ -1257,8 +1257,8 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
         projectMaterialAcceptanceReview.setProjectMaterialAcceptanceModeId(projectMaterialAcceptanceReviewModeId);
         projectMaterialAcceptanceReview.setReviewDatetime(new Date());
         projectMaterialAcceptanceReview.setReviewResult(projectMaterialAcceptanceReviewUser.getReviewResult() == 0 ?
-                                                                IProjectReviewService.PROJECT_REVIEW_RESULT_REJECTED :
-                                                                IProjectReviewService.PROJECT_REVIEW_RESULT_ACCEPTED);
+                                                                IProjectReviewService.PROJECT_REVIEW_RESULT_ACCEPTED :
+                                                                IProjectReviewService.PROJECT_REVIEW_RESULT_REJECTED);
         projectMaterialAcceptanceReview.setReviewStatus(IProjectReviewService.PROJECT_REVIEW_STATUS_REVIEWED);
         String projectMaterialAcceptanceReviewId = projectMaterialAcceptanceReviewService.add(
                 projectMaterialAcceptanceReview);
@@ -1273,8 +1273,8 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
         projectMaterialAcceptanceReviewUserTemp.setUserId(projectMaterialAcceptanceReviewUser.getUserId());
         projectMaterialAcceptanceReviewUserTemp.setReviewResult(
                 projectMaterialAcceptanceReviewUser.getReviewResult() == 0 ?
-                        IProjectReviewService.PROJECT_REVIEW_RESULT_REJECTED :
-                        IProjectReviewService.PROJECT_REVIEW_RESULT_ACCEPTED);
+                        IProjectReviewService.PROJECT_REVIEW_RESULT_ACCEPTED :
+                        IProjectReviewService.PROJECT_REVIEW_RESULT_REJECTED);
         String projectMaterialAcceptanceReviewUserId = projectMaterialAcceptanceReviewUserService.add(
                 projectMaterialAcceptanceReviewUserTemp);
         if (projectMaterialAcceptanceReviewUserId == null)
@@ -2309,6 +2309,11 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
                 projectAppearanceReviewModeId);
     }
     @Override
+    public List<ProjectMaterialAcceptanceReviewUserView> getListOfProjectMaterialAcceptanceReviewUserViewByTaskId(String projectAcceptanceReviewModeId) {
+        return projectMaterialAcceptanceBusinessService.getViewListByProjectMaterialAcceptanceReviewModeId(
+                projectAcceptanceReviewModeId);
+    }
+    @Override
     public List<ProjectReviewUserView> getProjectReviewUserViewListByProjectIdAndTaskId(String projectReviewId) {
         return projectReviewBusinessService.getProjectReviewUserViewListByProjectIdAndTaskId(projectReviewId);
     }
@@ -3052,10 +3057,7 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
              ProjectMaterialAcceptanceBatch projectMaterialAcceptanceBatch = projectMaterialAcceptanceBatchService.getById(
                      projectMaterialAcceptanceReviewMode.getProjectMaterialAcceptanceBatchId());
              for (ProjectMaterialAcceptanceReviewUser projectMaterialAcceptanceReviewUser : projectMaterialAcceptanceReviewUserList){
-                 if (projectUserService.isUserDesignDepartmentManager(projectMaterialAcceptanceBatch.getProjectId(),
-                         projectMaterialAcceptanceReviewUser.getUserId()) ||
-                         projectUserService.isUserEngineeringDepartmentManager(projectMaterialAcceptanceBatch.getProjectId(),
-                                 projectMaterialAcceptanceReviewUser.getUserId()));
+                 if (projectUserService.isUserDesignDepartmentManager(projectMaterialAcceptanceBatch.getProjectId(), projectMaterialAcceptanceReviewUser.getUserId()) || projectUserService.isUserEngineeringDepartmentManager(projectMaterialAcceptanceBatch.getProjectId(), projectMaterialAcceptanceReviewUser.getUserId()))
                  return projectMaterialAcceptanceBusinessService.getViewByprojectMaterialAcceptanceReviewUserId(
                          projectMaterialAcceptanceReviewUser.getId());
              }

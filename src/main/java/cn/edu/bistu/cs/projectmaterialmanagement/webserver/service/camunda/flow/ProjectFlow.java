@@ -3690,21 +3690,22 @@ public class ProjectFlow {
                 projectAppearanceReviewModeId, pageNo, pageSize);
     }
 
-    public List<ProjectAppearanceReviewUserView> getListOfProjectAppearanceReviewUserViewByProjectIdAndTaskId(String projectId,
+    // 本方法为工程部验收方法
+    public List<ProjectMaterialAcceptanceReviewUserView> getListOfProjectAcceptanceReviewUserViewByProjectIdAndTaskId(String projectId,
                                                                                                               String taskId) {
-        String projectAppearanceReviewModeId = null;
+        String projectAcceptanceReviewModeId = null;
         if (projectBusinessService.isCurrentLoginUserInEngineeringDepartment()) {
-
-            projectAppearanceReviewModeId = (String) taskService.getVariable(taskId,
-                                                                             "projectAppearanceReviewModeId");
+            projectAcceptanceReviewModeId = (String) taskService.getVariable(taskId,
+                                                                             "projectMaterialAcceptanceReviewModeId");
+            System.out.println(projectAcceptanceReviewModeId);
         } else if (projectBusinessService.isCurrentLoginUserInDesignDepartment()) {
 
-            projectAppearanceReviewModeId = (String) taskService.getVariable(taskId,
+            projectAcceptanceReviewModeId = (String) taskService.getVariable(taskId,
                                                                              "projectDesignDepartmentAppearanceReviewModeId");
         }
-        if (projectAppearanceReviewModeId == null) return null;
-        return projectBusinessService.getListOfProjectAppearanceReviewUserViewByTaskId(
-                projectAppearanceReviewModeId);
+        if (projectAcceptanceReviewModeId == null) return null;
+        return projectBusinessService.getListOfProjectMaterialAcceptanceReviewUserViewByTaskId(
+                projectAcceptanceReviewModeId);
     }
 
     public ProjectReviewStatistics getStatisticsOfDesignDepartmentAppearanceReviewUserViewByProjectIdAndTaskId(String projectId,

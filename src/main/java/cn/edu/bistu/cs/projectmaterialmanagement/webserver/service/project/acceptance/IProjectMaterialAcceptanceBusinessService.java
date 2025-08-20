@@ -4,6 +4,8 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.acceptance.ProjectMaterialAcceptanceReviewUserView;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.acceptance.ProjectMaterialAcceptanceView;
 
+import java.util.List;
+
 
 public interface IProjectMaterialAcceptanceBusinessService {
 
@@ -52,6 +54,8 @@ public interface IProjectMaterialAcceptanceBusinessService {
     Page<ProjectMaterialAcceptanceView> getPageViewByProjectMaterialBrandPrivateId(String projectMaterialBrandPrivateId,
                                                                                    int pageNo,
                                                                                    int pageSize);
+
+    List<ProjectMaterialAcceptanceReviewUserView> getViewListByProjectMaterialAcceptanceReviewModeId(String projectMaterialAcceptanceReviewModeId);
 
     Page<ProjectMaterialAcceptanceView> getPageViewByProjectMaterialBrandPublicId(String projectMaterialBrandPublicId,
                                                                                   int pageNo,

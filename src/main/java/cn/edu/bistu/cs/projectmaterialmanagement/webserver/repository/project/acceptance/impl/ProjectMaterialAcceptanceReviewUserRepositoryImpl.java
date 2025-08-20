@@ -2,7 +2,9 @@ package cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.a
 
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.acceptance.ProjectMaterialAcceptanceReviewUser;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.appearance.ProjectAppearanceReviewUser;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.acceptance.IProjectMaterialAcceptanceReviewUserRepository;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.appearance.impl.ProjectAppearanceReviewUserRepositoryImpl;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.utility.GUID;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -81,6 +83,35 @@ public class ProjectMaterialAcceptanceReviewUserRepositoryImpl implements IProje
                                    projectMaterialAcceptanceReviewUser.getReviewContent(),
                                    projectMaterialAcceptanceReviewUser.getReviewDatetime(),
                                    projectMaterialAcceptanceReviewUser.getId());
+    }
+
+    @Override
+    public List<ProjectMaterialAcceptanceReviewUser> getByAcceptanceModeId(String projectAcceptanceReviewModeId) {
+        Integer i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*) 
+                                                        FROM t_project_material_acceptance_review_user
+                                                        LEFT JOIN t_project_material_acceptance_review ON t_project_material_acceptance_review.id=t_project_material_acceptance_review_user.t_project_material_acceptance_review_id
+                                                        LEFT JOIN t_project_material_acceptance_review_mode ON t_project_material_acceptance_review.t_project_material_acceptance_mode_id=t_project_material_acceptance_review_mode.id
+                                                        WHERE t_project_material_acceptance_review_mode.id=? 
+                                                        AND t_project_material_acceptance_review_user.deleted_at IS NULL
+                                                        AND t_project_material_acceptance_review.deleted_at IS NULL
+                                                        AND t_project_material_acceptance_review_mode.deleted_at IS NULL
+                                                        """,
+                Integer.class, projectAcceptanceReviewModeId);
+        if (i == null || i == 0)
+            return null;
+
+        return jdbcTemplate.query("""
+                                          SELECT t_project_material_acceptance_review_user.* 
+                                          FROM t_project_material_acceptance_review_user
+                                          LEFT JOIN t_project_material_acceptance_review ON t_project_material_acceptance_review.id=t_project_material_acceptance_review_user.t_project_material_acceptance_review_id
+                                          LEFT JOIN t_project_material_acceptance_review_mode ON t_project_material_acceptance_review.t_project_material_acceptance_mode_id=t_project_material_acceptance_review_mode.id
+                                          WHERE t_project_material_acceptance_review_mode.id=? 
+                                          AND t_project_material_acceptance_review_user.deleted_at IS NULL
+                                          AND t_project_material_acceptance_review.deleted_at IS NULL
+                                          AND t_project_material_acceptance_review_mode.deleted_at IS NULL
+                                          """,
+                new ProjectMaterialAcceptanceReviewUserRepositoryImpl.ProjectMaterialAcceptanceReviewUserMapper(), projectAcceptanceReviewModeId);
     }
 
     /**
@@ -291,6 +322,35 @@ public class ProjectMaterialAcceptanceReviewUserRepositoryImpl implements IProje
                                           AND t_project_material_acceptance_review_mode.deleted_at IS NULL
                                           """,
                                   new ProjectMaterialAcceptanceReviewUserMapper(), projectMaterialAcceptanceReviewModeId, reviewResult);
+    }
+
+    @Override
+    public List<ProjectMaterialAcceptanceReviewUser> getByMaterialAcceptanceModeId(String projectAppearanceReviewModeId) {
+        Integer i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*) 
+                                                        FROM t_project_material_acceptance_review_user
+                                                        LEFT JOIN t_project_material_acceptance_review ON t_project_material_acceptance_review.id=t_project_material_acceptance_review_user.t_project_material_acceptance_review_id
+                                                        LEFT JOIN t_project_material_acceptance_review_mode ON t_project_material_acceptance_review.t_project_material_acceptance_mode_id=t_project_material_acceptance_review_mode.id
+                                                        WHERE t_project_material_acceptance_review_mode.id=? 
+                                                        AND t_project_material_acceptance_review_user.deleted_at IS NULL
+                                                        AND t_project_material_acceptance_review.deleted_at IS NULL
+                                                        AND t_project_material_acceptance_review_mode.deleted_at IS NULL
+                                                        """,
+                Integer.class, projectAppearanceReviewModeId);
+        if (i == null || i == 0)
+            return null;
+
+        return jdbcTemplate.query("""
+                                          SELECT t_project_material_acceptance_review_user.* 
+                                          FROM t_project_material_acceptance_review_user
+                                          LEFT JOIN t_project_material_acceptance_review ON t_project_material_acceptance_review.id=t_project_material_acceptance_review_user.t_project_material_acceptance_review_id
+                                          LEFT JOIN t_project_material_acceptance_review_mode ON t_project_material_acceptance_review.t_project_material_acceptance_mode_id=t_project_material_acceptance_review_mode.id
+                                          WHERE t_project_material_acceptance_review_mode.id=? 
+                                          AND t_project_material_acceptance_review_user.deleted_at IS NULL
+                                          AND t_project_material_acceptance_review.deleted_at IS NULL
+                                          AND t_project_material_acceptance_review_mode.deleted_at IS NULL
+                                          """,
+                new ProjectMaterialAcceptanceReviewUserMapper(), projectAppearanceReviewModeId);
     }
 
     /**

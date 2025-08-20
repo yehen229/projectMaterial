@@ -35,6 +35,9 @@ public interface IProjectMaterialAcceptanceReviewUserRepository {
                                                              String projectMaterialAcceptanceBatchId,
                                                              String projectMaterialAcceptanceReviewModeId);
     List<ProjectMaterialAcceptanceReviewUser> getByMaterialAcceptanceModeIdAndNotReviewed (String projectMaterialAcceptanceReviewModeId, int reviewResult);
+
+    List<ProjectMaterialAcceptanceReviewUser> getByMaterialAcceptanceModeId(String projectAppearanceReviewModeId);
+
     List<ProjectMaterialAcceptanceReviewUser> getByUserId(String userId);
 
     List<ProjectMaterialAcceptanceReviewUser> getByProjectMaterialAcceptanceReviewId(String projectMaterialAcceptanceReviewId);
@@ -51,4 +54,5 @@ public interface IProjectMaterialAcceptanceReviewUserRepository {
                                                                                          int pageSize);
     Page<ProjectMaterialAcceptanceReviewUser> getViewPageByProjectMaterialAcceptanceReviewModeId(String projectMaterialAcceptanceReviewModeId, Integer pageNo, Integer pageSize);
 
+    List<ProjectMaterialAcceptanceReviewUser> getByAcceptanceModeId(String projectAcceptanceReviewModeId);
 }

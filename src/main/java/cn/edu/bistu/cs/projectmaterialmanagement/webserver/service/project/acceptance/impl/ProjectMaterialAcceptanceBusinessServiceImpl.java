@@ -2,6 +2,7 @@ package cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.acce
 
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.acceptance.*;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.appearance.ProjectAppearanceReviewUser;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.account.IUserService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.*;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.acceptance.*;
@@ -210,6 +211,13 @@ public class ProjectMaterialAcceptanceBusinessServiceImpl implements IProjectMat
         Page<ProjectMaterialAcceptance> projectMaterialAcceptancePage = projectMaterialAcceptanceService.getPageByProjectMaterialBrandPrivateId(
                 projectMaterialBrandPrivateId, pageNo, pageSize);
         return convertProjectMaterialAcceptancePage2PageView(projectMaterialAcceptancePage, pageNo, pageSize);
+    }
+
+    @Override
+    public List<ProjectMaterialAcceptanceReviewUserView> getViewListByProjectMaterialAcceptanceReviewModeId(String projectMaterialAcceptanceReviewModeId) {
+        List<ProjectMaterialAcceptanceReviewUser> projectAppearanceReviewUserList = projectMaterialAcceptanceReviewUserService.getByAcceptanceModeId(
+                projectMaterialAcceptanceReviewModeId);
+        return convertProjectMaterialAcceptanceUserListPage2ListPageView(projectAppearanceReviewUserList);
     }
 
     /**

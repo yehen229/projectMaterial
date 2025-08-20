@@ -189,6 +189,7 @@ public interface IProjectBusinessService {
                                                                                                          Integer pageNo,
                                                                                                          Integer pageSize);
     List<ProjectAppearanceReviewUserView> getListOfProjectAppearanceReviewUserViewByTaskId(String projectAppearanceReviewModeId);
+    List<ProjectMaterialAcceptanceReviewUserView> getListOfProjectMaterialAcceptanceReviewUserViewByTaskId(String projectMaterialAcceptanceReviewModeId);
     List<ProjectReviewUserView> getProjectReviewUserViewListByProjectIdAndTaskId (String projectReviewId);
 
     boolean checkDesignDepartmentManagerExists(String projectId);

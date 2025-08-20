@@ -65,4 +65,6 @@ public interface IProjectMaterialAcceptanceReviewUserService {
     Page<ProjectMaterialAcceptanceReviewUser> getViewPageByProjectMaterialAcceptanceReviewModeId(String projectMaterialAcceptanceReviewModeId,
                                                                                                  Integer pageNo,
                                                                                                  Integer pageSize);
+
+    List<ProjectMaterialAcceptanceReviewUser> getByAcceptanceModeId(String projectMaterialAcceptanceReviewModeId);
 }

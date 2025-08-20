@@ -1,0 +1,204 @@
+#spring:
+#  application:
+#    name: webserver
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    type: com.alibaba.druid.pool.DruidDataSource
+#    url: jdbc:mysql://pxc-bjrr3zdemw0od2-pub.polarx.rds.aliyuncs.com:3306/material?useSSL=false&serverTimezone=UTC&characterEncoding=utf-8
+#    username: dyz
+#    password: Dyz@20010202
+#    druid:
+#      initial-size: 5
+#      min-idle: 5
+#      max-active: 20
+#      max-wait: 60000
+#      time-between-eviction-runs-millis: 60000
+#      min-evictable-idle-time-millis: 300000
+#      validation-query: SELECT 1
+#      test-while-idle: true
+#      test-on-borrow: false
+#      test-on-return: false
+#      pool-prepared-statements: true
+#      max-pool-prepared-statement-per-connection-size: 20
+#  #    driver-class-name: com.mysql.cj.jdbc.Driver
+##    #    url: jdbc:mysql://74.48.81.138:3306/material?serverTimezone=Asia/Shanghai
+##    url: jdbc:mysql://localhost:3306/test2?serverTimezone=Asia/Shanghai
+##    #    username: admin
+##    username: root
+##    password: 3327326
+#  servlet:
+#    multipart:
+#      enabled: true
+#      max-file-size: 50MB
+#      max-request-size: 50MB
+#
+#  profiles:
+#    active: dev
+#
+#
+#  data:
+#    redis:
+#      client-name: project
+#      host: 127.0.0.1
+#      #      host: 74.48.81.138
+#      port: 6379
+#      password:
+#      database: 0
+#      timeout: 1000
+#
+#
+#
+#server:
+#  address: 127.0.0.1
+#  #  address: 0.0.0.0
+#  port: 9000
+##  ssl:
+##    protocol: TLS
+##    key-store: classpath:zhengdddddyyyyyy.store.pfx
+##    key-store-password: 5103fde6
+#  tomcat:
+#    remoteip:
+#      remote-ip-header: x-forwarded-for
+#  forward-headers-strategy: framework
+#  servlet:
+#    session:
+#      timeout: PT3H
+#
+#
+#
+##logging.level.root=warn
+##spring.profiles.active=dev
+#
+#
+## Camunda
+#camunda.bpm:
+#  admin-user:
+#    id: admin
+#    password: admin
+#  generic-properties.properties:
+#    javaSerializationFormatEnabled: true
+#
+#
+#
+#  filter:
+#    create: All tasks
+#
+#  database:
+#    type: mysql
+#    schema-update: true
+#
+#
+#
+#  auto-deployment-enabled: false
+#  deployment-resource-pattern: classpath:process*.bpmn
+#  history-level: full
+
+
+
+
+
+
+
+
+
+spring:
+  application:
+    name: webserver
+  datasource:
+
+#    url: jdbc:mysql://74.48.81.138:3306/material?serverTimezone=Asia/Shanghai
+#    url: jdbc:mysql://47.95.6.3:3306/material?serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://127.0.0.1:3306/material?useSSL=false&useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://localhost:3306/project_material_aliyun
+    username: root
+#    password: 3327326
+    password: yehen229
+  #    username: dyz
+#    password: biticai_404
+
+#    driver-class-name: org.postgresql.Driver
+#    url: jdbc:postgresql://10.146.58.74:5866/db0414?currentSchema=project_material,public
+##    url: jdbc:postgresql://localhost:5866/db0414?currentSchema=project_material,public
+#    username: sysdba
+#    password: Hello@12345
+#
+#    driver-class-name: org.postgresql.Driver
+#    url: jdbc:postgresql://localhost:5866/highgo?currentSchema=project_material,public
+#    username: sysdba
+#    password: Hello@12345
+#    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=project_material,public
+  #    username: postgres
+#    password: 3327326
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+
+  profiles:
+    active: dev
+
+
+  data:
+    redis:
+      client-name: project
+      host: 127.0.0.1
+
+      port: 6379
+      password:
+      database: 0
+      timeout: 1000
+
+
+
+server:
+  address: 127.0.0.1
+  port: 9000
+#
+  #    protocol: TLS
+#    key-store: classpath:_.zhengdddddyyyyyy.store.pfx
+#    key-store-password: c73a5dc8
+  tomcat:
+    remoteip:
+      remote-ip-header: x-forwarded-for
+  forward-headers-strategy: framework
+  servlet:
+    session:
+      timeout: PT3H
+#    context-path: /houduan
+
+
+#logging.level.root=warn
+#spring.profiles.active=dev
+
+
+# Camunda
+camunda.bpm:
+  admin-user:
+    id: admin
+    password: admin
+  generic-properties.properties:
+    javaSerializationFormatEnabled: true
+
+  filter:
+    create: All tasks
+
+  database:
+    type: postgres
+    schema-update: true
+
+
+
+  auto-deployment-enabled: false
+  deployment-resource-pattern: classpath:process*.bpmn
+  history-level: full
+
+
+
+
+
+
+

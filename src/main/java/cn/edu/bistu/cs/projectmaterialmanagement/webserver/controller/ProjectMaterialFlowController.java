@@ -1086,10 +1086,10 @@ public class ProjectMaterialFlowController {
             hasAnyRole('Admin') 
             or  @ProjectPermission.isInProject(#projectId)
             """)
-    public List<ProjectAppearanceReviewUserView> getListOfProjectAppearanceReviewUserViewByTaskId(
+    public List<ProjectMaterialAcceptanceReviewUserView> getListOfProjectAppearanceReviewUserViewByTaskId(
             @RequestParam(value = "projectId") String projectId,
             @RequestParam(value = "taskId") String taskId) {
-        return projectMaterialFlow.getListOfProjectAppearanceReviewUserViewByProjectIdAndTaskId(projectId, taskId);
+        return projectMaterialFlow.getListOfProjectAcceptanceReviewUserViewByProjectIdAndTaskId(projectId, taskId);
     }
 
     @GetMapping(value = "page-project-material-user-review-by-task-id")
