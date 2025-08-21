@@ -119,7 +119,6 @@ onMounted(async () => {
 });
 
 const getProjectFromServer = async (projectId: string) => {
-  console.log(projectId);
   const ret = await serverGetProjectViewById(projectId);
   // console.log(ret);
   if (ret && ret.code == 200) {
@@ -220,7 +219,6 @@ const onRowShowButtonClick = async (
   index: number,
   row: IServerProjectMaterialView
 ) => {
-  console.log(row);
   updateProjectMaterialView.value = row;
   dialogShowDetailsVisible.value = true;
 };

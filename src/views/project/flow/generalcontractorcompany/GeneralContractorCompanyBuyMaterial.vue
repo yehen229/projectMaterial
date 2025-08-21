@@ -278,7 +278,7 @@ const onSelectProjectMaterialDialogCancel = () => {
  * 将用户选择的物料增加到列表中，注意，不能重复添加
  * @param _projectMaterialViewList
  */
-const onSelectProjectMaterialDialogOk = async (
+ const onSelectProjectMaterialDialogOk = async (
   _projectMaterialViewList: IServerUseMaterialView[]
 ) => {
   dialogSelectProjectMaterialDialogVisible.value = false;
@@ -291,17 +291,45 @@ const onSelectProjectMaterialDialogOk = async (
     });
     return;
   }
+console.log(useProjectMaterialViewList,"listtttttttttt");
 
   _projectMaterialViewList.forEach(async (item: IServerUseMaterialView) => {
     console.log(item,"ietememtmet");
     
-    if (
-      !useProjectMaterialViewList.value.some(
-        (item2) =>
-          item2.projectMaterialView.projectMaterial.id ===
-          item.projectMaterialView.projectMaterial.id
-      )
-    ) {
+    // 不使用some()方法，改用传统循环方式实现三重判断
+    let shouldAdd = true; // 默认应该添加
+    
+    for (let i = 0; i < useProjectMaterialViewList.value.length; i++) {
+      const item2 = useProjectMaterialViewList.value[i];
+      
+      // 第一重判断：检查公有品牌ID是否相等，同时项目物料ID不相等
+      if (item2.buyMaterial.projectMaterialBrandPublicId === item.useMaterial.projectMaterialBrandPublicId) {
+          if(item2.projectMaterialView.projectMaterial.id !== item.projectMaterialView.projectMaterial.id)
+          {
+            shouldAdd = true; // 如果匹配，添加
+            break;
+          } else {
+            shouldAdd = false; // 如果项目物料ID相等，不添加
+            break;
+          }
+      }
+       
+      // 第二重判断：检查私有品牌ID是否存在且相等，同时项目物料ID不相等
+      if(
+        item2.buyMaterial.projectMaterialBrandPrivateId === item.useMaterial.projectMaterialBrandPrivateId
+      ) {
+        if (item2.projectMaterialView.projectMaterial.id !== item.projectMaterialView.projectMaterial.id) {
+          shouldAdd = true; // 如果匹配，不添加
+          break;
+        } else {
+          shouldAdd = false; // 如果项目物料ID相等，不添加
+          break;
+        }
+      }
+    }
+    
+    // 只有当shouldAdd为true时才添加项目
+    if (shouldAdd) {
       let privateBrandId = "";
       if (
         item.projectMaterialBrandPrivateView &&
@@ -332,7 +360,7 @@ const onSelectProjectMaterialDialogOk = async (
           useMaterialId: item.useMaterial.id, //t_use_material_id,外键,	t_use_material_id<-表t_use_material.id,物料使用申请物料使用申请
           projectMaterialBrandPrivateId: privateBrandId, //t_project_material_brand_private_id,外键,	t_project_material_brand_private_id<-表t_project_material_brand_private.id,私有品牌私有品牌
           projectMaterialBrandPublicId: publicBrandId, //t_project_material_brand_public_id,外键,	t_project_material_brand_public_id<-表t_project_material_brand_public.id,公有品牌公有品牌
-          materialCount: 0, //material_count,材料数量材料数量
+          materialCount: item.useMaterial.materialCount, //material_count,材料数量材料数量
           materialUnit: item.useMaterial.materialUnit, //material_unit,数量单位数量单位
           batch: 0, //batch,批次批次
           qrcode: "", //qrcode,二维码二维码
@@ -460,10 +488,10 @@ const textElipsisValue = ref(false);
               >
             </template>
           </el-table-column>
-
-          <el-table-column label="批次" show-overflow-tooltip>
+          
+          <!-- <el-table-column label="批次" show-overflow-tooltip>
             <template #default="scope"> </template>
-          </el-table-column>
+          </el-table-column> -->
         </el-table>
         <el-alert title="提交后可扫码确认详情，总包单位可填报材料" type="info" show-icon style="margin-top: 5px"/>
         <div style="margin: 10px; display: flex; justify-content: center">

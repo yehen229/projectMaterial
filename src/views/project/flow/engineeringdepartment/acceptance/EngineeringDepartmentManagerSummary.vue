@@ -574,7 +574,7 @@ const onEmployeeFilesAsManagerFilesChanged = (
           </el-form-item>
 
           <!--可以将员工审核的附件，作为项目经理的附件-->
-          <el-form-item label="员工已审附件" style="width: 100%">
+          <el-form-item label="" style="width: 100%">
             <ProjectMaterialAcceptanceReviewHandOverToManagerList
               :projectUserTask="projectUserTask"
               @onEmployeeFilesAsManagerFilesChanged="

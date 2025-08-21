@@ -1480,7 +1480,7 @@ export async function serverGetProjectMaterialAcceptanceReviewUserViewListByTask
       IServerResponseData<IServerProjectMaterialAcceptanceReviewUserView[]>
     >(
       BASEURL.projectmaterialflow +
-        "list-appearance-review-user-view-by-task-id",
+        "list-acceptance-review-user-view-by-task-id",
       {
         params: {
           projectId: projectId,

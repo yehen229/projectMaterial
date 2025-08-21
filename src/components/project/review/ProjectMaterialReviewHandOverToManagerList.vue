@@ -130,17 +130,12 @@ const emit = defineEmits<{
 }>();
 
 const setAllFilesAsManagerFiles = async () => {
-  console.log("111111111111111111")
-  console.log(projectUserTask.projectView.project.id)
-  console.log(designCompanyIndex)
   const ret = await serverGetProjectReviewUserViewListByProjectIdAndTaskId(
       projectUserTask.projectView.project.id,
       projectUserTask.taskId,
       designCompanyIndex
   );
-  console.log(ret);
   if (ret && ret.code == 200) {
-    console.log(ret.data);
     projectReviewUserViewListData.value = ret.data;
   }
 
@@ -153,7 +148,6 @@ const setAllFilesAsManagerFiles = async () => {
 watchEffect(async () => {
   // 在 3.5 之前只运行一次
   // 在 3.5+ 中在 "foo" prop 变化时重新执行
-  // console.log(projectReviewId);
   //await setAllFilesAsManagerFiles();
 
   emit(
@@ -163,7 +157,6 @@ watchEffect(async () => {
 });
 
 onMounted(async () => {
-  console.log("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
   await setAllFilesAsManagerFiles();
 });
 
@@ -191,7 +184,6 @@ const onRowShowButtonClick = async (
   index: number,
   row: IServerProjectMaterialView
 ) => {
-  console.log(row);
   updateProjectMaterialView.value = row;
   dialogShowDetailsVisible.value = true;
 };
@@ -219,13 +211,11 @@ const getFullFilename = (
   index: number,
   originFileName: string
 ) => {
-  //console.log(projectUserFileId);
   let file_ext = originFileName
     .substring(originFileName.lastIndexOf("."))
     .toLowerCase();
 
   const downloadFilename = userName + "_附件" + index + file_ext;
-  //console.log(downloadFilename);
   return downloadFilename;
 };
 
@@ -243,14 +233,12 @@ const downProjectReviewUserFileFromServer = async (
     index,
     originFileName
   );
-  console.log(downloadFilename);
 
   const ret = await serverDownloadProjectReviewUserFileById(
     projectId,
     projectUserFileId,
     downloadFilename
   );
-  console.log(ret);
 };
 
 const deleteUserReviewFile = (id: string) => {

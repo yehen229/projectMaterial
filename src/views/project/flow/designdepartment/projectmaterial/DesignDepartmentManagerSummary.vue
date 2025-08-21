@@ -78,6 +78,7 @@ import {
   IServerProjectReviewStatistics,
   IServerProjectReviewManagerForm,
 } from "@/server/types/project/review";
+import ProjectMaterialWaitingForReviewList from "@/components/project/material/ProjectMaterialWaitingForReviewList.vue";
 
 import ProjectUserTaskList from "@/components/project/flow/ProjectUserTaskList.vue";
 import ProjectMaterialList from "@/components/project/material/ProjectMaterialList.vue";
@@ -166,15 +167,19 @@ const getUserTaskFromServerByProjectId = async (
 
   if (ret && ret.code == 200) {
     projectUserTask.value = ret.data;
-    await getStatisticsOfProjectReviewUserFromServer();
-
+    
     if (projectUserTask && projectUserTask.value)
       designCompanyIndex.value = getDesignCompanyIndex(projectUserTask.value);
+
+    await getStatisticsOfProjectReviewUserFromServer();
+
   }
+  
 };
 
 const getStatisticsOfProjectReviewUserFromServer = async () => {
   if (projectUserTask.value) {
+    
     const ret = await serverGetStatisticsOfProjectReviewUserViewByTaskId(
       projectUserTask.value.projectView.project.id,
       projectUserTask.value.taskId,
@@ -207,7 +212,6 @@ const getStatisticsOfProjectReviewUserFromServer = async () => {
           colorrandom: false,
         };
         projectReviewPieData.value?.push(pieDataUnreviewed);
-        console.log(projectReviewPieData.value);
       }
     }
   }
@@ -224,10 +228,8 @@ const handleRadioReviewChange = async () => {};
  */
 const submitProcess = async () => {
   if (!projectReviewStatistics.value) return;
-  console.log(fileList.value);
 
   const userId = getUserID();
-  console.log(userId);
   if (!userId) {
     ElMessageBox.alert("用户信息异常，请重新登录", "提示", {
       confirmButtonText: "确定",
@@ -309,7 +311,6 @@ const getEmployeeReviewFileIds = () => {
   const temp: string[] = [];
 
   employeeProjectReviewUserViewList.value.forEach((item) => {
-    console.log(item)
     if(item.projectReviewUserFileList)
     item.projectReviewUserFileList.forEach((itemFile) =>
       temp.push(itemFile.id)
@@ -319,7 +320,6 @@ const getEmployeeReviewFileIds = () => {
 };
 
 const submitToServerManagerDirect = async (userId: string) => {
-  console.log(userId);
 
   //直接审核
   const projectReviewManagerForm: IServerProjectReviewManagerForm = {
@@ -339,16 +339,13 @@ const submitToServerManagerDirect = async (userId: string) => {
     employeeReviewFileIds: getEmployeeReviewFileIds(),
   };
 
-  console.log(projectReviewManagerForm);
 
   // 调用API
   const response = await serverSubmitProjectMaterialReviewOfManagerSummary(
     projectReviewManagerForm
   );
-  console.log(response);
   if (response && response.code === 200) {
     // Debug: 查看创建结果
-    console.log(response.data);
     ElMessage.success("审核成功");
   } else {
     console.error("审核失败");
@@ -365,7 +362,6 @@ const handleRemove: UploadProps["onRemove"] = async (
   uploadFile,
   uploadFiles
 ) => {
-  console.log(uploadFile, uploadFiles);
 
   const formData = new FormData();
   formData.append("projectId", projectId.value);
@@ -380,7 +376,6 @@ const handleRemove: UploadProps["onRemove"] = async (
     });
   } else ElMessage.success(`删除失败`);
 
-  console.log(uploadFiles.length);
   fileListUploadNum.value = uploadFiles.length;
 };
 
@@ -402,9 +397,7 @@ const handleUploadImageChange: UploadProps["onChange"] = (
   uploadFile,
   uploadFiles
 ) => {
-  console.log(uploadFile, uploadFiles);
 
-  console.log(uploadFiles.length);
   fileListUploadNum.value = uploadFiles.length;
 };
 
@@ -437,7 +430,6 @@ const uploadReviewFilesDir = ref(genUUID());
  * @param options
  */
 const httpRequest = async (options: UploadRequestOptions) => {
-  console.log("options");
   const fileObj = options.file;
 
   const formData = new FormData();
@@ -445,9 +437,6 @@ const httpRequest = async (options: UploadRequestOptions) => {
   formData.append("projectId", projectId.value);
   formData.append("file", fileObj);
   formData.append("uploadReviewFilesDir", uploadReviewFilesDir.value);
-
-  console.log(formData);
-
   const ret = await serverAddProjectMaterialReviewTempFiles(formData);
   if (ret && ret.code == 200 && ret.data) {
     ElMessage({
@@ -460,7 +449,6 @@ const httpRequest = async (options: UploadRequestOptions) => {
 const onSetAllEmployeeFilesAsManagerFiles = (
   _projectReviewUserViewList: IServerProjectReviewUserView[]
 ) => {
-  console.log(_projectReviewUserViewList);
   projectReviewUserViewList.value = _projectReviewUserViewList;
 };
 
@@ -592,6 +580,13 @@ const onEmployeeFilesAsManagerFilesChanged = (
           "
         />
       </div>
+
+                  <!--等待审核的项目物料列表-->
+      <ProjectMaterialWaitingForReviewList
+          :projectId="projectId"
+          :taskId="taskId"
+          :designCompanyIndex="designCompanyIndex"
+      />
 
       <!--项目物料列表-->
       <ProjectMaterialList :projectId="projectId" />

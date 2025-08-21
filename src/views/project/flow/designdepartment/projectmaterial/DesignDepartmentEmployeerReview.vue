@@ -83,6 +83,7 @@ import { getUserID, getUserPageSize } from "@/cookies/user";
 import ProjectUserTaskInfo from "@/components/project/flow/ProjectUserTaskInfo.vue";
 
 import ProjectReviewHistoryList from "@/components/project/flow/ProjectReviewHistoryList.vue";
+import ProjectMaterialWaitingForReviewList from "@/components/project/material/ProjectMaterialWaitingForReviewList.vue";
 
 import {
   getDesignCompanyIndex,
@@ -442,6 +443,13 @@ const getcompanyId = async () => {
           <el-button type="primary" @click="cancelProcess">取消</el-button>
         </div>
       </div>
+
+            <!--等待审核的项目物料列表-->
+      <ProjectMaterialWaitingForReviewList
+          :projectId="projectId"
+          :taskId="taskId"
+          :designCompanyIndex="designCompanyIndex"
+      />
 
       <!--项目物料列表-->
       <ProjectMaterialList :projectId="projectId" />

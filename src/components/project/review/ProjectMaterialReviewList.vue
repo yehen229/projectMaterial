@@ -135,14 +135,13 @@ const emit = defineEmits<{
 
 onMounted(async () => {
   if (projectUserTask) {
+    designCompanyIndex.value = getDesignCompanyIndex(projectUserTask);    
     await getProjectReviewUserViewPageFromServer();
-     if (projectUserTask && projectUserTask.value)
-      designCompanyIndex.value = getDesignCompanyIndex(projectUserTask.value);
+
   }
 });
 
 const getProjectReviewUserViewPageFromServer = async () => {
-  console.log(projectUserTask);
   let search = searchText.value.trim();
   let reviewUser = "", reviewResult;
   if (search) {
@@ -167,7 +166,6 @@ const getProjectReviewUserViewPageFromServer = async () => {
       pageSize.value
 
       );
-      console.log(ret);
       if (ret && ret.code == 200) {
         projectReviewUserViewPageData.value = ret.data;
       }
@@ -181,7 +179,6 @@ const getProjectReviewUserViewPageFromServer = async () => {
       pageNo.value,
       pageSize.value
       );
-      console.log(ret);
       if (ret && ret.code == 200) {
         projectReviewUserViewPageData.value = ret.data;
       }
@@ -204,7 +201,6 @@ watchEffect(async () => {
 });
 
 const tableData = computed(() => {
-  console.log(projectReviewUserViewPageData.value?.result);
   return projectReviewUserViewPageData.value?.result ?? [];
 });
 
@@ -228,7 +224,6 @@ const onRowShowButtonClick = async (
   index: number,
   row: IServerProjectMaterialView
 ) => {
-  console.log(row);
   updateProjectMaterialView.value = row;
   dialogShowDetailsVisible.value = true;
 };
@@ -277,13 +272,11 @@ const getFullFilename = (
   index: number,
   originFileName: string
 ) => {
-  //console.log(projectUserFileId);
   let file_ext = originFileName
     .substring(originFileName.lastIndexOf("."))
     .toLowerCase();
 
   const downloadFilename = userName + "_附件" + index + file_ext;
-  // console.log(downloadFilename);
   return downloadFilename;
 };
 
@@ -301,14 +294,12 @@ const downProjectReviewUserFileFromServer = async (
     index,
     originFileName
   );
-  //console.log(downloadFilename);
 
   const ret = await serverDownloadProjectReviewUserFileById(
     projectId,
     projectUserFileId,
     downloadFilename
   );
-  console.log(ret);
 };
 </script>
 

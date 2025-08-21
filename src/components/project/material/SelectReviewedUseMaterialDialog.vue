@@ -174,9 +174,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const getProjectFromServer = async (projectId: string) => {
-  console.log(projectId);
   const ret = await serverGetProjectViewById(projectId);
-  console.log(ret);
   if (ret && ret.code == 200) {
     projectViewData.value = ret.data;
   }
@@ -186,7 +184,6 @@ const getProjectMaterialViewFromSever = async () => {
   let search = searchText.value.trim();
   if (search) {
     if (searchSelect.value == "0") {
-      console.log(search);
       const ret = await serverGetUseMaterialPageViewByProjectAndName(
         props.projectId,
         searchText.value,
@@ -251,17 +248,14 @@ const getProjectMaterialViewFromSever = async () => {
       }
     }
   } else {
-    console.log(props.projectId);
     const ret = await serverGetUseMaterialPageViewByProject(
       props.projectId,
       pageNo.value,
       pageSize.value
     );
-    console.log(ret);
     if (ret && ret.code == 200) {
       projectMaterialViewPageData.value = ret.data;
     }
-    console.log(projectMaterialViewPageData.value);
   }
 };
 
@@ -331,7 +325,6 @@ const handleClose = () => {
   emit("onDilalogCancel");
 };
 const onOk = () => {
-  console.log(multipleSelection.value);
   if (multipleSelection.value.length == 0) {
     ElMessage.error("请选择要选择的物料");
     return;

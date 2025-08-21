@@ -121,9 +121,7 @@ onMounted(async () => {
 });
 
 const getProjectFromServer = async (projectId: string) => {
-  console.log(projectId);
   const ret = await serverGetProjectViewById(projectId);
-  // console.log(ret);
   if (ret && ret.code == 200) {
     projectViewData.value = ret.data;
   }
@@ -133,11 +131,9 @@ const getProjectFromServer = async (projectId: string) => {
 //   let search = searchText.value.trim();
 
 //   if (search) {
-//     console.log(searchSelect.value);
 
 //     if (searchSelect.value == "0") {
 //       //单位类型
-//       //   console.log(search);
 //       const ret = await serverGetCompanyPageByCompanyName(
 //         projectId,
 //         searchText.value,
@@ -160,17 +156,14 @@ const getProjectFromServer = async (projectId: string) => {
 //       }
 //     }
 //   } else {
-//     //console.log(projectId);
 //     const ret = await serverGetProjectMaterialPageViewByProject(
 //       projectId,
 //       pageNo.value,
 //       pageSize.value
 //     );
-//     //   console.log(ret);
 //     if (ret && ret.code == 200) {
 //       projectMaterialViewPageData.value = ret.data;
 //     }
-//     // console.log(projectMaterialViewPageData.value);
 //   }
 // };
 
@@ -178,7 +171,6 @@ const getProjectMaterialViewFromSever = async () => {
   let search = searchText.value.trim();
   let name = "", location = "", itemMark = "", technology = "", installation = "", brand = "", brandPrivate = "";
   if (search) {
-    console.log(searchSelect.value);
     switch (searchSelect.value) {
       case "0":
         name = search;
@@ -232,7 +224,6 @@ const getProjectMaterialViewFromSever = async () => {
       pageNo.value,
       pageSize.value
     );
-    console.log(ret);
     if (ret && ret.code == 200) {
       projectMaterialViewPageData.value = ret.data;
     }
@@ -320,7 +311,6 @@ const collapsed = ref(false);
 watchEffect(async () => {
   // 在 3.5 之前只运行一次
   // 在 3.5+ 中在 "foo" prop 变化时重新执行
-  // console.log(projectId);
   if (projectId) {
     await getProjectMaterialViewFromSever();
     await getProjectFromServer(projectId);

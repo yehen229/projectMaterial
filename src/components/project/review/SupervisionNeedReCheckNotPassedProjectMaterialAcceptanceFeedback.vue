@@ -144,7 +144,6 @@ onMounted(async () => {
 const projectReviewUserViewData = ref<IServerProjectMaterialRetestView[]>([]);
 
 const getProjectReviewUserViewPageFromServer = async () => {
-  console.log(projectUserTask);
   if (
     projectUserTask &&
     projectUserTask.projectView &&
@@ -157,10 +156,8 @@ const getProjectReviewUserViewPageFromServer = async () => {
         projectUserTask.projectView.project.id,
         projectUserTask.taskId
       );
-    console.log(ret);
     if (ret && ret.code == 200) {
       projectReviewUserViewData.value = ret.data; // 赋值为数组
-      console.log("projectReviewUserViewData.value", projectReviewUserViewData.value);
     }
   }
 };
@@ -193,7 +190,6 @@ const onRowShowButtonClick = async (
   index: number,
   row: IServerProjectMaterialView
 ) => {
-  console.log(row);
   updateProjectMaterialView.value = row;
   dialogShowDetailsVisible.value = true;
 };
@@ -215,13 +211,11 @@ const getFullFilename = (
   index: number,
   originFileName: string
 ) => {
-  //console.log(projectUserFileId);
   let file_ext = originFileName
     .substring(originFileName.lastIndexOf("."))
     .toLowerCase();
 
   const downloadFilename = userName + "_附件" + index + file_ext;
-  // console.log(downloadFilename);
   return downloadFilename;
 };
 
@@ -239,14 +233,12 @@ const downloadProjectMaterialAcceptanceFileById = async (
     index,
     originFileName
   );
-  //console.log(downloadFilename);
 
   const ret = await serverDownloadProjectMaterialAcceptanceFileById(
     projectId,
     projectUserFileId,
     downloadFilename
   );
-  console.log(ret);
 };
 const reviewResult = computed(() => {
   if (

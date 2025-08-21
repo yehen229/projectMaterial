@@ -52,6 +52,8 @@ import {
   serverSubmitProjectMaterialRemainReviewOfManager,
 } from "@/server/project/projectmaterialflow";
 
+import ProjectMaterialWaitingForReviewList from "@/components/project/material/ProjectMaterialWaitingForReviewList.vue";
+
 import { IServerProjectUserTask } from "@/server/types/project/flow";
 
 import { serverGetEmployeeUserOfDesignDepartment } from "@/server/project/projectuser";
@@ -435,6 +437,13 @@ const httpRequest = async (options: UploadRequestOptions) => {
           <el-button type="primary" @click="cancelProcess">取消</el-button>
         </div>
       </div>
+
+            <!--等待审核的项目物料列表-->
+      <ProjectMaterialWaitingForReviewList
+          :projectId="projectId"
+          :taskId="taskId"
+          :designCompanyIndex="designCompanyIndex"
+      />
 
       <!--项目物料列表-->
       <ProjectMaterialList :projectId="projectId" />
