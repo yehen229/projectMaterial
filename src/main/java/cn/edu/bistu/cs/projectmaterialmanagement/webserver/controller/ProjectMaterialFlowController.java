@@ -1081,16 +1081,29 @@ public class ProjectMaterialFlowController {
                 pageSize);
     }
 
+    @GetMapping(value = "list-acceptance-review-user-view-by-task-id")
+    @PreAuthorize("""
+            hasAnyRole('Admin') 
+            or  @ProjectPermission.isInProject(#projectId)
+            """)
+    public List<ProjectMaterialAcceptanceReviewUserView> getListOfProjectMaterialAcceptanceReviewUserViewByTaskId(
+            @RequestParam(value = "projectId") String projectId,
+            @RequestParam(value = "taskId") String taskId) {
+        return projectMaterialFlow.getListOfProjectAcceptanceReviewUserViewByProjectIdAndTaskId(projectId, taskId);
+
+    }
+
     @GetMapping(value = "list-appearance-review-user-view-by-task-id")
     @PreAuthorize("""
             hasAnyRole('Admin') 
             or  @ProjectPermission.isInProject(#projectId)
             """)
-    public List<ProjectMaterialAcceptanceReviewUserView> getListOfProjectAppearanceReviewUserViewByTaskId(
+    public List<ProjectAppearanceReviewUserView> getListOfProjectAppearanceReviewUserViewByTaskId(
             @RequestParam(value = "projectId") String projectId,
             @RequestParam(value = "taskId") String taskId) {
-        return projectMaterialFlow.getListOfProjectAcceptanceReviewUserViewByProjectIdAndTaskId(projectId, taskId);
+        return projectMaterialFlow.getListOfProjectAppearanceReviewUserViewByProjectIdAndTaskId(projectId, taskId);
     }
+
 
     @GetMapping(value = "page-project-material-user-review-by-task-id")
     @PreAuthorize("""

@@ -3690,6 +3690,23 @@ public class ProjectFlow {
                 projectAppearanceReviewModeId, pageNo, pageSize);
     }
 
+    // 本方法为工程部外观审核方法
+    public List<ProjectAppearanceReviewUserView> getListOfProjectAppearanceReviewUserViewByProjectIdAndTaskId(String projectId,
+                                                                                                                      String taskId) {
+        String projectAppearanceReviewModeId = null;
+        if (projectBusinessService.isCurrentLoginUserInEngineeringDepartment()) {
+            projectAppearanceReviewModeId = (String) taskService.getVariable(taskId,
+                    "projectAppearanceReviewModeId");
+        } else if (projectBusinessService.isCurrentLoginUserInDesignDepartment()) {
+
+            projectAppearanceReviewModeId = (String) taskService.getVariable(taskId,
+                    "projectDesignDepartmentAppearanceReviewModeId");
+        }
+        if (projectAppearanceReviewModeId == null) return null;
+        return projectBusinessService.getListOfProjectAppearanceReviewUserViewByTaskId(
+                projectAppearanceReviewModeId);
+    }
+
     // 本方法为工程部验收方法
     public List<ProjectMaterialAcceptanceReviewUserView> getListOfProjectAcceptanceReviewUserViewByProjectIdAndTaskId(String projectId,
                                                                                                               String taskId) {
@@ -3697,7 +3714,6 @@ public class ProjectFlow {
         if (projectBusinessService.isCurrentLoginUserInEngineeringDepartment()) {
             projectAcceptanceReviewModeId = (String) taskService.getVariable(taskId,
                                                                              "projectMaterialAcceptanceReviewModeId");
-            System.out.println(projectAcceptanceReviewModeId);
         } else if (projectBusinessService.isCurrentLoginUserInDesignDepartment()) {
 
             projectAcceptanceReviewModeId = (String) taskService.getVariable(taskId,
