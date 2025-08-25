@@ -63,14 +63,31 @@ public class CompanyRepositoryImpl implements ICompanyRepository {
     @Override
     public int delete(Company company) {
         if (company == null) return 0;
-
-        return jdbcTemplate.update("""
+        // 第一条更新公司列表，第二条更新用户公司连接表，第三条更新用户表
+        int i = jdbcTemplate.update("""
                                            UPDATE t_company
                                            SET deleted_at=? 
                                            WHERE id=?
                                            """,
-                                   new Date(),
-                                   company.getId());
+                                new Date(),
+                                company.getId());
+        int j = jdbcTemplate.update("""
+                                           UPDATE t_company_user 
+                                           SET deleted_at=? 
+                                           WHERE t_company_id=?
+                                           """,
+                                new Date(),
+                                company.getId());
+        int k = jdbcTemplate.update("""
+                                           UPDATE t_user 
+                                           SET deleted_at=? 
+                                           WHERE id IN (SELECT t_user_id FROM  t_company_user WHERE t_company_id=?);
+                                           """,
+                                new Date(),
+                                company.getId());
+        if (i > 0 && j > 0 && k > 0)
+            return 1;
+        return 0;
     }
 
     /**
@@ -240,7 +257,7 @@ public class CompanyRepositoryImpl implements ICompanyRepository {
                                           SELECT * 
                                           FROM t_company
                                           WHERE deleted_at IS NULL
-                                          AND company_type="厂家"
+                                          AND company_type='厂家'
                                           """,
                                   new CompanyMapper());
     }

@@ -48,7 +48,8 @@ public interface IUserService extends UserDetailsService {
 
     Page<User> getPage(int pageNo, int pageSize);
 
-
+    boolean ExistUser(User user);
+    boolean ExistUserName(User user);
     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 
 }

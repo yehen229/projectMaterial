@@ -229,6 +229,16 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public boolean ExistUser(User user) {
+        return userRepository.ExistUser(user);
+    }
+
+    @Override
+    public boolean ExistUserName(User user) {
+        return userRepository.ExistUserName(user);
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 1.根据用户账号（user_name）查询
         User user = getByUserName(username);

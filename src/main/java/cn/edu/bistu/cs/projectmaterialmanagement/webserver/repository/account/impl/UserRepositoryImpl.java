@@ -22,13 +22,33 @@ public class UserRepositoryImpl implements IUserRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public boolean ExistUser(User user){
+    public boolean ExistUser(User user) {
+//        Integer i = jdbcTemplate.queryForObject("""
+//                                                        SELECT count(*)
+//                                                        FROM t_user
+//                                                        WHERE user_name=? AND real_name=?
+//                                                        """,
+//                Integer.class,user.getUserName(),user.getRealName());
         Integer i = jdbcTemplate.queryForObject("""
                                                         SELECT count(*)
                                                         FROM t_user
-                                                        WHERE user_name=? AND real_name=?
+                                                        WHERE user_name=? AND real_name=? AND id != ?
                                                         """,
-                Integer.class,user.getUserName(),user.getRealName());
+                Integer.class,user.getUserName(),user.getRealName(),user.getId());
+        if( i > 0){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean ExistUserName(User user) {
+        Integer i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*)
+                                                        FROM t_user
+                                                        WHERE user_name=? and id != ?
+                                                        """,
+                Integer.class,user.getUserName(),user.getId());
         if( i > 0){
             return true;
         }
@@ -107,15 +127,15 @@ public class UserRepositoryImpl implements IUserRepository {
      */
     @Override
     public int update(User user) {
-        Integer i = jdbcTemplate.queryForObject("""
-                                                        SELECT count(*)
-                                                        FROM t_user
-                                                        WHERE user_name=? 
-                                                        """,
-                Integer.class,user.getUserName());
-        if( i == 0){
-            return 0;
-        }
+//        Integer i = jdbcTemplate.queryForObject("""
+//                                                        SELECT count(*)
+//                                                        FROM t_user
+//                                                        WHERE user_name=?
+//                                                        """,
+//                Integer.class,user.getUserName());
+//        if( i == 0){
+//            return 0;
+//        }
         return jdbcTemplate.update("""
                                            UPDATE t_user
                                            SET user_name=?,

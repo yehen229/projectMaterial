@@ -127,12 +127,28 @@ public class CompanyUserServiceImpl implements ICompanyUserService {
         User user = userService.getById(companyUser.getUserId());
         if (user == null)
             throw new BusinessException("更新公司用户，发生参数错误3");
-
-
-        user.setEmail(companyUserForm.getEmail());
-        user.setRealName(companyUserForm.getUserRealName());
-        user.setTel(companyUserForm.getTel());
-        int ret = userService.update(user);
+        User new_User = new User();
+        //不变的
+        new_User.setId(user.getId());
+        new_User.setPassword(user.getPassword());
+        //可能变的
+        new_User.setEmail(companyUserForm.getEmail());
+        new_User.setRealName(companyUserForm.getUserRealName());
+        new_User.setTel(companyUserForm.getTel());
+        new_User.setUserName(companyUserForm.getTel());
+        boolean existedUser = userService.ExistUser(new_User);
+        // 更新失败
+        if (existedUser){
+            System.out.println("更新失败，存在相同电话和名称的用户");
+            return 0;
+        }
+        boolean existedUserName = userService.ExistUserName(new_User);
+        // 更新失败
+        if (existedUserName){
+            System.out.println("更新失败，存在相同电话的用户");
+            return -1;
+        }
+        int ret = userService.update(new_User);
         if (ret == 0)
             throw new BusinessException("更新公司用户，发生参数错误4");
 

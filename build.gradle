@@ -27,9 +27,9 @@ dependencies {
 //    打包时候排除
     implementation 'xerces:xercesImpl:2.12.2'
     implementation 'cn.hutool:hutool-all:5.8.21'
-    implementation('org.springframework.boot:spring-boot-starter-web') {
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
-    }
+//    implementation('org.springframework.boot:spring-boot-starter-web') {
+//        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+//    }
     runtimeOnly 'com.mysql:mysql-connector-j'
 
 
