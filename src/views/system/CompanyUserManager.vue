@@ -280,11 +280,27 @@ const onUpdateCompanyUserDialogOk = async (form: IServerCompanyUserForm) => {
     type: "error",
     message: "用户信息修改失败",
   });
-  }else {
+  } else {
+    if (ret.data == 0) {
+      console.log("更新失败，存在相同用户电话和名称的用户");
+      ElMessage({
+        type: "error",
+        message: "更新失败，存在相同用户电话和名称的用户",
+      });
+    }
+    else if (ret.data == -1) {
+      console.log("更新失败，存在相同电话的用户");
+      ElMessage({
+        type: "error",
+        message: "更新失败，存在相同电话的用户",
+      });
+    }
+    else { 
     ElMessage({
     type: "success",
     message: "用户信息修改成功",
-  });
+    });
+    }
   }
   //刷新表格
   await getCompanyUserPageViewFromSever();

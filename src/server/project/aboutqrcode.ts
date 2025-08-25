@@ -1,10 +1,10 @@
-import {IServerPage, IServerResponseData} from "@/server/types/System";
-import {IServerProjectView} from "@/server/types/project/project";
-import {axios, BASEURL} from "@/http";
-import {serverGetProjectPageView} from "@/server/project/project";
-import {ElMessage} from "element-plus";
-import {IServerProjectMaterialVerificationDocumentView} from "@/server/types/project/review";
-import {exportFileWithFullFilenameWithExt} from "@/server/exportfile";
+import { IServerPage, IServerResponseData } from "@/server/types/System";
+import { IServerProjectView } from "@/server/types/project/project";
+import { axios, BASEURL } from "@/http";
+import { serverGetProjectPageView } from "@/server/project/project";
+import { ElMessage } from "element-plus";
+import { IServerProjectMaterialVerificationDocumentView } from "@/server/types/project/review";
+import { exportFileWithFullFilenameWithExt } from "@/server/exportfile";
 
 /**
  * 获取材料信息
@@ -14,7 +14,7 @@ import {exportFileWithFullFilenameWithExt} from "@/server/exportfile";
  */
 export async function getListMaterialInfo(
     qrcode: string,
-):  Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
+): Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
     try {
         let res = await axios.get<
             any,
@@ -34,7 +34,7 @@ export async function getListMaterialInfo(
 // 通过二维码获取材料信息
 export async function getMaterialInfo(
     qrcode: string,
-):  Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
+): Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
     try {
         let res = await axios.get<
             any,
@@ -54,7 +54,7 @@ export async function getMaterialInfo(
 * */
 export async function getProjectInfo(
     qrcode: string,
-):  Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
+): Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
     try {
         let res = await axios.get<
             any,
@@ -74,7 +74,7 @@ export async function getProjectInfo(
 * */
 export async function getCompanyInfo(
     qrcode: string,
-):  Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
+): Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
     try {
         let res = await axios.get<
             any,
@@ -116,7 +116,7 @@ export async function serverGetQrcodeProjectPageView(
 * */
 export async function getmaterialbrand(
     qrcode: string,
-):  Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
+): Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
     try {
         let res = await axios.get<
             any,
@@ -136,7 +136,7 @@ export async function getmaterialbrand(
 * */
 export async function getmaterialPhoto(
     qrcode: string,
-):  Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
+): Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
     try {
         let res = await axios.get<
             any,
@@ -154,9 +154,9 @@ export async function getmaterialPhoto(
 }
 
 export async function getpageviewbykey(
-    projectname:string,
-    batch:number,
-    materialname:string,
+    projectname: string,
+    batch: number,
+    materialname: string,
     pageNo: number,
     pageSize: number
 ): Promise<IServerResponseData<IServerPage<IServerProjectView>>> {
@@ -166,9 +166,9 @@ export async function getpageviewbykey(
             IServerResponseData<IServerPage<IServerProjectView>>
         >(BASEURL.qrcode + "page-view-by-key", {
             params: {
-                projectname:projectname,
-                batch:batch,
-                materialname:materialname,
+                projectname: projectname,
+                batch: batch,
+                materialname: materialname,
                 pageNo: pageNo,
                 pageSize: pageSize,
             },
@@ -208,7 +208,7 @@ export async function getFilebyqrcode(
 export async function getBlobPartdata(
     projectId: string,
     projectMaterialVerificationDocumentFileId: string,
-    downloadFilename:string
+    downloadFilename: string
 ) {
     try {
         let res = await axios.get(
@@ -218,21 +218,21 @@ export async function getBlobPartdata(
                 params: {
                     projectId: projectId,
                     projectMaterialVerificationDocumentFileId:
-                    projectMaterialVerificationDocumentFileId,
+                        projectMaterialVerificationDocumentFileId,
                 },
                 responseType: "arraybuffer",
             }
         );
 
         try {
-            let response=peocessfile(
+            let response = peocessfile(
                 res,
                 downloadFilename
             );
-            console.log("response",response);
+            console.log("response", response);
             return response
 
-        }catch(err) {
+        } catch (err) {
             console.log(err);
             throw err;
         }
@@ -241,6 +241,20 @@ export async function getBlobPartdata(
         console.log(err);
         throw err;
     }
+}
+
+export async function getIsFactory() {
+    try {
+        
+        let res = await axios.get<
+            any
+        >(BASEURL.qrcode + "getISFactory");
+        return res;
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+
 }
 
 export const peocessfile = (
@@ -270,7 +284,7 @@ export const peocessfile = (
         typeVal = "image/png";
     } else if (file_ext === ".zip") {
         typeVal = "application/zip";
-    } else if(file_ext === ".txt"){
+    } else if (file_ext === ".txt") {
         typeVal = "text/plain"
     } else {
         console.log("文件类型不支持导出");
@@ -281,7 +295,7 @@ export const peocessfile = (
         type: typeVal,
     });
     let objectUrl = window.URL.createObjectURL(blob); //创建一个新的url对象
-    console.log("objectUrl",objectUrl)
+    console.log("objectUrl", objectUrl)
 
     return objectUrl;
     // let link = document.createElement("a");
@@ -347,7 +361,7 @@ export const deleteUrl = (
 export async function getOnlyBlob(
     projectId: string,
     projectMaterialVerificationDocumentFileId: string,
-    downloadFilename:string
+    downloadFilename: string
 ) {
     try {
         let res = await axios.get(
@@ -357,7 +371,7 @@ export async function getOnlyBlob(
                 params: {
                     projectId: projectId,
                     projectMaterialVerificationDocumentFileId:
-                    projectMaterialVerificationDocumentFileId,
+                        projectMaterialVerificationDocumentFileId,
                 },
                 responseType: "arraybuffer",
             }

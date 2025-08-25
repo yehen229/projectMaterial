@@ -12,7 +12,7 @@ const BASEURL = {
   //apiUrl: "http://211.68.36.45:8000", //学校机房production
   //apiUrl: "https://api.pythonkaoshi.com", //阿里云
   qrcode: "/qrcode/v1/",
-  // apiUrl: "https://www.bistuxinxigang.top:9000",
+  // apiUrl: "https://www.bistuxinxigang.shop:9000",
   // apiUrl: "https://10.157.176.70:9000",
   // apiUrl: "https://10.146.58.74:9000",
   apiUrl: "http://127.0.0.1:9000", //pro

@@ -20,6 +20,7 @@ import {
   getmaterialPhoto,
   getOnlyBlob,
   getProjectInfo,
+  getIsFactory
 } from "@/server/project/aboutqrcode";
 import { serverGetMaterialPhotoFileById } from "@/server/system/materialphoto";
 import { serverGetMaterialViewById } from "@/server/system/material";
@@ -34,6 +35,7 @@ import VueOfficeExcel from "@vue-office/excel";
 //引入相关样式
 import "@vue-office/excel/lib/index.css";
 import VueOfficePdf from "@vue-office/pdf";
+import { fa } from "element-plus/es/locale";
 
 //import VueOfficePptx from '@vue-office/pptx'
 // import '@vue-office/pptx/lib/index.css'
@@ -49,6 +51,7 @@ onMounted(async () => {
   await getmaterialClass();
   await getprojectTime();
   await getprojectFile();
+  // await getisfactory();
 });
 // 获取存储在本地的qrcode
 const qrcode = ref("");
@@ -141,6 +144,27 @@ const activeNames = ref(["1"]);
 // 获取项目信息
 const project = ref({});
 
+const factoryType = ref({});
+
+const getisfactory = async () => {
+  const response = await getIsFactory();
+  // 直接使用 response.code 判断业务状态码
+  if (response && response.code == 200) {
+    // console.log("获取工厂二维码信息成功");
+    factoryType.value = response.data;
+    console.log("factoryType", factoryType.value);
+    if (factoryType.value == 0) {
+      ElMessage.success("该二维码不是工厂二维码");
+    } else {
+      ElMessage.warning("该二维码是工厂二维码");
+    }
+    
+  } else {
+    ElMessage.error(response.message || "请求失败");
+  }
+  console.log("是否是工厂二维码：", response);
+};
+getisfactory();
 const getprojectinfo = async () => {
   const response = await getProjectInfo(qrcode.value);
   if (response.code == 200) {
@@ -574,7 +598,7 @@ const actives = ref(["1", "2", "3", "4"]);
           </el-descriptions-item>
         </el-descriptions>
       </el-collapse-item>
-
+      <p v-if="factoryType == 0">
       <el-collapse-item title="文件信息" name="3">
         <el-descriptions :column="1" border>
           <el-descriptions-item label="工程材料">
@@ -649,6 +673,7 @@ const actives = ref(["1", "2", "3", "4"]);
           </el-timeline-item>
         </el-timeline>
       </el-collapse-item>
+    </p>
     </el-collapse>
   </el-card>
 </template>
