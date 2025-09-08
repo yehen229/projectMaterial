@@ -294,12 +294,12 @@ const inputReset = async () => {
 
       <el-pagination
           style="margin-top: 10px"
-
+          :hide-on-single-page="false"
           class="page-class"
           background
           v-model:current-page="pageNo"
           v-model:page-size="pageSize"
-          :page-sizes="[10, 50, 100]"
+          :page-sizes="[10, 50, 100, 200, 300, 400]"
           layout="total, sizes, prev, pager, next"
           :total="totalCount"
           @prev-click="onPagePrevClick"

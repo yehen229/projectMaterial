@@ -73,6 +73,7 @@ const updateMaterialView = ref<IServerMaterialView>();
 const searchText = ref("");
 const searchSelect = ref("1");
 
+
 const pageNo = ref(1); //第几页
 const pageSize = ref(getUserPageSize()); //每页多少数据
 
@@ -83,7 +84,7 @@ const radioUserType = ref(0);
 onMounted(async () => {
   await getMaterialFromSever();
 });
-
+var key_v = 0;
 const getMaterialFromSever = async () => {
   let search = searchText.value.trim();
 
@@ -208,8 +209,8 @@ const onUpdateMaterialDialogCancel = () => {
   dialogFormUpdateVisible.value = false;
 };
 
-const onUpdateMaterialDialogOk = async (materialView: IServerMaterialView) => {
-  console.log(materialView);
+const onUpdateMaterialDialogOk = async (material: IServerMaterial) => {
+  console.log(material);
 
   await getMaterialFromSever();
   dialogFormUpdateVisible.value = false;
@@ -247,16 +248,25 @@ const onRowDeleteButtonClick = async (
     });
 };
 
-const onPagePrevClick = (value: number) => {};
-const onPageNextClick = (value: number) => {};
+const onPagePrevClick = (value: number) => {
+  key_v += 1;
+  console.log(key_v);
+};
+const onPageNextClick = (value: number) => {
+  key_v += 1;
+  console.log(key_v);
+
+};
 const onPageCurrentChange = async (value: number) => {
   pageNo.value = value;
+  key_v += 1; // 强制更新照片组件
   await getMaterialFromSever();
 };
 
 const onPageSizeChange = async (value: number) => {
   pageSize.value = value;
   setUserPageSize(value);
+  key_v += 1; // 强制更新照片组件
   await getMaterialFromSever();
 };
 
@@ -265,9 +275,14 @@ const onSearchClick = async () => {
 
   if (search) {
     pageNo.value = 1;
+  } else {
+    // 当搜索框内容为空时，强制刷新页面数据
+    key_v += 1;
+    pageNo.value = 1;
   }
   await getMaterialFromSever();
 };
+
 
 const goBack = () => {
   history.back();
@@ -318,7 +333,7 @@ const textElipsisValue = ref(false);
 
       <!--搜索框-->
       <div class="input-with-select">
-        <el-input v-model="searchText" placeholder="输入搜索内容">
+        <el-input v-model="searchText" placeholder="输入搜索内容" @input="(val) => { console.log('Input event triggered:', val); }">
           <template #prepend>
             <el-select
               v-model="searchSelect"
@@ -465,7 +480,7 @@ const textElipsisValue = ref(false);
               ) in projectMaterialViewItem.materialPhotoViewList"
               :key="photoIndex"
             >
-              <MaterialPhoto :photoItem="photoItem"></MaterialPhoto>
+              <MaterialPhoto :photoItem="photoItem" :key="key_v + '_' + photoItem.materialPhoto.id"></MaterialPhoto>
             </div>
           </div>
         </el-col>
@@ -511,7 +526,7 @@ const textElipsisValue = ref(false);
     </div>
 
     <el-pagination
-      :hide-on-single-page="true"
+      :hide-on-single-page="false"
       class="page-class"
       background
       v-model:current-page="pageNo"

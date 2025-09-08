@@ -55,7 +55,12 @@ import {
   serverGetProjectBrandPageView,
 } from "@/server/project/projectbrand";
 
-import { serverBrandUpdate } from "@/server/system/brand";
+
+
+import {
+  serverBrandUpdate,
+  serverBrandDelete,
+} from "@/server/system/brand";
 
 import { IServerBrand, IServerBrandView } from "@/server/types/system/brand";
 
@@ -67,6 +72,7 @@ import { getUserPageSize, setUserPageSize } from "@/cookies/user";
 import NewProjectBrandDialog from "@/components/project/brand/NewProjectBrandDialog.vue";
 import UpdateProjectBrandDialog from "@/components/project/brand/UpdateProjectBrandDialog.vue";
 import UploadExcelProjectBrandDialog from "@/components/project/brand/UploadExcelProjectBrandDialog.vue";
+import { ro } from "element-plus/es/locale";
 
 const router = useRouter();
 const route = useRoute();
@@ -191,6 +197,8 @@ const onNewProjectBrandDialogOk = async (brand: IServerBrand) => {
       brand: brand,
     };
     await serverProjectBrandAddForm(form);
+    // 新增完成后刷新页面
+    await getProjectBrandPageViewFromSever();
   }
   dialogFormNewVisible.value = false;
 };
@@ -216,6 +224,10 @@ const onUpdateProjectBrandDialogOk = async (brand: IServerBrand) => {
   console.log(brand);
   await serverBrandUpdate(brand);
   await getProjectBrandPageViewFromSever();
+  ElMessage({
+        type: "success",
+        message: "完成更新",
+  });
   dialogFormUpdateVisible.value = false;
 };
 
@@ -224,8 +236,8 @@ const onUpdateProjectBrandDialogOk = async (brand: IServerBrand) => {
  * @param index
  * @param row
  */
-const onRowDeleteButtonClick = async (index: number, row: IServerCompany) => {
-  console.log(index, row);
+const onRowDeleteButtonClick = async (index: number, row: IServerProjectBrandView) => {
+  console.log(index, row.brandView);
 
   ElMessageBox.confirm("是否真的删除数据？", "警告", {
     confirmButtonText: "确定",
@@ -233,7 +245,8 @@ const onRowDeleteButtonClick = async (index: number, row: IServerCompany) => {
     type: "warning",
   })
     .then(async () => {
-      await serverCompanyDelete(row);
+      await serverBrandDelete(row.brandView.brand);
+      await serverProjectBrandDelete(row.projectBrand);
       await getProjectBrandPageViewFromSever();
       ElMessage({
         type: "success",

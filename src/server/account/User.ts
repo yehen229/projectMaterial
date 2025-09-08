@@ -19,6 +19,7 @@ import { clearCookies } from "@/cookies/user";
  * @param captchaKey
  * @returns
  */
+
 export async function serverLogin(
   username: string, //用户名
   password: string, //用户密码
@@ -38,8 +39,8 @@ export async function serverLogin(
     return res;
   } catch (err) {
     console.log(err);
-
-    throw err;
+    return { code: 500, message: "验证码错误", data: {} as IServerUserLoginResult };
+    // throw err;
   }
 }
 

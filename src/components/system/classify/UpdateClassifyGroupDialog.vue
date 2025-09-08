@@ -129,7 +129,7 @@ const onOpenDialog = async () => {
   form.id = props.materialClassifyGroup.id; //id,主键
   form.name = props.materialClassifyGroup.name; //name,名称
   form.materialClassifyDivisionId = props.materialClassifyDivision.id;
-  form.note = props.materialClassifyDivision.note; //note,备注
+  form.note = props.materialClassifyGroup.note; //note,备注
 };
 
 const handleClose = () => {
