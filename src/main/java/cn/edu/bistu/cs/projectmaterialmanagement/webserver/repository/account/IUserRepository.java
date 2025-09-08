@@ -11,6 +11,7 @@ public interface IUserRepository{
 
 	String add(User user);
 	int delete(User user);
+	int delete_company_user(User user);
 	int update(User user);
 	int deleteById(String id);
 

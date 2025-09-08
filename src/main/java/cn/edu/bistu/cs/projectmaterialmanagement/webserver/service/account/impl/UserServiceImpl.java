@@ -80,7 +80,12 @@ public class UserServiceImpl implements IUserService {
      */
     @Override
     public int delete(User user) {
-        return userRepository.delete(user);
+        int i = userRepository.delete(user);
+        int j = userRepository.delete_company_user(user);
+        if (j > 0 && i > 0)
+            return 1;
+        else
+            return 0;
     }
 
     /**

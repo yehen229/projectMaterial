@@ -122,6 +122,27 @@ public class UserRepositoryImpl implements IUserRepository {
                                    user.getId(),user.getUserName(),user.getRealName());
     }
 
+    @Override
+    public int delete_company_user(User user) {
+        if (user == null) return 0;
+        Integer i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*) 
+                                                        FROM t_company_user
+                                                        WHERE t_user_id = ?
+                                                        """,
+                Integer.class,user.getId());
+        if( i == 0){
+            return 0;
+        }
+        return jdbcTemplate.update("""
+                                           UPDATE t_company_user
+                                           SET deleted_at=? 
+                                           WHERE t_user_id = ?
+                                           """,
+                new Date(),
+                user.getId());
+    }
+
     /**
      * update
      */

@@ -1,11 +1,17 @@
 package cn.edu.bistu.cs.projectmaterialmanagement.webserver.config;
 
+import cn.hutool.json.JSONUtil;
+import java.io.File;
 public class ConfigConstant {
     //Windows平台下路径
     //题目中的文件附件路径
-    private final static String FILE_PATH_WINDOWS = "D:\\AAAproject\\vue\\temp";
-    private final static String FILE_PATH_TEMP_WINDOWS = "D:\\AAAproject\\vue\\temp";
+    private final static String CURRENT_DIR = System.getProperty("user.dir");
+    private final static String FILE_DIR = CURRENT_DIR + "\\src\\main\\resources\\temp";
 
+//    private final static String FILE_PATH_WINDOWS = "D:\\AAAproject\\vue\\temp";
+//    private final static String FILE_PATH_TEMP_WINDOWS = "D:\\AAAproject\\vue\\temp";
+    private final static String FILE_PATH_WINDOWS = FILE_DIR;
+    private final static String FILE_PATH_TEMP_WINDOWS = FILE_DIR;
 //    private final static String FILE_PATH_WINDOWS = "D:\\研究生\\研究生\\项目\\project\\temp";
 //    private final static String FILE_PATH_WINDOWS = "D:\\AAAproject\\Java\\MaterialManage1\\temp";
 //    private final static String FILE_PATH_TEMP_WINDOWS = "D:\\研究生\\研究生\\项目\\project\\temp";

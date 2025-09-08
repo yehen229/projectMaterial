@@ -9,6 +9,7 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.account.UserLog
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.log.Log;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.CompanyUser;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.account.IJWTTokenService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.account.IRoleService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.account.IUserService;
@@ -20,6 +21,7 @@ import jakarta.annotation.Resource;
 import org.apache.xmlbeans.impl.xb.xsdschema.Attribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -61,6 +63,8 @@ public class UserController {
 
     @Resource
     private RedisTemplate<String, org.springframework.security.core.userdetails.User> redisTemplate;
+    @Autowired
+    private CompanyUser companyUser;
 
 
     UserController(IUserService userService, IRoleService roleService,

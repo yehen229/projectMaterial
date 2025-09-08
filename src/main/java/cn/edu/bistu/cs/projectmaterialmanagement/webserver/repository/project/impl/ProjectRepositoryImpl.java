@@ -486,7 +486,7 @@ public class ProjectRepositoryImpl implements IProjectRepository {
                         WHERE location like ? AND deleted_at IS NULL
                         LIMIT ? offset  ?
                         """,
-                new ProjectMapper(), likeProjectLocation,pageNo * pageSize,  pageSize);
+                new ProjectMapper(), likeProjectLocation,pageSize,  pageNo * pageSize);
     }
 
     //
