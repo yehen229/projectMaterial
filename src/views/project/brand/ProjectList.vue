@@ -94,6 +94,19 @@ const onSearchClick = async () => {
   
 };
 
+/**
+ * 点击“下载Excel模板”按钮，下载Excel文件
+ */
+ const onExcelDownloadButtonClick = async () => {
+  let a = document.createElement("a");
+  a.href = "/static/员工名单模板.xlsx";
+  a.download = "员工名单模板.xlsx";
+  a.style.display = "none";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+};
+
 // 获取项目列表
 const fetchTableData = async () => {
   let search = searchText.value.trim();

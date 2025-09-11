@@ -59,6 +59,7 @@ onMounted(async () => {
 // 与 beforeRouteUpdate 相同，无法访问 `this`
 onBeforeRouteUpdate(async (to, from) => {
   editableTabsValue.value = to.path;
+  
 });
 
 const isCollapse = ref(false);
@@ -133,8 +134,6 @@ const gorouter = () => {
             text-color="#9ea4ba"
             active-text-color="#f1f5f7"
             style="height: calc(100vh - 60px)"
-            @open="handleOpen"
-            @close="handleClose"
             @select="handleSelect"
             :default-openeds="['1', '2', '3']"
           >

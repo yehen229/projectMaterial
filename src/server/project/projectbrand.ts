@@ -176,7 +176,7 @@ export async function serverGetProjectMaterialBrandPrivateViewListByProjectIdAnd
       IServerResponseData<IServerProjectMaterialBrandPrivateView[]>
     >(
       BASEURL.projectmaterialbrandprivate +
-        "get-view-by-project-id-and-material-id",
+      "get-view-by-project-id-and-material-id",
       {
         params: {
           projectId: projectId,
@@ -230,5 +230,125 @@ export async function serverGetProjectBrandPageView(
   } catch (err) {
     console.log(err);
     throw err;
+  }
+}
+
+export async function serverGetProjectBrandPageViewByProjectId(
+  projectId: string,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerProjectBrandView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerProjectBrandView>>
+    >(BASEURL.projectbrand + "page-view-by-project-id", {
+      params: {
+        projectId: projectId,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function serverGetProjectBrandPageViewByProjectIdAndPosition(
+  projectId: string,
+  position: string,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerProjectBrandView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerProjectBrandView>>
+    >(BASEURL.projectbrand + "page-view-by-project-id-position", {
+      params: {
+        projectId: projectId,
+        position: position,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function serverGetProjectBrandPageViewByProjectIdAndBrandName(
+  projectId: string,
+  brandName: string,
+  pageNo: number,
+  pageSize: number
+): Promise<IServerResponseData<IServerPage<IServerProjectBrandView>>> {
+  try {
+    let res = await axios.get<
+      any,
+      IServerResponseData<IServerPage<IServerProjectBrandView>>
+    >(BASEURL.projectbrand + "page-view-by-project-id-brand-name", {
+      params: {
+        projectId: projectId,
+        brandName: brandName,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      },
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function serverPrivateBrandExcelAdd(
+  projectId: string,
+  formData: FormData
+): Promise<IServerResponseData<number>> {
+  try {
+    let res = await axios.post<any, IServerResponseData<number>>(
+      BASEURL.projectbrand + "PrivateExceladd?projectId=" + projectId,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    return res;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+export async function serverPrivateBrandExcelDown(
+  projectId: string
+)
+  : Promise<Blob> {
+  console.log("请求axios了--------------");
+  try {
+    console.log("请求axiostry了--------------");
+    // 发起请求，设置 responseType 为 'blob'
+    let res = await axios.post(BASEURL.projectbrand + "PrivateExceldown?projectId=" + projectId,
+      null,
+      {
+        responseType: 'blob' // 这是关键设置
+      });
+    const blob = res instanceof Blob ? res : res.data;
+    console.log("res.data 类型:", typeof res.data);
+    console.log("接收到的响应res---============:", res);
+    // 验证 Blob 对象
+
+    // 直接返回 res.data，它已经是 Blob
+    return blob;
+  } catch (err) {
+    console.error('下载Excel文件出错:', err);
+    throw err; // 重新抛出错误
   }
 }

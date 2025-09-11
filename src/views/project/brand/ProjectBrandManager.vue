@@ -53,6 +53,11 @@ import {
   serverGetProjectBrandById,
   serverGetProjectBrandPage,
   serverGetProjectBrandPageView,
+  serverPrivateBrandExcelDown,
+  serverGetProjectBrandPageViewByProjectId,
+  serverPrivateBrandExcelAdd,
+  serverGetProjectBrandPageViewByProjectIdAndPosition,
+  serverGetProjectBrandPageViewByProjectIdAndBrandName,
 } from "@/server/project/projectbrand";
 
 
@@ -125,6 +130,19 @@ const getProjectFromServer = async (projectId: string) => {
   }
 };
 
+/**
+ * 点击“下载Excel模板”按钮，下载Excel文件
+ */
+ const onExcelDownloadButtonClick = async () => {
+  let a = document.createElement("a");
+  a.href = "/static/私有品牌模板.xlsx";
+  a.download = "私有品牌模板.xlsx";
+  a.style.display = "none";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+};
+
 const getProjectBrandPageViewFromSever = async () => {
   let search = searchText.value.trim();
 
@@ -132,9 +150,10 @@ const getProjectBrandPageViewFromSever = async () => {
     console.log(searchSelect.value);
 
     if (searchSelect.value == "0") {
-      //单位类型
+      //品牌名称搜索
       console.log(search);
-      const ret = await serverGetCompanyPageByCompanyName(
+      const ret = await serverGetProjectBrandPageViewByProjectIdAndBrandName(
+        projectId.value,
         searchText.value,
         pageNo.value,
         pageSize.value
@@ -143,8 +162,9 @@ const getProjectBrandPageViewFromSever = async () => {
         projectBrandViewPageData.value = ret.data;
       }
     } else if (searchSelect.value == "1") {
-      //单位名称
-      const ret = await serverGetCompanyPageByCompanyType(
+      //定位搜索
+      const ret = await serverGetProjectBrandPageViewByProjectIdAndPosition(
+        projectId.value,
         searchText.value,
         pageNo.value,
         pageSize.value
@@ -154,7 +174,8 @@ const getProjectBrandPageViewFromSever = async () => {
       }
     }
   } else {
-    const ret = await serverGetProjectBrandPageView(
+    const ret = await serverGetProjectBrandPageViewByProjectId(
+      projectId.value,
       pageNo.value,
       pageSize.value
     );
@@ -302,43 +323,90 @@ const onExcelUploadButtonClick = () => {
   dialogFormExcelVisible.value = true;
 };
 
-/**
- * 下载用户名单
- * @param index
- * @param row
- */
-const onDownloadExcelButtonClick = async () => {
-  const downloadFilename = "用户名单";
-
-  loading.value = true;
-  let search = searchText.value.trim();
-
-  if (search) {
-    if (searchSelect.value == "用户名称") {
-      //用户名称
-      const ret = await serverDownloadCompanyUserByUserNamer(
-        searchText.value,
-        downloadFilename
-      );
-    } else if (searchSelect.value == "项目名称") {
-      //项目名称
-      const ret = await serverDownloadCompanyUserByProjectName(
-        searchText.value,
-        downloadFilename
-      );
-    } else if (searchSelect.value == "单位名称") {
-      //单位名称
-      const ret = await serverDownloadCompanyUserByCompanyName(
-        searchText.value,
-        downloadFilename
-      );
+const handleUpload = async (params: any) => {
+      const file = params.file;
+      const formData = new FormData();
+      formData.append('file', file);      
+      try {
+        const res = await serverPrivateBrandExcelAdd(projectId.value,formData);
+        ElMessage.success('文件上传成功');
+        params.onSuccess?.(res);
+      } catch (err) {
+        ElMessage.error('文件上传失败');
+        params.onError?.(err);
+      }
     }
-  } else {
-    await serverDownloadAllCompanyUser(downloadFilename);
-  }
 
-  loading.value = false;
-};
+
+const handledownload = async (params: any) => {
+  try {
+        console.log("开始try了")
+        const blob = await serverPrivateBrandExcelDown(projectId.value);
+        if (!(blob instanceof Blob)) {
+            console.log('获取到的对象不是Blob类型');
+            
+        }
+            // 创建一个隐藏的<a>元素
+            const a = document.createElement('a');
+            console.log("这是bobl"+blob);
+            a.href = URL.createObjectURL(blob); // 创建一个指向blob数据的URL
+            a.download = '私有品牌列表.xlsx'; // 设置下载文件的名称
+            a.style.display = 'none'; // 隐藏<a>元素，不显示在页面上
+
+            // 将<a>元素添加到body中
+            document.body.appendChild(a);
+
+            // 触发<a>元素的点击事件来开始下载
+            a.click();
+        console.log("触发下载了========")
+            // 下载完成后移除<a>元素
+            window.setTimeout(() => {
+              document.body.removeChild(a);
+              URL.revokeObjectURL(a.href); // 释放创建的URL对象
+              params?.onSuccess?.(blob); // 调用成功回调
+            }, 0);
+          } catch (err) {
+            console.error("下载失败:", err);
+            params?.onError?.(err); // 调用错误回调
+          }
+}
+// /**
+//  * 下载用户名单
+//  * @param index
+//  * @param row
+//  */
+// const onDownloadExcelButtonClick = async () => {
+//   const downloadFilename = "用户名单";
+
+//   loading.value = true;
+//   let search = searchText.value.trim();
+
+//   if (search) {
+//     if (searchSelect.value == "用户名称") {
+//       //用户名称
+//       const ret = await serverDownloadCompanyUserByUserNamer(
+//         searchText.value,
+//         downloadFilename
+//       );
+//     } else if (searchSelect.value == "项目名称") {
+//       //项目名称
+//       const ret = await serverDownloadCompanyUserByProjectName(
+//         searchText.value,
+//         downloadFilename
+//       );
+//     } else if (searchSelect.value == "单位名称") {
+//       //单位名称
+//       const ret = await serverDownloadCompanyUserByCompanyName(
+//         searchText.value,
+//         downloadFilename
+//       );
+//     }
+//   } else {
+//     await serverDownloadAllCompanyUser(downloadFilename);
+//   }
+
+//   loading.value = false;
+// };
 </script>
 
 <template>
@@ -379,15 +447,21 @@ const onDownloadExcelButtonClick = async () => {
     <div class="top-toolbar">
       <!--新增按钮-->
       <div>
-        <el-button :icon="Plus" type="primary" @click="onNewButtonClick">
-          新增项目私有品牌
-        </el-button>
-        <el-button :icon="Upload" @click="onExcelUploadButtonClick">
-          导入项目品牌（Excel）
-        </el-button>
-        <el-button :icon="Download" @click="onDownloadExcelButtonClick">
-          导出项目品牌（Excel）
-        </el-button>
+        <el-button-group style="display: flex; gap: 15px;">
+          <el-button :icon="Plus" type="primary" @click="onNewButtonClick">
+            新增项目私有品牌
+          </el-button>
+          <el-upload  class="upload-demo"
+            :http-request="handleUpload"
+            :show-file-list="false"
+            :on-success="successUpload"
+            accept=".xlsx,.xls"
+          >
+            <el-button type="primary" style="width: 80px;">批量导入</el-button>
+          </el-upload>
+          <el-button type="danger" style="width: 80px;" @click="handledownload">批量导出</el-button>
+          <el-button style="width: 80px;" @click="onExcelDownloadButtonClick">模板</el-button>
+        </el-button-group>
       </div>
 
       <!--搜索框-->
@@ -458,7 +532,7 @@ const onDownloadExcelButtonClick = async () => {
         <el-table-column label="定位" width="100px">
           <template #default="scope">
             <div style="display: flex; align-items: center">
-              <span>{{ scope.row.brandView.brand.location }}</span>
+              <span>{{ scope.row.brandView.brand.position }}</span>
             </div>
           </template>
         </el-table-column>
