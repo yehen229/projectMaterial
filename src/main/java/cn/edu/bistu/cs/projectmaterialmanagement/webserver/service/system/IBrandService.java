@@ -7,6 +7,8 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.BrandVie
 public interface IBrandService {
     String add(Brand brand);
 
+    String addAndGetId(Brand brand);
+
     int delete(Brand brand);
 
     int update(Brand brand);

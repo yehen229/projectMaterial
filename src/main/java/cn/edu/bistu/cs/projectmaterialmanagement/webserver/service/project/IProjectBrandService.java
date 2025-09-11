@@ -4,7 +4,10 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectBrand;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectBrandForm;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectBrandView;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Brandexcel;
+import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface IProjectBrandService {
@@ -46,6 +49,16 @@ public interface IProjectBrandService {
                                           int pageNo,
                                           int pageSize);
 
+    Page<ProjectBrand> getPageByProjectIdAndPosition(String projectId,
+                                                     String position,
+                                                     int pageNo,
+                                                     int pageSize);
+
+    Page<ProjectBrand> getPageByProjectIdAndBrandName(String projectId,
+                                                      String brandName,
+                                                      int pageNo,
+                                                      int pageSize);
+
     Page<ProjectBrand> getPageByBrandId(String brandId,
                                         int pageNo,
                                         int pageSize);
@@ -57,9 +70,25 @@ public interface IProjectBrandService {
                                                   int pageNo,
                                                   int pageSize);
 
+    Page<ProjectBrandView> getPageViewByProjectIdAndPosition(String projectId,
+                                                  String position,
+                                                  int pageNo,
+                                                  int pageSize);
+
+    Page<ProjectBrandView> getPageViewByProjectIdAndBrandName(String projectId,
+                                                  String brandName,
+                                                  int pageNo,
+                                                  int pageSize);
+
     Page<ProjectBrandView> getPageViewByBrandId(String brandId,
                                                 int pageNo,
                                                 int pageSize);
 
     List<ProjectBrandView> getViewListByProjectId(String projectId);
+
+
+    List<Brandexcel> getExcelListByProjectId(String projectId);
+
+    void PrivateExceldown(String projectId, HttpServletResponse response) throws IOException;
+
 }

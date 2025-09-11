@@ -13,7 +13,7 @@ import java.util.List;
 public interface IBrandPublicService {
     String add(Brand brand);
     String add(BrandPublic brandPublic);
-    String MId(String classname);
+    String MId(String divisionclassname,String groupclassname, String sectionclassname);
     int delete(BrandPublic brandPublic);
 
     int update(BrandPublic brandPublic);

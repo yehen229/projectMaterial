@@ -2,6 +2,7 @@ package cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project;
 
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectBrand;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Brandexcel;
 
 import java.util.List;
 
@@ -26,6 +27,10 @@ public interface IProjectBrandRepository {
 
     int getCountByProjectId(String projectId);
 
+    int getCountByProjectIdAndPosition(String projectId, String position);
+
+    int getCountByProjectIdAndBrandName(String projectId, String brandName);
+
     int getCountByBrandId(String brandId);
 
     ProjectBrand getById(String id);
@@ -43,10 +48,19 @@ public interface IProjectBrandRepository {
     Page<ProjectBrand> getPageByProjectId(String projectId,
                                           int pageNo,
                                           int pageSize);
+    Page<ProjectBrand> getPageByProjectIdAndPosition(String projectId,
+                                          String position,
+                                          int pageNo,
+                                          int pageSize);
+    Page<ProjectBrand> getPageByProjectIdAndBrandName(String projectId,
+                                          String brandName,
+                                          int pageNo,
+                                          int pageSize);
 
     Page<ProjectBrand> getPageByBrandId(String brandId,
                                         int pageNo,
                                         int pageSize);
 
+    List<Brandexcel> getExcelListByProjectId(String projectId);
 
 }

@@ -7,14 +7,24 @@ import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.Project
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectBrandForm;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectBrandView;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Brand;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Brandexcel;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.IProjectBrandRepository;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IProjectBrandService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.project.IProjectService;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.service.system.IBrandService;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.HttpHeaders;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -203,6 +213,34 @@ public class ProjectBrandServiceImpl implements IProjectBrandService {
                                                  int pageSize) {
         return projectBrandRepository.getPageByProjectId(projectId, pageNo, pageSize);
     }
+    /**
+     * 获得指定页面数据
+     *
+     * @param projectId
+     * @param pageNo    页号，从1开始
+     * @param pageSize  每页的记录数
+     */
+    @Override
+    public Page<ProjectBrand> getPageByProjectIdAndPosition(String projectId,
+                                                            String position,
+                                                            int pageNo,
+                                                            int pageSize) {
+        return projectBrandRepository.getPageByProjectIdAndPosition(projectId, position, pageNo, pageSize);
+    }
+    /**
+     * 获得指定页面数据
+     *
+     * @param projectId
+     * @param pageNo    页号，从1开始
+     * @param pageSize  每页的记录数
+     */
+    @Override
+    public Page<ProjectBrand> getPageByProjectIdAndBrandName(String projectId,
+                                                             String brandName,
+                                                             int pageNo,
+                                                             int pageSize) {
+        return projectBrandRepository.getPageByProjectIdAndBrandName(projectId, brandName, pageNo, pageSize);
+    }
 
     /**
      * 获得指定页面数据
@@ -243,6 +281,38 @@ public class ProjectBrandServiceImpl implements IProjectBrandService {
                                                          int pageNo,
                                                          int pageSize) {
         Page<ProjectBrand> projectBrandPage = getPageByProjectId(projectId, pageNo, pageSize);
+        return convertProjectBrandPage2PageView(projectBrandPage, pageNo, pageSize);
+    }
+
+    /**
+     * 获得指定页面视图数据
+     *
+     * @param projectId
+     * @param pageNo    页号，从1开始
+     * @param pageSize  每页的记录数
+     */
+    @Override
+    public Page<ProjectBrandView> getPageViewByProjectIdAndPosition(String projectId,
+                                                         String position,
+                                                         int pageNo,
+                                                         int pageSize) {
+        Page<ProjectBrand> projectBrandPage = getPageByProjectIdAndPosition(projectId, position, pageNo, pageSize);
+        return convertProjectBrandPage2PageView(projectBrandPage, pageNo, pageSize);
+    }
+
+    /**
+     * 获得指定页面视图数据
+     *
+     * @param projectId
+     * @param pageNo    页号，从1开始
+     * @param pageSize  每页的记录数
+     */
+    @Override
+    public Page<ProjectBrandView> getPageViewByProjectIdAndBrandName(String projectId,
+                                                         String brandName,
+                                                         int pageNo,
+                                                         int pageSize) {
+        Page<ProjectBrand> projectBrandPage = getPageByProjectIdAndBrandName(projectId, brandName, pageNo, pageSize);
         return convertProjectBrandPage2PageView(projectBrandPage, pageNo, pageSize);
     }
 
@@ -309,6 +379,62 @@ public class ProjectBrandServiceImpl implements IProjectBrandService {
             if (projectBrandView != null) list.add(projectBrandView);
         }
         return list;
+    }
+
+    @Override
+    public List<Brandexcel> getExcelListByProjectId(String projectId) {
+
+        return projectBrandRepository.getExcelListByProjectId(projectId);
+    }
+
+    @Override
+    public void PrivateExceldown(String projectId,HttpServletResponse response) throws IOException {
+        System.out.println("进服务了------------------");
+        response.reset();
+        List<Brandexcel> list=getExcelListByProjectId(projectId);
+        Workbook wb = new XSSFWorkbook();
+        Sheet sheet = wb.createSheet("私有品牌");
+        // 表头
+        String[] headers = {
+                "大类-专业",
+                "中类-材料分类",
+                "小类-材料名称",
+                "定位",
+                "品牌",
+                "厂家"
+        };
+        Row headRow = sheet.createRow(0);
+        for (int i = 0; i < headers.length; i++) {
+            headRow.createCell(i).setCellValue(headers[i]);
+        }
+        System.out.println("开空间了------------------");
+        int rowIdx = 1;
+        for (Brandexcel be : list) {
+            Row row = sheet.createRow(rowIdx++);
+            row.createCell(0).setCellValue(be.getMaterialsdiv());
+            row.createCell(1).setCellValue(be.getMaterialsgroup());
+            row.createCell(2).setCellValue(be.getMaterialssection());
+            row.createCell(3).setCellValue(be.getPosition());
+            row.createCell(4).setCellValue(be.getName());
+            row.createCell(5).setCellValue(
+                    be.getFactory_id() == null ? "无" : be.getFactory_id());
+        }
+        System.out.println("添加完了了------------------");
+        String fileName = URLEncoder.encode("私有品牌列表.xlsx", StandardCharsets.UTF_8);
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename*=UTF-8''" + fileName);
+
+        // 5) 写出 & 关闭
+// Spring Boot 示例
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:5173"); // 允许的前端域名
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET"); // 允许的HTTP方法
+        // 允许的请求头
+        wb.write(response.getOutputStream());
+        System.out.println("写完了------------------");
+
+        wb.close();
+
     }
 
 }

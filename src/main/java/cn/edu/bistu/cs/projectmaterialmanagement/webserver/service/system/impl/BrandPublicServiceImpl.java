@@ -67,8 +67,9 @@ public class BrandPublicServiceImpl implements IBrandPublicService {
     }
 
     @Override
-    public String MId(String classname) {
-        return brandPublicRepository.findIdByClassName(classname);
+    public String MId(String divisionclassname,String groupclassname, String sectionclassname) {
+
+        return brandPublicRepository.findIdByClassName(divisionclassname, groupclassname, sectionclassname);
     }
 
     /**

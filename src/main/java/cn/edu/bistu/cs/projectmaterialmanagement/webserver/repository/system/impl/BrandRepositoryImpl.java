@@ -46,6 +46,32 @@ public class BrandRepositoryImpl implements IBrandRepository {
     }
 
     /**
+     * insert
+     */
+    @Override
+    public String addAndGetId(Brand brand) {
+        System.out.println(brand.getFactory_id());
+        String newId = GUID.getGUID();
+        if (jdbcTemplate.update("""
+                                        INSERT INTO t_brand(id,
+                                        name,
+                                        t_material_classify_section_id,
+                                        position,
+                                        factory_id)
+                                        VALUES(?,?,?,?,?)
+                                        """,
+                newId,
+                brand.getName(),
+                brand.getMaterialClassifySectionId(),
+                brand.getPosition(),
+                brand.getFactory_id()) > 0) {
+            System.out.println(newId);
+            return newId;
+        }
+            return null;
+    }
+
+    /**
      * update
      */
     @Override

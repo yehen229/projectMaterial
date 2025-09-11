@@ -10,6 +10,8 @@ public interface IBrandRepository {
 
     String add(Brand brand);
 
+    String addAndGetId(Brand brand);
+
     int update(Brand brand);
 
     int deleteById(String id);

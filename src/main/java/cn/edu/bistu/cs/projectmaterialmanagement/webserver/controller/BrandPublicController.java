@@ -61,7 +61,9 @@ public class BrandPublicController {
                 Row row = sheet.getRow(i);
                 Brand brand = new Brand();
                 String name = row.getCell(4).getStringCellValue().trim();
-                String classname = row.getCell(2).getStringCellValue().trim();
+                String divisionclassname = row.getCell(0).getStringCellValue().trim();
+                String groupclassname = row.getCell(1).getStringCellValue().trim();
+                String sectionclassname = row.getCell(2).getStringCellValue().trim();
                 String position = row.getCell(3).getStringCellValue().trim();
                 String value = row.getCell(5) != null ? row.getCell(5).toString().trim() : "";
                 if (!value.isEmpty()) {
@@ -69,7 +71,7 @@ public class BrandPublicController {
                     brand.setFactory_id(value);
                 }
                 brand.setName(name);
-                brand.setMaterialClassifySectionId(brandPublicService.MId(classname));
+                brand.setMaterialClassifySectionId(brandPublicService.MId(divisionclassname, groupclassname, sectionclassname));
                 brand.setPosition(position);
                 brandPublicService.add(brand);
             }

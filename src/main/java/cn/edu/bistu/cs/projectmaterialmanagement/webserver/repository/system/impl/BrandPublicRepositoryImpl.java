@@ -54,11 +54,22 @@ public class BrandPublicRepositoryImpl implements IBrandPublicRepository {
                                    brandPublic.getId());
     }
     @Override
-    public String findIdByClassName(String className) {
+    public String findIdByClassName(String divisionclassname,String groupclassname, String sectionclassname) {
         return jdbcTemplate.queryForObject(
-                "SELECT id FROM t_material_classify_section WHERE name = ?",
+                """
+                        SELECT t_material_classify_section.id FROM t_material_classify_section
+                        INNER JOIN t_material_classify_group ON t_material_classify_group.name = ?
+                        INNER JOIN t_material_classify_division ON t_material_classify_division.name = ?
+                        WHERE t_material_classify_section.name = ?
+                        AND t_material_classify_section.t_material_classify_group_id = t_material_classify_group.id
+                        AND t_material_classify_group.t_material_classify_division_id = t_material_classify_division.id
+                        AND t_material_classify_section.deleted_at IS NULL
+                        AND t_material_classify_group.deleted_at IS NULL
+                        AND t_material_classify_division.deleted_at IS NULL
+
+                        """,
                 String.class, // 指定返回类型
-                className // 查询参数
+                groupclassname, divisionclassname, sectionclassname // 查询参数
         );
     }
 

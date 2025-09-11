@@ -43,6 +43,23 @@ public class BrandServiceImpl implements IBrandService {
     }
 
     /**
+     * 增加
+     */
+    @Override
+    public String addAndGetId(Brand brand) {
+        if(brand==null)return null;
+        if(brand.getName()==null || brand.getName().isEmpty())return null;
+        if(brand.getMaterialClassifySectionId()==null || brand.getMaterialClassifySectionId().isEmpty())return null;
+        if(brand.getPosition()==null || brand.getPosition().isEmpty())return null;
+
+
+
+
+
+        return brandRepository.addAndGetId(brand);
+    }
+
+    /**
      * 删除
      */
     @Override

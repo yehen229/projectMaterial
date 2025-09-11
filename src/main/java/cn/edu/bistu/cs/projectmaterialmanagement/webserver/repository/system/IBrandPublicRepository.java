@@ -15,7 +15,7 @@ public interface IBrandPublicRepository {
 
     int update(BrandPublic brandPublic);
 
-    String findIdByClassName(String className);
+    String findIdByClassName(String divisionclassname,String groupclassname, String sectionclassname);
 
     int deleteById(String id);
 

@@ -3,6 +3,7 @@ package cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.i
 
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.general.Page;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.project.ProjectBrand;
+import cn.edu.bistu.cs.projectmaterialmanagement.webserver.model.system.Brandexcel;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.repository.project.IProjectBrandRepository;
 import cn.edu.bistu.cs.projectmaterialmanagement.webserver.utility.GUID;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -146,6 +147,40 @@ public class ProjectBrandRepositoryImpl implements IProjectBrandRepository {
                                                 Integer.class, projectId);
         return i == null ? 0 : i;
     }
+    /**
+     * 根据外键ProjectId和位置得到总数量
+     */
+    @Override
+    public int getCountByProjectIdAndPosition(String projectId, String position) {
+        position = "%" + position.trim() + "%";
+        Integer i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*) 
+                                                        FROM t_project_brand
+                                                        INNER JOIN t_brand ON t_project_brand.t_brand_id = t_brand.id
+                                                        WHERE t_project_brand.t_project_id=? AND t_project_brand.deleted_at IS NULL
+                                                        AND t_brand.deleted_at IS NULL
+                                                        AND t_brand.position LIKE ?
+                                                        """,
+                                                Integer.class, projectId, position);
+        return i == null ? 0 : i;
+    }
+    /**
+     * 根据外键ProjectId和品牌名得到总数量
+     */
+    @Override
+    public int getCountByProjectIdAndBrandName(String projectId, String brandName) {
+        brandName = "%" + brandName.trim() + "%";
+        Integer i = jdbcTemplate.queryForObject("""
+                                                        SELECT count(*) 
+                                                        FROM t_project_brand
+                                                        INNER JOIN t_brand ON t_project_brand.t_brand_id = t_brand.id
+                                                        WHERE t_project_brand.t_project_id=? AND t_project_brand.deleted_at IS NULL
+                                                        AND t_brand.deleted_at IS NULL
+                                                        AND t_brand.name LIKE ?
+                                                        """,
+                                                Integer.class, projectId, brandName);
+        return i == null ? 0 : i;
+    }
 
     /**
      * 根据外键BrandId得到总数量
@@ -278,6 +313,42 @@ public class ProjectBrandRepositoryImpl implements IProjectBrandRepository {
         List<ProjectBrand> resultData = getPageQueryByProjectId(projectId, pageNo - 1, pageSize);
         return new Page<>(0, totalCount, (int) totalCount, resultData);
     }
+    /**
+     * 获得指定页面数据
+     *
+     * @param projectId
+     * @param pageNo    页号，从1开始
+     * @param pageSize  每页的记录数
+     */
+    @Override
+    public Page<ProjectBrand> getPageByProjectIdAndPosition(String projectId,
+                                                 String position,
+                                                 int pageNo,
+                                                 int pageSize) {
+        long totalCount = getCountByProjectIdAndPosition(projectId, position);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<ProjectBrand> resultData = getPageQueryByProjectIdAndPosition(projectId, position, pageNo - 1, pageSize);
+        return new Page<>(0, totalCount, (int) totalCount, resultData);
+    }
+    /**
+     * 获得指定页面数据
+     *
+     * @param projectId
+     * @param pageNo    页号，从1开始
+     * @param pageSize  每页的记录数
+     */
+    @Override
+    public Page<ProjectBrand> getPageByProjectIdAndBrandName(String projectId,
+                                                 String brandName,
+                                                 int pageNo,
+                                                 int pageSize) {
+        long totalCount = getCountByProjectIdAndBrandName(projectId, brandName);
+        if (totalCount < 1) return new Page<>();
+        int startIndex = Page.getStartOfPage(pageNo, pageSize);
+        List<ProjectBrand> resultData = getPageQueryByProjectIdAndBrandName(projectId, brandName, pageNo - 1, pageSize);
+        return new Page<>(0, totalCount, (int) totalCount, resultData);
+    }
 
     /**
      * 获得指定页面数据
@@ -335,6 +406,58 @@ public class ProjectBrandRepositoryImpl implements IProjectBrandRepository {
     }
 
     /**
+     * 根据外键（t_project_id和位置）+获得指定页面数据
+     *
+     * @param projectId
+     * @param position
+     * @param pageNo    页号，从1开始
+     * @param pageSize  每页的记录数
+     */
+    private List<ProjectBrand> getPageQueryByProjectIdAndPosition(String projectId,
+                                                       String position,
+                                                       int pageNo,
+                                                       int pageSize) {
+        position = "%" + position + "%";
+        return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_project_brand
+                                          INNER JOIN t_brand ON t_project_brand.t_brand_id = t_brand.id
+                                          WHERE t_project_brand.t_project_id=? 
+                                          AND t_brand.position LIKE ?
+                                          AND t_project_brand.deleted_at IS NULL
+                                          AND t_brand.deleted_at IS NULL
+                                          LIMIT ?,?
+                                          """,
+                                  new ProjectBrandMapper(), projectId, position, pageNo * pageSize, pageSize);
+    }
+
+
+    /**
+     * 根据外键（t_project_id和名字）+获得指定页面数据
+     *
+     * @param projectId
+     * @param brandName
+     * @param pageNo    页号，从1开始
+     * @param pageSize  每页的记录数
+     */
+    private List<ProjectBrand> getPageQueryByProjectIdAndBrandName(String projectId,
+                                                       String brandName,
+                                                       int pageNo,
+                                                       int pageSize) {
+        return jdbcTemplate.query("""
+                                          SELECT * 
+                                          FROM t_project_brand
+                                          INNER JOIN t_brand ON t_project_brand.t_brand_id = t_brand.id
+                                          WHERE t_project_brand.t_project_id=? 
+                                          AND t_brand.name LIKE ?
+                                          AND t_project_brand.deleted_at IS NULL
+                                          AND t_brand.deleted_at IS NULL
+                                          LIMIT ?,?
+                                          """,
+                                  new ProjectBrandMapper(), projectId,brandName, pageNo * pageSize, pageSize);
+    }
+
+    /**
      * 根据外键（t_brand_id）+获得指定页面数据
      *
      * @param brandId
@@ -353,6 +476,28 @@ public class ProjectBrandRepositoryImpl implements IProjectBrandRepository {
                                   new ProjectBrandMapper(), brandId, pageNo * pageSize, pageSize);
     }
 
+    @Override
+    public List<Brandexcel> getExcelListByProjectId(String projectId) {
+
+        return jdbcTemplate.query("""
+                                SELECT
+                mcd.name                                  AS division_name,
+                mcg.name                                  AS group_name,
+                mcs.name                                  AS section_name,
+                b.position,
+                b.name                                    AS brand_name,
+                c.name                                    AS company_name
+                FROM t_project_brand AS tpb
+                LEFT JOIN t_brand AS b ON tpb.t_brand_id = b.id
+                LEFT JOIN t_company               AS c   ON b.factory_id = c.id
+                LEFT JOIN t_material_classify_section AS mcs ON b.t_material_classify_section_id = mcs.id
+                LEFT JOIN t_material_classify_group   AS mcg ON mcs.t_material_classify_group_id = mcg.id
+                LEFT JOIN t_material_classify_division AS mcd ON mcg.t_material_classify_division_id = mcd.id
+                WHERE tpb.deleted_at IS NULL AND b.deleted_at IS NULL AND tpb.t_project_id = ?
+          """,
+                new ProjectBrandRepositoryImpl.PrivateBrandExcelMapper(), projectId);
+    }
+
     /**
      * RowMapper
      */
@@ -366,6 +511,21 @@ public class ProjectBrandRepositoryImpl implements IProjectBrandRepository {
             projectBrand.setBrandId(rs.getString("t_brand_id"));
             projectBrand.setDeletedAt(rs.getTimestamp("deleted_at"));
             return projectBrand;
+        }
+    }
+
+    private static final class PrivateBrandExcelMapper implements RowMapper<Brandexcel> {
+        @Override
+        public Brandexcel mapRow(ResultSet rs,
+                                 int rowNum) throws SQLException {
+            Brandexcel brandexcel = new Brandexcel();
+            brandexcel.setMaterialsdiv(rs.getString("division_name"));
+            brandexcel.setMaterialsgroup(rs.getString("group_name"));
+            brandexcel.setMaterialssection(rs.getString("section_name"));
+            brandexcel.setPosition(rs.getString("position"));
+            brandexcel.setName(rs.getString("brand_name"));
+            brandexcel.setFactory_id(rs.getString("company_name"));
+            return brandexcel;
         }
     }
 
