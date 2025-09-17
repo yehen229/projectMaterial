@@ -149,6 +149,19 @@ const onNewBrandDialogOk = async (brand: IServerBrand) => {
 };
 
 /**
+ * 点击“下载Excel模板”按钮，下载Excel文件
+ */
+ const onExcelDownloadButtonClick = async () => {
+  let a = document.createElement("a");
+  a.href = "/static/公有品牌模板.xlsx";
+  a.download = "公有品牌模板.xlsx";
+  a.style.display = "none";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+};
+
+/**
  * 单击编辑按钮，编辑内容
  * @param index
  * @param row
@@ -286,6 +299,7 @@ const goBack = () => {
     <el-button type="primary" style="width: 80px;">批量导入</el-button>
   </el-upload>
          <el-button type="danger" style="width: 80px;" @click="handledownload">批量导出</el-button>
+         <el-button style="width: 80px;" @click="onExcelDownloadButtonClick">模板</el-button>
          </el-button-group>
     </div>
       <!--搜索框-->
@@ -438,33 +452,33 @@ export default {
       try {
         console.log("开始try了")
         const blob = await serverBrandExcelDown();
-if (!(blob instanceof Blob)) {
-    console.log('获取到的对象不是Blob类型');
-    
-}
-    // 创建一个隐藏的<a>元素
-    const a = document.createElement('a');
-    console.log("这是bobl"+blob);
-    a.href = URL.createObjectURL(blob); // 创建一个指向blob数据的URL
-    a.download = '品牌列表.xlsx'; // 设置下载文件的名称
-    a.style.display = 'none'; // 隐藏<a>元素，不显示在页面上
+        if (!(blob instanceof Blob)) {
+            console.log('获取到的对象不是Blob类型');
+            
+        }
+            // 创建一个隐藏的<a>元素
+            const a = document.createElement('a');
+            console.log("这是bobl"+blob);
+            a.href = URL.createObjectURL(blob); // 创建一个指向blob数据的URL
+            a.download = '品牌列表.xlsx'; // 设置下载文件的名称
+            a.style.display = 'none'; // 隐藏<a>元素，不显示在页面上
 
-    // 将<a>元素添加到body中
-    document.body.appendChild(a);
+            // 将<a>元素添加到body中
+            document.body.appendChild(a);
 
-    // 触发<a>元素的点击事件来开始下载
-    a.click();
-console.log("触发下载了========")
-    // 下载完成后移除<a>元素
-    window.setTimeout(() => {
-      document.body.removeChild(a);
-      URL.revokeObjectURL(a.href); // 释放创建的URL对象
-      params?.onSuccess?.(blob); // 调用成功回调
-    }, 0);
-  } catch (err) {
-    console.error("下载失败:", err);
-    params?.onError?.(err); // 调用错误回调
-  }
+            // 触发<a>元素的点击事件来开始下载
+            a.click();
+        console.log("触发下载了========")
+            // 下载完成后移除<a>元素
+            window.setTimeout(() => {
+              document.body.removeChild(a);
+              URL.revokeObjectURL(a.href); // 释放创建的URL对象
+              params?.onSuccess?.(blob); // 调用成功回调
+            }, 0);
+          } catch (err) {
+            console.error("下载失败:", err);
+            params?.onError?.(err); // 调用错误回调
+          }
 
     },
   },

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import VueQrcode from 'vue-qrcode'
-import {computed, onMounted, ref} from 'vue'
+import {computed, onBeforeMount, onMounted, ref} from 'vue'
 import {getpageviewbykey, serverGetQrcodeProjectPageView} from "@/server/project/aboutqrcode";
 import {getUserPageSize, setUserPageSize} from "@/cookies/user";
 import {Calendar, Search, Refresh} from '@element-plus/icons-vue'
@@ -102,7 +102,7 @@ const pageSize = ref(10);
 const loading = ref(false);
 const dialogVisible = ref(true);
 const allDisagreeData = ref();
-const dialogData = ref();
+const dialogData = ref([]);
 
 const getDialogData = async () => {
   let ret = await getAllList_disagree_all();
@@ -112,7 +112,7 @@ const getDialogData = async () => {
     for (let i = 0; i < dialogDisagreecount.value; i++) {      
       dialogData.value[i] = allDisagreeData.value[i];
     }
-    console.log(dialogData.value);
+    console.log(dialogData.value.length,"valueeeeeeee");
     
   }
 };
@@ -303,6 +303,9 @@ const getchart_bar = async () => {
 <template>
 
   <div>
+    <el-card>
+      <el-button type="primary" @click="dialogVisible = true"> 请注意审核驳回较多项目！ </el-button>
+    </el-card>
 
     <el-dialog
       v-model="dialogVisible"
@@ -313,12 +316,12 @@ const getchart_bar = async () => {
       <el-table :data="dialogData" style="width: 100%">
         <el-table-column label="项目名">
           <template #default="scope">
-            <el-button @click="goProjectPage(scope.row.projectId)">{{ scope.row.project.name }}</el-button>
+            <el-button @click="goProjectPage(scope.row?.projectId)" v-if="scope.row?.project">{{ scope.row?.project.name }}</el-button>
           </template>
         </el-table-column>
         <el-table-column label="审核不通过次数">
-          <template #default="scope">
-            <div>{{ scope.row.count }}</div>
+          <template #default="scope" #empty="">
+            <div v-if="scope.row?.count">{{ scope.row?.count || "0" }}</div>
           </template>
         </el-table-column>
       </el-table>
