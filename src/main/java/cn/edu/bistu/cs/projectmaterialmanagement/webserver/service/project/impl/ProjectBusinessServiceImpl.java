@@ -832,6 +832,7 @@ public class ProjectBusinessServiceImpl implements IProjectBusinessService {
             }
         }
 
+        setProjectReviewedNewBrandByProjectId(projectAppearanceReviewManagerDirectForm.getProjectId());
         return projectAppearanceReviewModeId;
     }
 

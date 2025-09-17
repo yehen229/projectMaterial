@@ -542,7 +542,7 @@ public class ProjectFlow {
 
         return result;
     }
-
+    //设计部项目员工对设计单位提交的项目材料参数进行审核
     public String submitProjectMaterialReviewOfEmployee(ProjectReviewEmployeeForm projectReviewEmployeeForm) {
         User user = userService.getCurrentLoginUser();
         if (user == null) {
@@ -608,7 +608,7 @@ public class ProjectFlow {
 
         return result;
     }
-
+    //设计部项目经理汇总员工审核数据并对设计单位提交项目材料参数进行审核
     public String submitProjectMaterialReviewOfManager(ProjectReviewEmployeeForm projectReviewEmployeeForm) {
         User user = userService.getCurrentLoginUser();
         if (user == null) {
@@ -1402,7 +1402,7 @@ public class ProjectFlow {
 
             //不通过的话，需要记录下来，供总包单位查看不通过的意见
             if (nBrandReviewResult == 0) {
-                taskService.setVariable(task.getId(), "supervisionCompanySelectBrandReviewResultOfNotPassed",
+                taskService.setVariable(task.getId(), "notPassedAffectAppearanceReviewModeId",
                                         projectAppearanceReviewModeId);
             }
 
@@ -1483,7 +1483,7 @@ public class ProjectFlow {
                                     nReviewResult);
             if(nReviewResult == 0){
 
-                taskService.setVariable(task.getId(),"AffectAppearanceReviewModeId",projectAppearanceReviewModeId);
+                taskService.setVariable(task.getId(),"notPassedAffectAppearanceReviewModeId",projectAppearanceReviewModeId);
             }
 
             //完成任务
@@ -1686,6 +1686,10 @@ public class ProjectFlow {
             else nReviewResult = 1;
             taskService.setVariable(task.getId(), "nAffectAppearanceEngineeringManagerReviewResult", nReviewResult);
 
+            if (nReviewResult == 0)
+            {
+                taskService.setVariable(task.getId(),"notPassedAffectAppearanceReviewModeId",projectAppearanceReviewModeId);
+            }
             //完成任务
             setTaskComplete(task, "项目经理对项目材料品牌、物料申请进行审核", user);
 
@@ -1761,8 +1765,7 @@ public class ProjectFlow {
             //项目经理已经填写好了意见，不需要等待其它项目员工填写意见了，走向下一个节点
             taskService.setVariable(task.getId(), "engineeringDepartmentManagerAffectAppearanceSummaryReview", 1);
              if(nReviewResult == 0){
-
-                taskService.setVariable(task.getId(),"AffectAppearanceReviewModeId",projectAppearanceReviewModeId);
+                taskService.setVariable(task.getId(),"notPassedAffectAppearanceReviewModeId",projectAppearanceReviewModeId);
             }
 
             //完成任务
@@ -1843,7 +1846,8 @@ public class ProjectFlow {
 
 
             if (nAffectAppearanceDesignCompanyReviewResult == 0){
-                 taskService.setVariable(task.getId(),"DesignCompanyAffectAppearanceReviewModeId",
+                // 设计单位返回数据
+                 taskService.setVariable(task.getId(),"notPassedAffectAppearanceReviewModeId",
                          projectAppearanceReviewModeId);
 
              }
@@ -1933,7 +1937,7 @@ public class ProjectFlow {
                                     nReviewResult);
             if (nReviewResult == 0)
             {
-                taskService.setVariable(task.getId(),"DesignDepartmentAffectAppearanceReviewModeId",projectAppearanceReviewModeId);
+                taskService.setVariable(task.getId(),"notPassedAffectAppearanceReviewModeId",projectAppearanceReviewModeId);
             }
 
             //完成任务
@@ -2131,7 +2135,7 @@ public class ProjectFlow {
                                     nReviewResult);
             if (nReviewResult == 0)
             {
-                taskService.setVariable(task.getId(),"DesignDepartmentAffectAppearanceReviewModeId",projectDesignDepartmentAppearanceReviewModeId);
+                taskService.setVariable(task.getId(),"notPassedAffectAppearanceReviewModeId",projectDesignDepartmentAppearanceReviewModeId);
             }
             //完成任务
             setTaskComplete(task, "项目经理对项目材料品牌、物料申请进行审核", user);
@@ -2210,7 +2214,7 @@ public class ProjectFlow {
             taskService.setVariable(task.getId(), "designDepartmentManagerAppearanceSummaryReview", 1);
             if (nReviewResult == 0)
             {
-                taskService.setVariable(task.getId(),"DesignDepartmentAffectAppearanceReviewModeId",projectDesignDepartmentAppearanceReviewModeId);
+                taskService.setVariable(task.getId(),"notPassedAffectAppearanceReviewModeId",projectDesignDepartmentAppearanceReviewModeId);
             }
 
             //完成任务
@@ -2299,7 +2303,8 @@ public class ProjectFlow {
             taskService.setVariable(task.getId(), "nNotAffectAppearanceEngineeringManagerReviewResult",
                                     nReviewResult);
             if (nReviewResult == 0){
-                taskService.setVariable(task.getId(), "AffectAppearanceReviewModeId", AffectAppearanceReviewModeId);
+                //已验证
+                taskService.setVariable(task.getId(), "notPassedAffectAppearanceReviewModeId", AffectAppearanceReviewModeId);
             }
 
             //完成任务
@@ -2495,7 +2500,8 @@ public class ProjectFlow {
             taskService.setVariable(task.getId(), "nNotAffectAppearanceEngineeringManagerReviewResult", nReviewResult
             );
             if (nReviewResult == 0){
-                taskService.setVariable(task.getId(), "notAffectAppearanceReviewModeId", projectAppearanceReviewModeId);
+                // 已经验证数值没问题
+                taskService.setVariable(task.getId(), "notPassedAffectAppearanceReviewModeId", projectAppearanceReviewModeId);
             }
 
             //完成任务
@@ -2574,7 +2580,8 @@ public class ProjectFlow {
             //项目经理已经填写好了意见，不需要等待其它项目员工填写意见了，走向下一个节点
             taskService.setVariable(task.getId(), "engineeringDepartmentManagerNotAffectAppearanceSummaryReview", 1);
              if (nReviewResult == 0){
-                taskService.setVariable(task.getId(), "notAffectAppearanceReviewModeId", projectDesignDepartmentAppearanceReviewModeId);
+                 // 已经验证数值没问题
+                taskService.setVariable(task.getId(), "notPassedAffectAppearanceReviewModeId", projectDesignDepartmentAppearanceReviewModeId);
             }
 
             //完成任务
@@ -2945,17 +2952,17 @@ public class ProjectFlow {
             taskService.setVariable(task.getId(), "projectMaterialRetestBatchId", projectMaterialRetestBatchId);
 
             //完成任务
-            setTaskComplete(task, "监理判断是否需要复试", user);
+            setTaskComplete(task, "监理判断是否需要复检", user);
 
             //增加审核历史过程
             projectHistoryBusiness.addSupervisionCompanyDecidePassReCheck(businessId, user.getId(),
-                                                                          "监理判断是否需要复试",
-                                                                          "监理判断是否需要复试",
+                                                                          "监理判断是否需要复检",
+                                                                          "监理判断是否需要复检",
                                                                           projectMaterialRetestBatchId);
-            Log log = new Log(user.getId(), businessId, "监理判断是否需要复试", 0 , new Date());
+            Log log = new Log(user.getId(), businessId, "监理判断是否需要复检", 0 , new Date());
             logService.add(log);
 
-            result = "监理判断不需要复试";
+            result = "监理判断不需要复检";
         }
 
         return result;
@@ -3159,6 +3166,7 @@ public class ProjectFlow {
             else nReviewResult = 1;
             taskService.setVariable(task.getId(), "nSupervisionCompanyProjectMaterialAcceptanceReviewResult",
                                     nReviewResult);
+            /// /////////////////////未改
             if (nReviewResult == 0){
                 taskService.setVariable(task.getId(), "supervisionCompanyMaterialAcceptanceReviewResultOfNotPassed",projectMaterialAcceptanceReviewModeId);
             }
@@ -3245,6 +3253,7 @@ public class ProjectFlow {
             else nReviewResult = 1;
             taskService.setVariable(task.getId(), "nEngineeringDepartmentManagerProjectMaterialAcceptanceReviewResult",
                                     nReviewResult);
+            /// //////////////////////未改supervisionCompanyMaterialAcceptanceReviewResultOfNotPassed
            if (nReviewResult == 0){
                taskService.setVariable(task.getId(),"DepartmentManagerProjectMaterialAcceptanceReviewNotPassed",projectMaterialAcceptanceReviewModeId);
            }
@@ -3401,7 +3410,7 @@ public class ProjectFlow {
 
         return result;
     }
-
+    ///工程部材料验收
     public String submitProjectMaterialAcceptanceRemainReviewOfEngineeringDepartmentOfManager(ProjectMaterialAcceptanceReviewEmployeeForm projectMaterialAcceptanceReviewEmployeeForm) {
         User user = userService.getCurrentLoginUser();
         if (user == null) {
@@ -3453,6 +3462,7 @@ public class ProjectFlow {
             else nReviewResult = 1;
             taskService.setVariable(task.getId(), "nEngineeringDepartmentManagerProjectMaterialAcceptanceReviewResult",
                                     nReviewResult);
+            /// /////////////////////////////////////未改supervisionCompanyMaterialAcceptanceReviewResultOfNotPassed
             if (nReviewResult == 0){
                 taskService.setVariable(task.getId(),"DepartmentManagerProjectMaterialAcceptanceReviewNotPassed",projectMaterialAcceptanceReviewModeId);
            }
@@ -3534,7 +3544,7 @@ public class ProjectFlow {
             //项目经理已经填写好了意见，不需要等待其它项目员工填写意见了，走向下一个节点
             taskService.setVariable(task.getId(), "engineeringDepartmentManagerProjectMaterialAcceptanceSummaryReview",
                                     1);
-
+/// //////////////////////////////////////////////////////////未改
             if (nReviewResult == 0){
                 taskService.setVariable(task.getId(),"DepartmentManagerProjectMaterialAcceptanceReviewNotPassed",projectMaterialAcceptanceReviewModeId);
             }
@@ -3981,7 +3991,7 @@ public class ProjectFlow {
     public UseMaterialBrandSelectView getNotPassedBrandOfSelectBrandReviewedOfSupervisionCompanyByProjectIdAndTaskId(String projectId,
                                                                                                                      String taskId) {
         String projectAppearanceReviewModeId = (String) taskService.getVariable(taskId,
-                                                                                "supervisionCompanySelectBrandReviewResultOfNotPassed");
+                                                                                "notPassedAffectAppearanceReviewModeId");
         return projectBusinessService.getNotPassedBrandOfSelectBrandReviewedOfSupervisionCompanyByProjectIdAndTaskId(
                 projectAppearanceReviewModeId);
     }
