@@ -104,12 +104,11 @@ import {
   serverGetMaterialViewById,
 } from "@/server/system/material";
 import MaterialPhoto from "@/components/system/meterial/MaterialPhoto.vue";
-
 const router = useRouter();
 const materialViewList = ref<IServerMaterialView[]>();
 const brandPublicViewList = ref<IServerBrandPublicView[]>();
 const projectBrandList = ref<IServerProjectBrandView[]>();
-
+const is_Edited = ref(0); //是否修改过
 interface Props {
   dialogVisible: boolean; //对话框是否可见
   materialData;
@@ -196,13 +195,17 @@ const onOpenDialog = async () => {
   form.installation = props.material.installation;
   form.materialCount = props.projectMaterial.materialCount;
   form.materialUnit = props.projectMaterial.materialUnit;
-  if (props.materialData && props.materialData.isEdit != true) {
+  // && GeneralContractorCompanyBrandSelection.is_Edited == 0&& is_Edited != 0
+  if (props.materialData.useMaterial.materialUnit != "" && props.materialData.useMaterial.materialCount != 0 && is_Edited.value == 0) {
+    console.log(props.materialData.useMaterial);
     form.materialCount = props.materialData.useMaterial.materialCount;
     form.materialUnit = props.materialData.useMaterial.materialUnit;
+    console.log(1);
   }
-  if (props.materialData.isEdit == true) {
-    form.materialCount = props.materialData.projectMaterial.materialCount;
-    form.materialUnit = props.materialData.projectMaterial.materialUnit;
+  else{
+    // form.materialCount = props.materialData.projectMaterial.materialCount;
+    // form.materialUnit = props.materialData.projectMaterial.materialUnit;
+    console.log(2);
    }
   await getMaterialViewListFromSever();
   await getbrandPublicViewListFromSever();
@@ -309,7 +312,8 @@ const onOk = () => {
     photoIds: [], //照片ID
   };
 
-
+  is_Edited.value += 1;
+  console.log("is_Edited:",is_Edited.value);
   emit("onDilalogOk", projectMaterialForm);
 };
 

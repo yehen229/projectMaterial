@@ -463,7 +463,7 @@ const dialogTitle = computed(() => {
             </el-table-column>
           </el-table>
           <el-pagination
-            :hide-on-single-page="true"
+            :hide-on-single-page="false"
             class="page-class"
             background
             v-model:current-page="pageNo"

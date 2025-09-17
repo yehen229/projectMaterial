@@ -462,7 +462,7 @@ const getchart_bar = async () => {
 
       <el-pagination
           style="margin-top: 10px"
-
+          :hide-on-single-page="false"
           class="page-class"
           background
           v-model:current-page="pageNo"

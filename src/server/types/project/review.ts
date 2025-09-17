@@ -221,6 +221,8 @@ export interface IServerUseMaterialFormItem {
   photoIds: string[]; //材料样本图片id
 }
 
+
+
 export interface IServerUseMaterialForm {
   projectId: string; //项目号
   taskId: string;
